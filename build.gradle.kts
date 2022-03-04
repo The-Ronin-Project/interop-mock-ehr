@@ -19,6 +19,7 @@ dependencies {
     implementation("org.jetbrains.kotlin:kotlin-stdlib-jdk8")
     implementation("mysql:mysql-connector-java:8.0.28")
     implementation("com.google.protobuf:protobuf-java:3.19.4")
+    implementation("com.projectronin.interop.ehr:interop-ehr-epic:1.0.0-SNAPSHOT")
 
     implementation("ca.uhn.hapi.fhir", "hapi-fhir-base", hapiversion)
     implementation("ca.uhn.hapi.fhir", "hapi-fhir-server", hapiversion)
