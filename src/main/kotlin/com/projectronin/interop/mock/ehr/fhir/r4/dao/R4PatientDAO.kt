@@ -3,6 +3,7 @@ package com.projectronin.interop.mock.ehr.fhir.r4.dao
 import ca.uhn.fhir.context.FhirContext
 import com.mysql.cj.xdevapi.Collection
 import com.projectronin.interop.mock.ehr.fhir.BaseResourceDAO
+import org.hl7.fhir.r4.model.Identifier
 import org.hl7.fhir.r4.model.Patient
 
 class R4PatientDAO : BaseResourceDAO<Patient>() {
@@ -17,5 +18,15 @@ class R4PatientDAO : BaseResourceDAO<Patient>() {
             list.add(parser.parseResource(resourceType, it.toString()))
         }
         return list
+    }
+
+    fun searchByIdentifier(identifier: Identifier): Patient {
+        val parser = context.newJsonParser()
+        return parser.parseResource(
+            resourceType,
+            // note that this query is a bit rigid and expects identifiers in database to only ever have just value and system
+            collection.find("{'value':'${identifier.value}','system':'${identifier.system}'} in identifier[*]")
+                .execute().fetchOne().toString()
+        )
     }
 }

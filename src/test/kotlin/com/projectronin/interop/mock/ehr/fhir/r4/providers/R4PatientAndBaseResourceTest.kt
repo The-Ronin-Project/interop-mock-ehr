@@ -2,6 +2,7 @@ package com.projectronin.interop.mock.ehr.fhir.r4.providers
 
 import ca.uhn.fhir.context.FhirContext
 import ca.uhn.fhir.rest.param.DateParam
+import ca.uhn.fhir.rest.param.TokenParam
 import ca.uhn.fhir.rest.server.exceptions.ResourceNotFoundException
 import com.mysql.cj.xdevapi.Collection
 import com.mysql.cj.xdevapi.Schema
@@ -13,6 +14,7 @@ import io.mockk.mockkStatic
 import io.mockk.unmockkAll
 import io.mockk.unmockkStatic
 import org.hl7.fhir.r4.model.IdType
+import org.hl7.fhir.r4.model.Identifier
 import org.hl7.fhir.r4.model.Patient
 import org.junit.jupiter.api.AfterAll
 import org.junit.jupiter.api.Assertions.assertEquals
@@ -180,6 +182,31 @@ class R4PatientAndBaseResourceTest {
 
         val output = provider.searchByBirth(DateParam("1987-01-15"))
         assertEquals(output[0].birthDate, testPat1.birthDate)
+    }
+
+    @Test
+    fun `identifier search test`() {
+        val testPat = Patient()
+        testPat.id = "TESTINGIDENTIFIER"
+        testPat.birthDate = Date(87, 0, 15)
+        val identifier = Identifier()
+        identifier.value = "E2731"
+        identifier.system = "urn:oid:1.2.840.114350.1.1"
+        testPat.addIdentifier(identifier)
+        collection.add(FhirContext.forR4().newJsonParser().encodeResourceToString(testPat)).execute()
+        val testPat2 = Patient()
+        testPat2.id = "TESTINGIDENTIFIER2"
+        testPat2.birthDate = Date(87, 1, 15)
+        val identifier2 = Identifier()
+        identifier2.value = "E1928341293"
+        identifier2.system = "urn:oid:1.2.840.114350.1.1"
+        testPat.addIdentifier(identifier2)
+        collection.add(FhirContext.forR4().newJsonParser().encodeResourceToString(testPat2)).execute()
+        val token = TokenParam()
+        token.value = "E2731"
+        token.system = "urn:oid:1.2.840.114350.1.1"
+        val output = provider.searchByIdentifier(token)
+        assertEquals(output.birthDate, testPat.birthDate)
     }
 
     @Test
