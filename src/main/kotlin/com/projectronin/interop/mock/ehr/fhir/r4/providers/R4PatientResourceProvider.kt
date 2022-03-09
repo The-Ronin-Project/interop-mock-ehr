@@ -12,9 +12,8 @@ import org.hl7.fhir.r4.model.Patient
 import org.springframework.stereotype.Component
 
 @Component
-class R4PatientResourceProvider : BaseResourceProvider<Patient, R4PatientDAO>() {
-
-    override var resourceDAO = R4PatientDAO()
+class R4PatientResourceProvider(override var resourceDAO: R4PatientDAO) :
+    BaseResourceProvider<Patient, R4PatientDAO>() {
 
     override fun getResourceType(): Class<out IBaseResource> {
         return Patient::class.java

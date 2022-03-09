@@ -5,8 +5,6 @@ import ca.uhn.fhir.rest.server.exceptions.ResourceNotFoundException
 import com.mysql.cj.xdevapi.Collection
 import com.mysql.cj.xdevapi.DbDoc
 import com.mysql.cj.xdevapi.JsonString
-import com.mysql.cj.xdevapi.Schema
-import com.projectronin.interop.mock.ehr.InteropMockEHRApplication
 import org.hl7.fhir.r4.model.Resource
 import java.util.UUID
 
@@ -15,7 +13,6 @@ abstract class BaseResourceDAO<T : Resource> {
     abstract var context: FhirContext
     abstract var resourceType: Class<T>
     abstract var collection: Collection
-    var database: Schema = InteropMockEHRApplication.database
 
     fun insert(resource: T): String {
         if (!resource.hasId()) {
