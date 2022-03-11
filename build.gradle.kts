@@ -1,5 +1,3 @@
-import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
-
 plugins {
     id("org.springframework.boot") version "2.6.3"
     id("com.projectronin.interop.gradle.spring")
@@ -8,7 +6,6 @@ plugins {
 }
 
 var hapiversion = "5.6.0"
-java.sourceCompatibility = JavaVersion.VERSION_16
 
 dependencies {
     implementation(platform("org.springframework.boot:spring-boot-parent:2.6.4"))
@@ -30,15 +27,4 @@ dependencies {
     testImplementation("org.junit.jupiter:junit-jupiter:5.8.2")
     testImplementation("org.testcontainers:testcontainers:1.16.3")
     testImplementation("org.testcontainers:junit-jupiter:1.16.3")
-}
-
-repositories {
-    mavenCentral()
-}
-
-tasks.withType<KotlinCompile> {
-    kotlinOptions {
-        freeCompilerArgs = listOf("-Xjsr305=strict")
-        jvmTarget = "16"
-    }
 }
