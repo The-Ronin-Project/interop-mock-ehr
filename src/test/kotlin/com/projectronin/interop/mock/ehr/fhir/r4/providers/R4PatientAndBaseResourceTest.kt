@@ -195,7 +195,16 @@ class R4PatientAndBaseResourceTest {
         token.value = "E2731"
         token.system = "urn:oid:1.2.840.114350.1.1"
         val output = patientProvider.searchByIdentifier(token)
-        assertEquals(output.birthDate, testPat.birthDate)
+        assertEquals(output?.birthDate, testPat.birthDate)
+    }
+
+    @Test
+    fun `identifier search not found test`() {
+        val token = TokenParam()
+        token.value = "NotGoingToFindThisID"
+        token.system = "BadSystem"
+        val output = patientProvider.searchByIdentifier(token)
+        assertNull(output)
     }
 
     @Test

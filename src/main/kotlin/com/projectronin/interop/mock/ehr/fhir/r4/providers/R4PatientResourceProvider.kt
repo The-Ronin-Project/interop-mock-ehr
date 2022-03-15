@@ -25,7 +25,7 @@ class R4PatientResourceProvider(override var resourceDAO: R4PatientDAO) :
     }
 
     @Search
-    fun searchByIdentifier(@RequiredParam(name = Patient.SP_IDENTIFIER) idToken: TokenParam): Patient {
+    fun searchByIdentifier(@RequiredParam(name = Patient.SP_IDENTIFIER) idToken: TokenParam): Patient? {
         val identifier = Identifier()
         identifier.value = idToken.value
         identifier.system = idToken.system
