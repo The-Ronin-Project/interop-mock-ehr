@@ -13,9 +13,9 @@ import org.hl7.fhir.r4.model.Appointment as R4Appointment
 @Component
 class R4AppointmentTransformer {
 
-    fun transformToEpicAppointment(r4Appointment: R4Appointment, r4Patient: Patient): EpicAppointment {
+    fun transformToEpicAppointment(r4Appointment: R4Appointment, r4Patient: Patient?): EpicAppointment {
 
-        val patientIDs = r4Patient.identifier?.map { IDType(it.value, it.system) }
+        val patientIDs = r4Patient?.identifier?.map { IDType(it.value, it.system) }
         val providers = mutableListOf<ScheduleProviderReturnWithTime>()
 
         // in the future, we may want to link this concept to 'actual' Organization resources.
@@ -30,22 +30,20 @@ class R4AppointmentTransformer {
                         providerName = "",
                         time = "",
                         departmentIDs = listOf(
-                            IDType(
-                                id = ref.reference.removePrefix("Organization/"), "Internal"
-                            )
+                            IDType(ref.reference.removePrefix("Organization/"), "FHIR")
                         )
                     )
                 )
             }
 
         // in the future, we may want to link this concept to 'actual' Practitioner resources.
-        r4Appointment.participant.filter { it.actor.type == "Practitioner" }.forEach { practitioner ->
+        r4Appointment.participant.filter { it.actor.reference.contains("Practitioner") }.forEach { practitioner ->
             providers.add(
                 ScheduleProviderReturnWithTime(
                     departmentName = "",
                     duration = "",
                     providerIDs = listOf(
-                        IDType(practitioner.actor.reference.removePrefix("Practitioner/"), "Internal")
+                        IDType(practitioner.actor.reference.removePrefix("Practitioner/"), "FHIR")
                     ),
                     providerName = "",
                     time = "",
@@ -65,8 +63,8 @@ class R4AppointmentTransformer {
             extraExtensions = listOf(),
             extraItems = listOf(),
             patientIDs = patientIDs ?: listOf(),
-            patientName = r4Patient.name.find { it.use.toCode() == "usual" }?.nameAsSingleString
-                ?: r4Patient.nameFirstRep.nameAsSingleString ?: "",
+            patientName = r4Patient?.name?.find { it.use.toCode() == "usual" }?.nameAsSingleString
+                ?: r4Patient?.nameFirstRep?.nameAsSingleString ?: "",
             providers = providers,
             visitTypeIDs = listOf(),
             visitTypeName = r4Appointment.appointmentType.text ?: ""

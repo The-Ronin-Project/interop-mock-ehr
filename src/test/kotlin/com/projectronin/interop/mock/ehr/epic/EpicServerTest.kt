@@ -2,6 +2,8 @@ package com.projectronin.interop.mock.ehr.epic
 
 import com.projectronin.interop.ehr.epic.apporchard.model.GetAppointmentsResponse
 import com.projectronin.interop.ehr.epic.apporchard.model.GetPatientAppointmentsRequest
+import com.projectronin.interop.ehr.epic.apporchard.model.GetProviderAppointmentRequest
+import com.projectronin.interop.ehr.epic.apporchard.model.ScheduleProvider
 import com.projectronin.interop.ehr.epic.auth.EpicAuthentication
 import com.projectronin.interop.mock.ehr.epic.dal.EpicDAL
 import io.mockk.every
@@ -12,6 +14,7 @@ import io.mockk.unmockkAll
 import io.mockk.unmockkStatic
 import org.hl7.fhir.r4.model.Identifier
 import org.hl7.fhir.r4.model.Patient
+import org.hl7.fhir.r4.model.Practitioner
 import org.hl7.fhir.r4.model.Reference
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Test
@@ -95,7 +98,88 @@ internal class EpicServerTest {
         val output = server.getAppointmentsByPatient(request)
         val expected = GetAppointmentsResponse(
             appointments = listOf(epicAppointment1, epicAppointment2),
-            error = "No error good job"
+            error = null
+        )
+        assertEquals(expected, output)
+        unmockkAll()
+    }
+
+    @Test
+    fun `working provider appointment request test`() {
+        val patient = Patient()
+        patient.id = "TESTINGPATID"
+        every {
+            dal.r4PatientDAO.findById(
+                "TESTINGPATID"
+            )
+        } returns patient
+
+        val provider = Practitioner()
+        provider.id = "TESTINGPRACTID"
+
+        val request = GetProviderAppointmentRequest(
+            providers = listOf(
+                ScheduleProvider(
+                    "PRACT#1",
+                    "External"
+                )
+            ),
+            startDate = "01/01/2020",
+            endDate = "01/01/2021",
+            userID = "12345",
+            userIDType = "Internal"
+        )
+
+        mockkConstructor(Identifier::class)
+        val ident = mockk<Identifier>()
+        every { anyConstructed<Identifier>().setValue("PRACT#1").setSystem("External") } returns ident
+        every {
+            dal.r4PractitionerDAO.searchByIdentifier(
+                ident
+            )
+        } returns provider
+
+        val appointment1 = R4Appointment()
+        appointment1.id = "APPTID1"
+        val patientParticipant = org.hl7.fhir.r4.model.Appointment.AppointmentParticipantComponent()
+        patientParticipant.actor = Reference().setReference("Patient/TESTINGPATID").setType("Patient")
+        appointment1.participant.add(patientParticipant)
+        val appointment2 = R4Appointment()
+        appointment2.id = "APPTID2"
+
+        mockkConstructor(Reference::class)
+        val ref = mockk<Reference>()
+        every { anyConstructed<Reference>().setReference("TESTINGPRACTID") } returns ref
+
+        every {
+            dal.r4AppointmentDAO.searchByQuery(
+                references = listOf(ref),
+                fromDate = Date(120, 0, 1),
+                toDate = Date(121, 0, 1)
+            )
+        } returns listOf(appointment1, appointment2)
+
+        val epicAppointment1 = mockk<EpicAppointment>()
+        val epicAppointment2 = mockk<EpicAppointment>()
+
+        every {
+            dal.r4AppointmentTransformer.transformToEpicAppointment(
+                appointment1,
+                patient
+            )
+        } returns epicAppointment1
+
+        every {
+            dal.r4AppointmentTransformer.transformToEpicAppointment(
+                appointment2,
+                null
+            )
+        } returns epicAppointment2
+
+        val output = server.getAppointmentsByPractitioner(request)
+        val expected = GetAppointmentsResponse(
+            appointments = listOf(epicAppointment1, epicAppointment2),
+            error = null
         )
         assertEquals(expected, output)
         unmockkAll()
@@ -123,6 +207,37 @@ internal class EpicServerTest {
         val expected = GetAppointmentsResponse(
             appointments = listOf(),
             error = "No patient found."
+        )
+        assertEquals(expected, output)
+    }
+
+    @Test
+    fun `no practitioners found test`() {
+        val request = GetProviderAppointmentRequest(
+            providers = listOf(
+                ScheduleProvider(
+                    "PRACT#1",
+                    "External"
+                )
+            ),
+            startDate = "01/01/2020",
+            endDate = "01/01/2021",
+            userID = "12345",
+            userIDType = "Internal"
+        )
+        mockkConstructor(Identifier::class)
+        val ident = mockk<Identifier>()
+        every { anyConstructed<Identifier>().setValue("PRACT#1").setSystem("External") } returns ident
+        every {
+            dal.r4PractitionerDAO.searchByIdentifier(
+                ident
+            )
+        } returns null
+
+        val output = server.getAppointmentsByPractitioner(request)
+        val expected = GetAppointmentsResponse(
+            appointments = listOf(),
+            error = "No practitioners found matching request."
         )
         assertEquals(expected, output)
     }

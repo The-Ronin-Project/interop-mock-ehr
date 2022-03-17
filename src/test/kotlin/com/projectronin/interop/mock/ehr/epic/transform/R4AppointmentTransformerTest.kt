@@ -57,7 +57,7 @@ internal class R4AppointmentTransformerTest {
                     departmentIDs = listOf(
                         IDType(
                             id = "ORGID#1",
-                            type = "Internal"
+                            type = "FHIR"
                         )
                     ),
                     departmentName = "",
@@ -73,7 +73,7 @@ internal class R4AppointmentTransformerTest {
                     providerIDs = listOf(
                         IDType(
                             id = "PRACTID#1",
-                            type = "Internal"
+                            type = "FHIR"
                         )
                     ),
                     providerName = "",
