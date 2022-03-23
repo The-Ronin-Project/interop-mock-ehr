@@ -1,6 +1,7 @@
 package com.projectronin.interop.mock.ehr.fhir.r4.providers
 
 import ca.uhn.fhir.context.FhirContext
+import ca.uhn.fhir.model.api.Include
 import ca.uhn.fhir.rest.param.DateParam
 import ca.uhn.fhir.rest.param.TokenParam
 import ca.uhn.fhir.rest.server.exceptions.ResourceNotFoundException
@@ -24,6 +25,7 @@ import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.TestInstance
 import org.junit.jupiter.api.assertThrows
 import org.testcontainers.junit.jupiter.Testcontainers
+import java.security.InvalidParameterException
 import java.util.Date
 import java.util.UUID
 
@@ -129,6 +131,40 @@ class R4PatientAndBaseResourceTest {
         collection.add(FhirContext.forR4().newJsonParser().encodeResourceToString(testPat)).execute()
 
         val output = patientProvider.read(IdType("TESTINGID6"))
+        assertEquals(output.birthDate, testPat.birthDate)
+    }
+
+    @Test
+    fun `read test using parameter`() {
+        val testPat = Patient()
+        testPat.birthDate = Date(87, 0, 15)
+        testPat.id = "TESTINGID11"
+        collection.add(FhirContext.forR4().newJsonParser().encodeResourceToString(testPat)).execute()
+
+        val output = patientProvider.readWithIncludes(IdType("TESTINGID11"), null)
+        assertEquals(output.birthDate, testPat.birthDate)
+    }
+
+    @Test
+    fun `include throws error`() {
+        val testPat = Patient()
+        testPat.birthDate = Date(87, 0, 15)
+        testPat.id = "TESTINGID11"
+        collection.add(FhirContext.forR4().newJsonParser().encodeResourceToString(testPat)).execute()
+
+        assertThrows<InvalidParameterException> {
+            patientProvider.readWithIncludes(IdType("TESTINGID11"), setOf(Include("badInclude")))
+        }
+    }
+
+    @Test
+    fun `code coverage test`() {
+        val testPat = Patient()
+        testPat.birthDate = Date(87, 0, 15)
+        testPat.id = "TESTINGID12"
+        collection.add(FhirContext.forR4().newJsonParser().encodeResourceToString(testPat)).execute()
+
+        val output = patientProvider.readWithIncludes(IdType("TESTINGID12"), setOf())
         assertEquals(output.birthDate, testPat.birthDate)
     }
 

@@ -63,7 +63,7 @@ class R4AppointmentResourceTest {
 
         val testAppt2 = Appointment()
         testAppt2.addParticipant().actor = Reference("Practitioner/BADID")
-        testAppt.addParticipant().actor = Reference("Location/2")
+        testAppt2.addParticipant().actor = Reference("Location/2")
         testAppt2.id = "TESTAPPT4"
         collection.add(FhirContext.forR4().newJsonParser().encodeResourceToString(testAppt2)).execute()
 
