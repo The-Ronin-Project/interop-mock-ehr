@@ -1,4 +1,4 @@
-name: Tests
+name: Interop Mock EHR Tests
 on:
   push:
     branches: [ master ]
@@ -17,10 +17,11 @@ jobs:
       - name: Grant execute permission for gradlew
         run: chmod +x gradlew
       - name: Gradlew Test
-        run: ./gradlew test
+        run: ./gradlew :interop-mock-ehr:test
       - name: Upload Coverage
         uses: codecov/codecov-action@v2
         with:
           token: ${{ secrets.CODECOV_TOKEN }}
           fail_ci_if_error: false
-          file: ./codecov/test/jacocoTestReport.xml
+          file: ./interop-mock-ehr/codecov/test/jacocoTestReport.xml
+          flags: mock-ehr
