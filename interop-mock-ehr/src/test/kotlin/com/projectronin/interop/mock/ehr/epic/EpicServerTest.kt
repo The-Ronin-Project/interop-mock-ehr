@@ -4,6 +4,8 @@ import com.projectronin.interop.ehr.epic.apporchard.model.GetAppointmentsRespons
 import com.projectronin.interop.ehr.epic.apporchard.model.GetPatientAppointmentsRequest
 import com.projectronin.interop.ehr.epic.apporchard.model.GetProviderAppointmentRequest
 import com.projectronin.interop.ehr.epic.apporchard.model.ScheduleProvider
+import com.projectronin.interop.ehr.epic.apporchard.model.SendMessageRecipient
+import com.projectronin.interop.ehr.epic.apporchard.model.SendMessageRequest
 import com.projectronin.interop.ehr.epic.auth.EpicAuthentication
 import com.projectronin.interop.mock.ehr.epic.dal.EpicDAL
 import io.mockk.every
@@ -12,6 +14,7 @@ import io.mockk.mockkConstructor
 import io.mockk.mockkStatic
 import io.mockk.unmockkAll
 import io.mockk.unmockkStatic
+import org.hl7.fhir.r4.model.Communication
 import org.hl7.fhir.r4.model.Identifier
 import org.hl7.fhir.r4.model.Patient
 import org.hl7.fhir.r4.model.Practitioner
@@ -240,5 +243,35 @@ internal class EpicServerTest {
             error = "No practitioners found matching request."
         )
         assertEquals(expected, output)
+    }
+
+    @Test
+    fun `working communication test`() {
+        val request = SendMessageRequest(
+            messageText = "Message Text",
+            patientID = "MRN#1",
+            recipients = listOf(
+                SendMessageRecipient("first", false, "External"),
+                SendMessageRecipient("second", true, "External"),
+            ),
+            senderID = "Sender#1",
+            messageType = "messageType",
+            senderIDType = "SendType#1",
+            patientIDType = "MRN",
+            contactID = "Con#1",
+            contactIDType = "ConType#1",
+            messagePriority = "just incoherent gibberish"
+        )
+        val communication = mockk<Communication>()
+        every {
+            dal.r4CommunicationTransformer.transformFromSendMessage(request)
+        } returns communication
+        every {
+            dal.r4CommunicationDAO.insert(communication)
+        } returns "NEW FHIR ID"
+        val output = server.createCommunication(request)
+        assertEquals(1, output.idTypes.size)
+        assertEquals("NEW FHIR ID", output.idTypes.first().id)
+        assertEquals("FHIR ID", output.idTypes.first().type)
     }
 }

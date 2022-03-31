@@ -1,6 +1,7 @@
 package com.projectronin.interop.mock.ehr.fhir.r4
 
 import com.projectronin.interop.mock.ehr.fhir.r4.providers.R4AppointmentResourceProvider
+import com.projectronin.interop.mock.ehr.fhir.r4.providers.R4CommunicationResourceProvider
 import com.projectronin.interop.mock.ehr.fhir.r4.providers.R4LocationResourceProvider
 import com.projectronin.interop.mock.ehr.fhir.r4.providers.R4PatientResourceProvider
 import com.projectronin.interop.mock.ehr.fhir.r4.providers.R4PractitionerResourceProvider
@@ -8,6 +9,7 @@ import com.projectronin.interop.mock.ehr.fhir.r4.providers.R4PractitionerRoleRes
 import io.mockk.every
 import io.mockk.mockk
 import org.hl7.fhir.r4.model.Appointment
+import org.hl7.fhir.r4.model.Communication
 import org.hl7.fhir.r4.model.Location
 import org.hl7.fhir.r4.model.Patient
 import org.hl7.fhir.r4.model.Practitioner
@@ -29,7 +31,9 @@ internal class R4ServerTest {
         every { r4PractitionerRole.resourceType } returns PractitionerRole::class.java
         val r4Location = mockk<R4LocationResourceProvider>()
         every { r4Location.resourceType } returns Location::class.java
-        val server = R4Server(r4Patient, r4Appointment, r4Practitioner, r4Location, r4PractitionerRole)
+        val r4Communication = mockk<R4CommunicationResourceProvider>()
+        every { r4Communication.resourceType } returns Communication::class.java
+        val server = R4Server(r4Patient, r4Appointment, r4Practitioner, r4Location, r4PractitionerRole, r4Communication)
         server.init()
         assertTrue(
             server.resourceProviders.containsAll(
@@ -38,7 +42,8 @@ internal class R4ServerTest {
                     r4Appointment,
                     r4Practitioner,
                     r4Location,
-                    r4PractitionerRole
+                    r4PractitionerRole,
+                    r4Communication
                 )
             )
         )

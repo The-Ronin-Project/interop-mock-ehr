@@ -3,11 +3,15 @@ package com.projectronin.interop.mock.ehr.epic
 import com.projectronin.interop.ehr.epic.apporchard.model.GetAppointmentsResponse
 import com.projectronin.interop.ehr.epic.apporchard.model.GetPatientAppointmentsRequest
 import com.projectronin.interop.ehr.epic.apporchard.model.GetProviderAppointmentRequest
+import com.projectronin.interop.ehr.epic.apporchard.model.IDType
+import com.projectronin.interop.ehr.epic.apporchard.model.SendMessageRequest
+import com.projectronin.interop.ehr.epic.apporchard.model.SendMessageResponse
 import com.projectronin.interop.ehr.epic.auth.EpicAuthentication
 import com.projectronin.interop.mock.ehr.epic.dal.EpicDAL
 import org.hl7.fhir.r4.model.Identifier
 import org.hl7.fhir.r4.model.Reference
 import org.springframework.web.bind.annotation.GetMapping
+import org.springframework.web.bind.annotation.PostMapping
 import org.springframework.web.bind.annotation.RequestBody
 import org.springframework.web.bind.annotation.RequestMapping
 import org.springframework.web.bind.annotation.RestController
@@ -81,5 +85,12 @@ class EpicServer(private var dal: EpicDAL) {
             }
         }
         return GetAppointmentsResponse(appointments = epicAppointments, error = null)
+    }
+
+    @PostMapping("/api/epic/2014/Common/Utility/SENDMESSAGE/Message")
+    fun createCommunication(@RequestBody sendMessageRequest: SendMessageRequest): SendMessageResponse {
+        val communication = dal.r4CommunicationTransformer.transformFromSendMessage(sendMessageRequest)
+        val newCommunicationId = dal.r4CommunicationDAO.insert(communication)
+        return SendMessageResponse(listOf(IDType(id = newCommunicationId, type = "FHIR ID")))
     }
 }
