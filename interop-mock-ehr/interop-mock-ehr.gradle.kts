@@ -1,8 +1,8 @@
 plugins {
+    `maven-publish`
     id("org.springframework.boot") version "2.4.5"
     id("com.projectronin.interop.gradle.spring")
     id("com.projectronin.interop.gradle.mockk")
-    id("com.projectronin.interop.gradle.publish")
 }
 
 var hapiversion = "5.6.0"
@@ -29,6 +29,20 @@ dependencies {
     testImplementation("org.junit.jupiter:junit-jupiter:5.8.2")
 }
 publishing {
+    repositories {
+        maven {
+            name = "nexus"
+            credentials {
+                username = System.getenv("NEXUS_USER")
+                password = System.getenv("NEXUS_TOKEN")
+            }
+            url = if (project.version.toString().endsWith("SNAPSHOT")) {
+                uri("https://repo.devops.projectronin.io/repository/maven-snapshots/")
+            } else {
+                uri("https://repo.devops.projectronin.io/repository/maven-releases/")
+            }
+        }
+    }
     publications {
         create<MavenPublication>("bootJava") {
             artifact(tasks.getByName("bootJar"))
