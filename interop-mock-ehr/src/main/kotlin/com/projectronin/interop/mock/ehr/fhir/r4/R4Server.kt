@@ -1,6 +1,7 @@
 package com.projectronin.interop.mock.ehr.fhir.r4
 
 import ca.uhn.fhir.context.FhirContext
+import ca.uhn.fhir.rest.server.FifoMemoryPagingProvider
 import ca.uhn.fhir.rest.server.RestfulServer
 import com.projectronin.interop.mock.ehr.fhir.r4.providers.R4AppointmentResourceProvider
 import com.projectronin.interop.mock.ehr.fhir.r4.providers.R4CommunicationResourceProvider
@@ -11,7 +12,7 @@ import com.projectronin.interop.mock.ehr.fhir.r4.providers.R4PractitionerRoleRes
 import org.springframework.stereotype.Component
 import javax.servlet.annotation.WebServlet
 
-@WebServlet("/fhir/r4/*")
+@WebServlet(urlPatterns = ["/fhir/r4/*", "/epic/FHIR/R4/*"])
 @Component
 class R4Server(
     private val r4PatientProvider: R4PatientResourceProvider,
@@ -31,6 +32,8 @@ class R4Server(
             r4PractitionerRoleResourceProvider,
             r4CommunicationResourceProvider
         )
+        pagingProvider = FifoMemoryPagingProvider(10)
+        maximumPageSize = 10 // in reality this is much higher, but this is easier to test with.
         super.initialize()
     }
 }

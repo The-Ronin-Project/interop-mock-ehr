@@ -3,6 +3,7 @@ package com.projectronin.interop.mock.ehr.fhir.r4.providers
 import ca.uhn.fhir.context.FhirContext
 import ca.uhn.fhir.model.api.Include
 import ca.uhn.fhir.rest.param.DateParam
+import ca.uhn.fhir.rest.param.StringParam
 import ca.uhn.fhir.rest.param.TokenParam
 import ca.uhn.fhir.rest.server.exceptions.ResourceNotFoundException
 import com.mysql.cj.xdevapi.Collection
@@ -13,6 +14,8 @@ import io.mockk.every
 import io.mockk.mockk
 import io.mockk.mockkStatic
 import io.mockk.unmockkStatic
+import org.hl7.fhir.r4.model.ContactPoint
+import org.hl7.fhir.r4.model.Enumerations
 import org.hl7.fhir.r4.model.IdType
 import org.hl7.fhir.r4.model.Identifier
 import org.hl7.fhir.r4.model.Patient
@@ -35,6 +38,7 @@ class R4PatientAndBaseResourceTest {
 
     private lateinit var collection: Collection
     private lateinit var patientProvider: R4PatientResourceProvider
+    private lateinit var dao: R4PatientDAO
 
     @BeforeAll
     fun initTest() {
@@ -42,17 +46,18 @@ class R4PatientAndBaseResourceTest {
 
         val database = mockk<Schema>()
         every { database.createCollection(Patient::class.simpleName, true) } returns collection
-        patientProvider = R4PatientResourceProvider(R4PatientDAO(database))
+        dao = R4PatientDAO(database)
+        patientProvider = R4PatientResourceProvider(dao)
     }
 
     @Test
     fun `insert test with id`() {
         val testPat = Patient()
-        testPat.id = "TESTINGID"
+        testPat.id = "TESTINGID1"
         testPat.birthDate = Date(87, 0, 15)
 
         val output = patientProvider.create(testPat)
-        assertEquals(output.id, IdType("TESTINGID"))
+        assertEquals(output.id, IdType("TESTINGID1"))
     }
 
     @Test
@@ -71,14 +76,14 @@ class R4PatientAndBaseResourceTest {
     fun `update test with id`() {
         val testPat = Patient()
         testPat.birthDate = Date(87, 0, 15)
-        testPat.id = "TESTINGID3"
+        testPat.id = "TESTINGID2"
         collection.add(FhirContext.forR4().newJsonParser().encodeResourceToString(testPat)).execute()
 
         testPat.active = true
-        val output = patientProvider.update(IdType("TESTINGID3"), testPat)
+        val output = patientProvider.update(IdType("TESTINGID2"), testPat)
         assertTrue(output.created)
 
-        val dbDoc = collection.find("id = :id").bind("id", "TESTINGID3").execute().fetchOne()
+        val dbDoc = collection.find("id = :id").bind("id", "TESTINGID2").execute().fetchOne()
         val outputPat = FhirContext.forR4().newJsonParser().parseResource(Patient::class.java, dbDoc.toString())
         assertTrue(outputPat.active)
     }
@@ -87,14 +92,14 @@ class R4PatientAndBaseResourceTest {
     fun `update test without id`() {
         val testPat = Patient()
         testPat.birthDate = Date(87, 0, 15)
-        testPat.id = "TESTINGID4"
+        testPat.id = "TESTINGID3"
         collection.add(FhirContext.forR4().newJsonParser().encodeResourceToString(testPat)).execute()
         testPat.active = true
 
         val output = patientProvider.updateNoId(testPat)
         assertTrue(output.created)
 
-        val dbDoc = collection.find("id = :id").bind("id", "TESTINGID4").execute().fetchOne()
+        val dbDoc = collection.find("id = :id").bind("id", "TESTINGID3").execute().fetchOne()
         val outputPat = FhirContext.forR4().newJsonParser().parseResource(Patient::class.java, dbDoc.toString())
         assertTrue(outputPat.active)
     }
@@ -102,12 +107,12 @@ class R4PatientAndBaseResourceTest {
     @Test
     fun `update test not found so create new`() {
         val testPat = Patient()
-        testPat.id = "TESTINGIDNEW"
+        testPat.id = "TESTINGID4"
         testPat.birthDate = Date(87, 0, 15)
         val output = patientProvider.updateNoId(testPat)
         assertTrue(output.created)
 
-        val dbDoc = collection.find("id = :id").bind("id", "TESTINGIDNEW").execute().fetchOne()
+        val dbDoc = collection.find("id = :id").bind("id", "TESTINGID4").execute().fetchOne()
         val outputPat = FhirContext.forR4().newJsonParser().parseResource(Patient::class.java, dbDoc.toString())
         assertNotNull(outputPat.birthDate)
     }
@@ -138,10 +143,10 @@ class R4PatientAndBaseResourceTest {
     fun `read test using parameter`() {
         val testPat = Patient()
         testPat.birthDate = Date(87, 0, 15)
-        testPat.id = "TESTINGID11"
+        testPat.id = "TESTINGID7"
         collection.add(FhirContext.forR4().newJsonParser().encodeResourceToString(testPat)).execute()
 
-        val output = patientProvider.readWithIncludes(IdType("TESTINGID11"), null)
+        val output = patientProvider.readWithIncludes(IdType("TESTINGID7"), null)
         assertEquals(output.birthDate, testPat.birthDate)
     }
 
@@ -149,11 +154,11 @@ class R4PatientAndBaseResourceTest {
     fun `include throws error`() {
         val testPat = Patient()
         testPat.birthDate = Date(87, 0, 15)
-        testPat.id = "TESTINGID11"
+        testPat.id = "TESTINGID8"
         collection.add(FhirContext.forR4().newJsonParser().encodeResourceToString(testPat)).execute()
 
         assertThrows<InvalidParameterException> {
-            patientProvider.readWithIncludes(IdType("TESTINGID11"), setOf(Include("badInclude")))
+            patientProvider.readWithIncludes(IdType("TESTINGID8"), setOf(Include("badInclude")))
         }
     }
 
@@ -161,10 +166,10 @@ class R4PatientAndBaseResourceTest {
     fun `code coverage test`() {
         val testPat = Patient()
         testPat.birthDate = Date(87, 0, 15)
-        testPat.id = "TESTINGID12"
+        testPat.id = "TESTINGID9"
         collection.add(FhirContext.forR4().newJsonParser().encodeResourceToString(testPat)).execute()
 
-        val output = patientProvider.readWithIncludes(IdType("TESTINGID12"), setOf())
+        val output = patientProvider.readWithIncludes(IdType("TESTINGID9"), setOf())
         assertEquals(output.birthDate, testPat.birthDate)
     }
 
@@ -177,12 +182,12 @@ class R4PatientAndBaseResourceTest {
     fun `return all test`() {
         val testPat1 = Patient()
         testPat1.birthDate = Date(87, 0, 15)
-        testPat1.id = "TESTINGID7"
+        testPat1.id = "TESTINGID10"
         collection.add(FhirContext.forR4().newJsonParser().encodeResourceToString(testPat1)).execute()
 
         val testPat2 = Patient()
         testPat2.birthDate = Date(87, 1, 15)
-        testPat2.id = "TESTINGID8"
+        testPat2.id = "TESTINGID11"
         collection.add(FhirContext.forR4().newJsonParser().encodeResourceToString(testPat2)).execute()
 
         val output = patientProvider.returnAll()
@@ -193,16 +198,75 @@ class R4PatientAndBaseResourceTest {
     fun `birthday search test`() {
         val testPat1 = Patient()
         testPat1.birthDate = Date(87, 0, 15)
-        testPat1.id = "TESTINGID9"
         collection.add(FhirContext.forR4().newJsonParser().encodeResourceToString(testPat1)).execute()
 
         val testPat2 = Patient()
         testPat2.birthDate = Date(87, 1, 15)
-        testPat2.id = "TESTINGID10"
         collection.add(FhirContext.forR4().newJsonParser().encodeResourceToString(testPat2)).execute()
 
-        val output = patientProvider.searchByBirth(DateParam("1987-01-15"))
-        assertEquals(output[0].birthDate, testPat1.birthDate)
+        val output = patientProvider.search(DateParam("1987-01-15")).first()
+        assertEquals(output.birthDate, testPat1.birthDate)
+    }
+
+    @Test
+    fun `name and gender search test`() {
+        val testPat1 = Patient()
+        testPat1.addName().setFamily("testFamily").addGiven("testGiven")
+        testPat1.gender = Enumerations.AdministrativeGender.MALE
+        collection.add(FhirContext.forR4().newJsonParser().encodeResourceToString(testPat1)).execute()
+
+        val testPat2 = Patient()
+        testPat2.addName().setFamily("badFamily").addGiven("badGiven")
+        testPat2.gender = Enumerations.AdministrativeGender.FEMALE
+        collection.add(FhirContext.forR4().newJsonParser().encodeResourceToString(testPat2)).execute()
+
+        val output =
+            patientProvider.search(
+                givenName = StringParam("testGiven"),
+                familyName = StringParam("testFamily"),
+                gender = StringParam("male")
+            ).first()
+
+        assertEquals(output.nameFirstRep.family, testPat1.nameFirstRep.family)
+        assertEquals(output.gender, testPat1.gender)
+    }
+
+    @Test
+    fun `email search test`() {
+        val testPat1 = Patient()
+        testPat1.telecom.add(
+            ContactPoint().setSystem(ContactPoint.ContactPointSystem.EMAIL).setValue("goodEmail@com.com")
+        )
+        collection.add(FhirContext.forR4().newJsonParser().encodeResourceToString(testPat1)).execute()
+
+        val testPat2 = Patient()
+        testPat2.telecom.add(
+            ContactPoint().setSystem(ContactPoint.ContactPointSystem.EMAIL).setValue("badEmail@com.com")
+        )
+        collection.add(FhirContext.forR4().newJsonParser().encodeResourceToString(testPat2)).execute()
+
+        val output = patientProvider.search(email = StringParam("goodEmail@com.com")).first()
+        assertEquals(output.telecom.first().system, testPat1.telecom.first().system)
+        assertEquals(output.telecom.first().value, testPat1.telecom.first().value)
+    }
+
+    @Test
+    fun `phone search test`() {
+        val testPat1 = Patient()
+        testPat1.telecom.add(
+            ContactPoint().setSystem(ContactPoint.ContactPointSystem.PHONE).setValue("608-608-6080")
+        )
+        collection.add(FhirContext.forR4().newJsonParser().encodeResourceToString(testPat1)).execute()
+
+        val testPat2 = Patient()
+        testPat2.telecom.add(
+            ContactPoint().setSystem(ContactPoint.ContactPointSystem.PHONE).setValue("808-908-9090")
+        )
+        collection.add(FhirContext.forR4().newJsonParser().encodeResourceToString(testPat2)).execute()
+
+        val output = patientProvider.search(telecomParam = TokenParam("608-608-6080")).first()
+        assertEquals(output.telecom.first().system, testPat1.telecom.first().system)
+        assertEquals(output.telecom.first().value, testPat1.telecom.first().value)
     }
 
     @Test
@@ -213,7 +277,7 @@ class R4PatientAndBaseResourceTest {
 
         val identifier = Identifier()
         identifier.value = "E2731"
-        identifier.system = "urn:oid:1.2.840.114350.1.1"
+        identifier.system = "MRN"
         testPat.addIdentifier(identifier)
         collection.add(FhirContext.forR4().newJsonParser().encodeResourceToString(testPat)).execute()
 
@@ -229,7 +293,7 @@ class R4PatientAndBaseResourceTest {
 
         val token = TokenParam()
         token.value = "E2731"
-        token.system = "urn:oid:1.2.840.114350.1.1"
+        token.system = "MRN"
         val output = patientProvider.searchByIdentifier(token)
         assertEquals(output?.birthDate, testPat.birthDate)
     }
@@ -246,5 +310,10 @@ class R4PatientAndBaseResourceTest {
     @Test
     fun `correct resource returned`() {
         assertEquals(patientProvider.resourceType, Patient::class.java)
+    }
+
+    @Test
+    fun `cove coverage test`() {
+        assertEquals(dao.searchByQuery().size, 0)
     }
 }
