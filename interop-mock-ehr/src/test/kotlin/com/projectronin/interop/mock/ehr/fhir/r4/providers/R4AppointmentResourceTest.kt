@@ -6,8 +6,8 @@ import ca.uhn.fhir.rest.param.DateRangeParam
 import ca.uhn.fhir.rest.param.ReferenceParam
 import com.mysql.cj.xdevapi.Collection
 import com.mysql.cj.xdevapi.Schema
+import com.projectronin.interop.mock.ehr.MockEHRBaseTest
 import com.projectronin.interop.mock.ehr.fhir.r4.dao.R4AppointmentDAO
-import com.projectronin.interop.mock.ehr.getTestCollection
 import io.mockk.every
 import io.mockk.mockk
 import org.hl7.fhir.r4.model.Appointment
@@ -16,20 +16,17 @@ import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.BeforeAll
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.TestInstance
-import org.testcontainers.junit.jupiter.Testcontainers
 import java.util.Date
 
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
-@Testcontainers
-class R4AppointmentResourceTest {
+class R4AppointmentResourceTest : MockEHRBaseTest() {
     private lateinit var collection: Collection
     private lateinit var appointmentProvider: R4AppointmentResourceProvider
     private lateinit var dao: R4AppointmentDAO
 
     @BeforeAll
     fun initTest() {
-        collection = getTestCollection()
-
+        collection = createCollection(Appointment::class.simpleName!!)
         val database = mockk<Schema>()
         every { database.createCollection(Appointment::class.simpleName, true) } returns collection
         dao = R4AppointmentDAO(database)

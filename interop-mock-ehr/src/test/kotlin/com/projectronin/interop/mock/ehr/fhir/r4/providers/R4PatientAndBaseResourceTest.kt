@@ -8,8 +8,8 @@ import ca.uhn.fhir.rest.param.TokenParam
 import ca.uhn.fhir.rest.server.exceptions.ResourceNotFoundException
 import com.mysql.cj.xdevapi.Collection
 import com.mysql.cj.xdevapi.Schema
+import com.projectronin.interop.mock.ehr.MockEHRBaseTest
 import com.projectronin.interop.mock.ehr.fhir.r4.dao.R4PatientDAO
-import com.projectronin.interop.mock.ehr.getTestCollection
 import io.mockk.every
 import io.mockk.mockk
 import io.mockk.mockkStatic
@@ -27,14 +27,12 @@ import org.junit.jupiter.api.BeforeAll
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.TestInstance
 import org.junit.jupiter.api.assertThrows
-import org.testcontainers.junit.jupiter.Testcontainers
 import java.security.InvalidParameterException
 import java.util.Date
 import java.util.UUID
 
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
-@Testcontainers
-class R4PatientAndBaseResourceTest {
+class R4PatientAndBaseResourceTest : MockEHRBaseTest() {
 
     private lateinit var collection: Collection
     private lateinit var patientProvider: R4PatientResourceProvider
@@ -42,8 +40,7 @@ class R4PatientAndBaseResourceTest {
 
     @BeforeAll
     fun initTest() {
-        collection = getTestCollection()
-
+        collection = createCollection(Patient::class.simpleName!!)
         val database = mockk<Schema>()
         every { database.createCollection(Patient::class.simpleName, true) } returns collection
         dao = R4PatientDAO(database)

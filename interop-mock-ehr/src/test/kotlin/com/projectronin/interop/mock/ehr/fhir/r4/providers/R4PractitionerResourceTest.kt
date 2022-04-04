@@ -4,8 +4,8 @@ import ca.uhn.fhir.context.FhirContext
 import ca.uhn.fhir.rest.param.TokenParam
 import com.mysql.cj.xdevapi.Collection
 import com.mysql.cj.xdevapi.Schema
+import com.projectronin.interop.mock.ehr.MockEHRBaseTest
 import com.projectronin.interop.mock.ehr.fhir.r4.dao.R4PractitionerDAO
-import com.projectronin.interop.mock.ehr.getTestCollection
 import io.mockk.every
 import io.mockk.mockk
 import org.hl7.fhir.r4.model.Identifier
@@ -15,20 +15,17 @@ import org.junit.jupiter.api.Assertions.assertNull
 import org.junit.jupiter.api.BeforeAll
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.TestInstance
-import org.testcontainers.junit.jupiter.Testcontainers
 import java.util.Date
 
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
-@Testcontainers
-class R4PractitionerResourceTest {
+class R4PractitionerResourceTest : MockEHRBaseTest() {
 
     private lateinit var collection: Collection
     private lateinit var practitionerProvider: R4PractitionerResourceProvider
 
     @BeforeAll
     fun initTest() {
-        collection = getTestCollection()
-
+        collection = createCollection(Practitioner::class.simpleName!!)
         val database = mockk<Schema>()
         every { database.createCollection(Practitioner::class.simpleName, true) } returns collection
         practitionerProvider = R4PractitionerResourceProvider(R4PractitionerDAO(database))
