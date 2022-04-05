@@ -11,7 +11,7 @@ class InteropMockEHRConfig {
     @Bean
     fun database(
         @Value("#{environment.MOCK_EHR_DB_HOST}") host: String,
-        @Value("#{environment.MOCK_EHR_DB_PORT}") port: Int,
+        @Value("#{environment.MOCK_EHR_DB_PORT}") port: String,
         @Value("#{environment.MOCK_EHR_DB_NAME}") name: String,
         @Value("#{environment.MOCK_EHR_DB_USER}") user: String,
         @Value("#{environment.MOCK_EHR_DB_PASS}") pass: String

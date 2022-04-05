@@ -8,7 +8,7 @@ import ca.uhn.fhir.rest.param.ReferenceParam
 import ca.uhn.fhir.rest.param.TokenParam
 import com.mysql.cj.xdevapi.Collection
 import com.mysql.cj.xdevapi.Schema
-import com.projectronin.interop.mock.ehr.MockEHRBaseTest
+import com.projectronin.interop.mock.ehr.BaseMySQLTest
 import com.projectronin.interop.mock.ehr.fhir.r4.dao.R4LocationDAO
 import com.projectronin.interop.mock.ehr.fhir.r4.dao.R4PractitionerDAO
 import com.projectronin.interop.mock.ehr.fhir.r4.dao.R4PractitionerRoleDAO
@@ -28,7 +28,7 @@ import org.junit.jupiter.api.assertThrows
 import java.security.InvalidParameterException
 
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
-class R4PractitionerRoleResourceTest : MockEHRBaseTest() {
+class R4PractitionerRoleResourceTest : BaseMySQLTest() {
 
     private lateinit var collection: Collection
     private lateinit var practitionerRoleProvider: R4PractitionerRoleResourceProvider

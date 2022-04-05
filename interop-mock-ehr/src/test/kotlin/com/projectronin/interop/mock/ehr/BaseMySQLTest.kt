@@ -4,7 +4,7 @@ import com.mysql.cj.xdevapi.Collection
 import com.mysql.cj.xdevapi.SessionFactory
 import org.testcontainers.containers.MySQLContainer
 
-abstract class MockEHRBaseTest {
+abstract class BaseMySQLTest {
     companion object {
         var MYSQL_CONTAINER = MySQLContainer<Nothing>("mysql:8.0.28-oracle").apply {
             withExposedPorts(3306, 33060)

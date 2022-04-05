@@ -16,7 +16,7 @@ internal class InteropMockEHRConfigTest {
         val slot = slot<String>()
         mockkConstructor(SessionFactory::class)
         every { anyConstructed<SessionFactory>().getSession(capture(slot)).defaultSchema } returns mockk()
-        InteropMockEHRConfig().database("host", 9090, "name", "user", "pass")
+        InteropMockEHRConfig().database("host", "9090", "name", "user", "pass")
         assertEquals("mysqlx://host:9090/name?user=user&password=pass", slot.captured)
         unmockkAll()
     }

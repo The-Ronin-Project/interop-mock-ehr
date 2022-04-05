@@ -6,7 +6,7 @@ import ca.uhn.fhir.rest.param.DateRangeParam
 import ca.uhn.fhir.rest.param.ReferenceParam
 import com.mysql.cj.xdevapi.Collection
 import com.mysql.cj.xdevapi.Schema
-import com.projectronin.interop.mock.ehr.MockEHRBaseTest
+import com.projectronin.interop.mock.ehr.BaseMySQLTest
 import com.projectronin.interop.mock.ehr.fhir.r4.dao.R4AppointmentDAO
 import io.mockk.every
 import io.mockk.mockk
@@ -19,7 +19,7 @@ import org.junit.jupiter.api.TestInstance
 import java.util.Date
 
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
-class R4AppointmentResourceTest : MockEHRBaseTest() {
+class R4AppointmentResourceTest : BaseMySQLTest() {
     private lateinit var collection: Collection
     private lateinit var appointmentProvider: R4AppointmentResourceProvider
     private lateinit var dao: R4AppointmentDAO

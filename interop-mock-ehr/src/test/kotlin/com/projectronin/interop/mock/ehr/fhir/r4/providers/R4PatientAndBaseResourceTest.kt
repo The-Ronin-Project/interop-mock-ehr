@@ -8,7 +8,7 @@ import ca.uhn.fhir.rest.param.TokenParam
 import ca.uhn.fhir.rest.server.exceptions.ResourceNotFoundException
 import com.mysql.cj.xdevapi.Collection
 import com.mysql.cj.xdevapi.Schema
-import com.projectronin.interop.mock.ehr.MockEHRBaseTest
+import com.projectronin.interop.mock.ehr.BaseMySQLTest
 import com.projectronin.interop.mock.ehr.fhir.r4.dao.R4PatientDAO
 import io.mockk.every
 import io.mockk.mockk
@@ -32,7 +32,7 @@ import java.util.Date
 import java.util.UUID
 
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
-class R4PatientAndBaseResourceTest : MockEHRBaseTest() {
+class R4PatientAndBaseResourceTest : BaseMySQLTest() {
 
     private lateinit var collection: Collection
     private lateinit var patientProvider: R4PatientResourceProvider

@@ -2,7 +2,7 @@ package com.projectronin.interop.mock.ehr.fhir.r4.providers
 
 import com.mysql.cj.xdevapi.Collection
 import com.mysql.cj.xdevapi.Schema
-import com.projectronin.interop.mock.ehr.MockEHRBaseTest
+import com.projectronin.interop.mock.ehr.BaseMySQLTest
 import com.projectronin.interop.mock.ehr.fhir.r4.dao.R4CommunicationDAO
 import io.mockk.every
 import io.mockk.mockk
@@ -13,7 +13,7 @@ import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.TestInstance
 
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
-class R4CommunicationResourceTest : MockEHRBaseTest() {
+class R4CommunicationResourceTest : BaseMySQLTest() {
     private lateinit var collection: Collection
     private lateinit var communicationProvider: R4CommunicationResourceProvider
     private lateinit var dao: R4CommunicationDAO

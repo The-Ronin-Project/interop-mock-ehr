@@ -4,7 +4,7 @@ import ca.uhn.fhir.context.FhirContext
 import ca.uhn.fhir.rest.param.TokenParam
 import com.mysql.cj.xdevapi.Collection
 import com.mysql.cj.xdevapi.Schema
-import com.projectronin.interop.mock.ehr.MockEHRBaseTest
+import com.projectronin.interop.mock.ehr.BaseMySQLTest
 import com.projectronin.interop.mock.ehr.fhir.r4.dao.R4LocationDAO
 import io.mockk.every
 import io.mockk.mockk
@@ -17,7 +17,7 @@ import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.TestInstance
 
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
-class R4LocationResourceTest : MockEHRBaseTest() {
+class R4LocationResourceTest : BaseMySQLTest() {
 
     private lateinit var collection: Collection
     private lateinit var locationProvider: R4LocationResourceProvider
