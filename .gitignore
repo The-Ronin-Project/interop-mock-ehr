@@ -17,3 +17,4 @@ out/
 !**/src/main/**/out/
 !**/src/test/**/out/
 /build/
+.DS_Store

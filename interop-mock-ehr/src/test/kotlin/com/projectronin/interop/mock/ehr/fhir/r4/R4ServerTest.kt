@@ -2,6 +2,7 @@ package com.projectronin.interop.mock.ehr.fhir.r4
 
 import com.projectronin.interop.mock.ehr.fhir.r4.providers.R4AppointmentResourceProvider
 import com.projectronin.interop.mock.ehr.fhir.r4.providers.R4CommunicationResourceProvider
+import com.projectronin.interop.mock.ehr.fhir.r4.providers.R4ConditionResourceProvider
 import com.projectronin.interop.mock.ehr.fhir.r4.providers.R4LocationResourceProvider
 import com.projectronin.interop.mock.ehr.fhir.r4.providers.R4PatientResourceProvider
 import com.projectronin.interop.mock.ehr.fhir.r4.providers.R4PractitionerResourceProvider
@@ -10,6 +11,7 @@ import io.mockk.every
 import io.mockk.mockk
 import org.hl7.fhir.r4.model.Appointment
 import org.hl7.fhir.r4.model.Communication
+import org.hl7.fhir.r4.model.Condition
 import org.hl7.fhir.r4.model.Location
 import org.hl7.fhir.r4.model.Patient
 import org.hl7.fhir.r4.model.Practitioner
@@ -23,6 +25,8 @@ internal class R4ServerTest {
     fun `add resources correctly test`() {
         val r4Patient = mockk<R4PatientResourceProvider>()
         every { r4Patient.resourceType } returns Patient::class.java
+        val r4Condition = mockk<R4ConditionResourceProvider>()
+        every { r4Condition.resourceType } returns Condition::class.java
         val r4Appointment = mockk<R4AppointmentResourceProvider>()
         every { r4Appointment.resourceType } returns Appointment::class.java
         val r4Practitioner = mockk<R4PractitionerResourceProvider>()
@@ -33,12 +37,13 @@ internal class R4ServerTest {
         every { r4Location.resourceType } returns Location::class.java
         val r4Communication = mockk<R4CommunicationResourceProvider>()
         every { r4Communication.resourceType } returns Communication::class.java
-        val server = R4Server(r4Patient, r4Appointment, r4Practitioner, r4Location, r4PractitionerRole, r4Communication)
+        val server = R4Server(r4Patient, r4Condition, r4Appointment, r4Practitioner, r4Location, r4PractitionerRole, r4Communication)
         server.init()
         assertTrue(
             server.resourceProviders.containsAll(
                 listOf(
                     r4Patient,
+                    r4Condition,
                     r4Appointment,
                     r4Practitioner,
                     r4Location,

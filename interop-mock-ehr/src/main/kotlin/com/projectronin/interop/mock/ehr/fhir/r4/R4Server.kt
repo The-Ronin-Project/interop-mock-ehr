@@ -5,6 +5,7 @@ import ca.uhn.fhir.rest.server.FifoMemoryPagingProvider
 import ca.uhn.fhir.rest.server.RestfulServer
 import com.projectronin.interop.mock.ehr.fhir.r4.providers.R4AppointmentResourceProvider
 import com.projectronin.interop.mock.ehr.fhir.r4.providers.R4CommunicationResourceProvider
+import com.projectronin.interop.mock.ehr.fhir.r4.providers.R4ConditionResourceProvider
 import com.projectronin.interop.mock.ehr.fhir.r4.providers.R4LocationResourceProvider
 import com.projectronin.interop.mock.ehr.fhir.r4.providers.R4PatientResourceProvider
 import com.projectronin.interop.mock.ehr.fhir.r4.providers.R4PractitionerResourceProvider
@@ -16,6 +17,7 @@ import javax.servlet.annotation.WebServlet
 @Component
 class R4Server(
     private val r4PatientProvider: R4PatientResourceProvider,
+    private val r4ConditionProvider: R4ConditionResourceProvider,
     private val r4AppointmentProvider: R4AppointmentResourceProvider,
     private val r4PractitionerResourceProvider: R4PractitionerResourceProvider,
     private val r4LocationResourceProvider: R4LocationResourceProvider,
@@ -26,6 +28,7 @@ class R4Server(
     override fun initialize() {
         setResourceProviders(
             r4PatientProvider,
+            r4ConditionProvider,
             r4AppointmentProvider,
             r4PractitionerResourceProvider,
             r4LocationResourceProvider,
