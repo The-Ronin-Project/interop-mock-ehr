@@ -1,4 +1,4 @@
-name: Build interop-ehr-liquibase image, push to Nexus, and sync with ArgoCD
+name: Build and Deploy Docker Image to Nexus
 
 on:
   workflow_run:
@@ -7,80 +7,28 @@ on:
     branches: [master]
 
 jobs:
-  get-info:
-    name: Standard tags
-    runs-on: self-hosted
-    env:
-      base_directory: ./interop-mock-ehr
-
-    outputs:
-      docker_image_tag: ${{ steps.gradle_info.outputs.docker_image_tag }}
-    if: ${{ github.event.workflow_run.conclusion == 'success' }}
-    steps:
-      - name: Check out code
-        uses: actions/checkout@v2.1.0
-
-      - name: Set up JDK 17
-        uses: actions/setup-java@v2
-        with:
-          java-version: 17
-          distribution: "zulu"
-
-      - name: Grant execute permission for gradlew
-        run: chmod +x gradlew
-        working-directory: "."
-
-      - name: Get tag from Gradle
-        id: gradle_info
-        run: |
-          TAG=$(./gradlew currentVersion | awk '{ if(/Project version:/) { print $3; exit } }' | cut -d\- -f1)
-          echo ${TAG}
-          echo "::set-output name=docker_image_tag::${TAG}"
-        working-directory: "."
-
-      - name: Build MockEHR
-        run: ./gradlew :interop-mock-ehr:bootJar
-
   image-push:
     if: ${{ github.event.workflow_run.conclusion == 'success' }}
-    name: Push multiplatform Docker to Nexus
-    needs:
-      - get-info
+    name: Push multiplatform Docker:latest to Nexus
     uses: projectronin/github/.github/workflows/image_push_nexus.yml@master
     with:
       base-directory: ./interop-mock-ehr
-      image-tag: ${{ needs.get-info.outputs.docker_image_tag }}
+      image-tag: latest
       repo: "interop-mock-ehr"
+      build_boot_jar: true
     secrets:
       username: ${{ secrets.NEXUS_DOCKER_USERNAME }}
       password: ${{ secrets.NEXUS_DOCKER_PASSWORD }}
 
   image-push-sha:
     if: ${{ github.event.workflow_run.conclusion == 'success' }}
-    name: Push multiplatform Docker to Nexus
-    needs:
-      - get-info
-      - image-push
+    name: Push multiplatform Docker:SHA to Nexus
     uses: projectronin/github/.github/workflows/image_push_nexus.yml@master
     with:
       base-directory: ./interop-mock-ehr
       image-tag: ${{ github.sha }}
       repo: "interop-mock-ehr"
-    secrets:
-      username: ${{ secrets.NEXUS_DOCKER_USERNAME }}
-      password: ${{ secrets.NEXUS_DOCKER_PASSWORD }}
-
-  image-push-dev:
-    if: ${{ github.event.workflow_run.conclusion == 'success' }}
-    name: Push multiplatform Docker to Nexus
-    needs:
-      - get-info
-      - image-push
-    uses: projectronin/github/.github/workflows/image_push_nexus.yml@master
-    with:
-      base-directory: ./interop-mock-ehr
-      image-tag: dev
-      repo: "interop-mock-ehr"
+      build_boot_jar: true
     secrets:
       username: ${{ secrets.NEXUS_DOCKER_USERNAME }}
       password: ${{ secrets.NEXUS_DOCKER_PASSWORD }}

@@ -16,7 +16,7 @@ abstract class BaseMockEHRTest {
             start()
         }
 
-        var MOCK_EHR_CONTAINER = GenericContainer("interop-mock-ehr:1.0.0-SNAPSHOT").apply {
+        var MOCK_EHR_CONTAINER = GenericContainer("docker-proxy.devops.projectronin.io/interop-mock-ehr:latest").apply {
             withExposedPorts(8080)
             withNetwork(Network.SHARED)
             withEnv(
