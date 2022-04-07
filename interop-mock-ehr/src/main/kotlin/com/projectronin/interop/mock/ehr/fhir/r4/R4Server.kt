@@ -13,7 +13,7 @@ import com.projectronin.interop.mock.ehr.fhir.r4.providers.R4PractitionerRoleRes
 import org.springframework.stereotype.Component
 import javax.servlet.annotation.WebServlet
 
-@WebServlet(urlPatterns = ["/fhir/r4/*", "/epic/FHIR/R4/*"])
+@WebServlet(urlPatterns = ["/fhir/r4/*", "/epic/api/FHIR/R4/*"])
 @Component
 class R4Server(
     private val r4PatientProvider: R4PatientResourceProvider,
