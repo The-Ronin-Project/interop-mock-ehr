@@ -10,8 +10,6 @@ import com.projectronin.interop.ehr.epic.auth.EpicAuthentication
 import com.projectronin.interop.mock.ehr.epic.dal.EpicDAL
 import org.hl7.fhir.r4.model.Identifier
 import org.hl7.fhir.r4.model.Reference
-import org.springframework.web.bind.annotation.GetMapping
-import org.springframework.web.bind.annotation.PostMapping
 import org.springframework.web.bind.annotation.RequestBody
 import org.springframework.web.bind.annotation.RequestMapping
 import org.springframework.web.bind.annotation.RestController
@@ -23,7 +21,7 @@ import com.projectronin.interop.ehr.epic.apporchard.model.Appointment as EpicApp
 @RequestMapping("/epic")
 class EpicServer(private var dal: EpicDAL) {
 
-    @GetMapping("/oauth2/token")
+    @RequestMapping("/oauth2/token")
     fun getAuthToken(): EpicAuthentication {
         return EpicAuthentication(
             accessToken = UUID.randomUUID().toString(),
@@ -33,7 +31,7 @@ class EpicServer(private var dal: EpicDAL) {
         )
     }
 
-    @GetMapping("/api/epic/2013/Scheduling/Patient/GETPATIENTAPPOINTMENTS/GetPatientAppointments")
+    @RequestMapping("/api/epic/2013/Scheduling/Patient/GETPATIENTAPPOINTMENTS/GetPatientAppointments")
     fun getAppointmentsByPatient(@RequestBody request: GetPatientAppointmentsRequest): GetAppointmentsResponse {
         val start = SimpleDateFormat("dd/MM/yyyy").parse(request.startDate)
         val end = SimpleDateFormat("dd/MM/yyyy").parse(request.endDate)
@@ -52,7 +50,7 @@ class EpicServer(private var dal: EpicDAL) {
         return GetAppointmentsResponse(appointments = epicAppointments, error = null)
     }
 
-    @GetMapping("/api/epic/2013/Scheduling/Provider/GetProviderAppointments/Scheduling/Provider/Appointments")
+    @RequestMapping("/api/epic/2013/Scheduling/Provider/GetProviderAppointments/Scheduling/Provider/Appointments")
     fun getAppointmentsByPractitioner(@RequestBody request: GetProviderAppointmentRequest): GetAppointmentsResponse {
         val epicAppointments = mutableListOf<EpicAppointment>()
         val start = SimpleDateFormat("dd/MM/yyyy").parse(request.startDate)
@@ -87,7 +85,7 @@ class EpicServer(private var dal: EpicDAL) {
         return GetAppointmentsResponse(appointments = epicAppointments, error = null)
     }
 
-    @PostMapping("/api/epic/2014/Common/Utility/SENDMESSAGE/Message")
+    @RequestMapping("/api/epic/2014/Common/Utility/SENDMESSAGE/Message")
     fun createCommunication(@RequestBody sendMessageRequest: SendMessageRequest): SendMessageResponse {
         val communication = dal.r4CommunicationTransformer.transformFromSendMessage(sendMessageRequest)
         val newCommunicationId = dal.r4CommunicationDAO.insert(communication)
