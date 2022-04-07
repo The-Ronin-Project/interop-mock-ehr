@@ -3,6 +3,7 @@ package com.projectronin.interop.mock.ehr.testcontainer
 import org.testcontainers.containers.GenericContainer
 import org.testcontainers.containers.MySQLContainer
 import org.testcontainers.containers.Network
+import org.testcontainers.images.PullPolicy
 
 abstract class BaseMockEHRTest {
     companion object {
@@ -19,6 +20,7 @@ abstract class BaseMockEHRTest {
         var MOCK_EHR_CONTAINER = GenericContainer("docker-proxy.devops.projectronin.io/interop-mock-ehr:latest").apply {
             withExposedPorts(8080)
             withNetwork(Network.SHARED)
+            withImagePullPolicy(PullPolicy.alwaysPull()) // 'latest' may be updated frequently
             withEnv(
                 mapOf(
                     "MOCK_EHR_DB_HOST" to "database",
