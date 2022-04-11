@@ -49,3 +49,7 @@ publishing {
         }
     }
 }
+// usually this is pulled in via interop-gradle.publish
+tasks.register("install") {
+    dependsOn(tasks.publishToMavenLocal)
+}

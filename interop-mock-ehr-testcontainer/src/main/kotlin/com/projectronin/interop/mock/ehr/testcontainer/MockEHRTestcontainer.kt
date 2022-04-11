@@ -7,12 +7,14 @@ import io.ktor.client.request.put
 import io.ktor.client.statement.HttpResponse
 import io.ktor.http.HttpHeaders
 import kotlinx.coroutines.runBlocking
+import org.springframework.stereotype.Service
 import org.testcontainers.containers.GenericContainer
 import org.testcontainers.containers.MySQLContainer
 import org.testcontainers.containers.Network
 import org.testcontainers.images.PullPolicy
 
-abstract class BaseMockEHRTest {
+@Service
+class MockEHRTestcontainer {
     private var httpClient = HttpClient(CIO)
 
     companion object {

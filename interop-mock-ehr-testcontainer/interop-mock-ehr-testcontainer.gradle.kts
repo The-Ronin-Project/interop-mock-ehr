@@ -2,6 +2,7 @@ plugins {
     id("com.projectronin.interop.gradle.mockk")
     id("com.projectronin.interop.gradle.publish")
     id("com.projectronin.interop.gradle.ktor")
+    id("com.projectronin.interop.gradle.spring")
 }
 
 dependencies {
