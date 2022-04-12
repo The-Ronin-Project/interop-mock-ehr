@@ -18,19 +18,19 @@ class MockEHRTestcontainer {
     private var httpClient = HttpClient(CIO)
 
     companion object {
-
+        private val sharedNetwork = Network.newNetwork()
         // needs to start before MOCK_EHR_CONTAINER, but isn't used directly.
         @Suppress("unused")
         var MYSQL_CONTAINER = MySQLContainer<Nothing>("mysql:8.0.28-oracle").apply {
             withExposedPorts(3306, 33060)
-            withNetwork(Network.SHARED)
+            withNetwork(sharedNetwork)
             withNetworkAliases("database")
             start()
         }
 
         var MOCK_EHR_CONTAINER = GenericContainer("docker-proxy.devops.projectronin.io/interop-mock-ehr:latest").apply {
             withExposedPorts(8080)
-            withNetwork(Network.SHARED)
+            withNetwork(sharedNetwork)
             withImagePullPolicy(PullPolicy.alwaysPull()) // 'latest' may be updated frequently
             withEnv(
                 mapOf(
