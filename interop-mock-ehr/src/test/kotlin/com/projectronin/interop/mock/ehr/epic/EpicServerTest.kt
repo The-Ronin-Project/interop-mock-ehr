@@ -209,13 +209,174 @@ internal class EpicServerTest {
         val output = server.getAppointmentsByPatient(request)
         val expected = GetAppointmentsResponse(
             appointments = listOf(),
-            error = "No patient found."
+            error = "NO-PATIENT-FOUND"
+        )
+        assertEquals(expected, output)
+        unmockkAll()
+    }
+
+    @Test
+    fun `bad date test 1`() {
+        val request = GetPatientAppointmentsRequest(
+            patientId = "TESTINGMRN",
+            patientIdType = "",
+            startDate = "lalala",
+            endDate = "01/01/2021",
+            userID = "12345",
+            userIDType = "Internal"
+        )
+        val output = server.getAppointmentsByPatient(request)
+        val expected = GetAppointmentsResponse(
+            appointments = listOf(),
+            error = "INVALID-START-DATE"
         )
         assertEquals(expected, output)
     }
 
     @Test
-    fun `no practitioners found test`() {
+    fun `bad date test 2`() {
+        val request = GetPatientAppointmentsRequest(
+            patientId = "TESTINGMRN",
+            patientIdType = "",
+            startDate = "01/01/2020",
+            endDate = "lalala",
+            userID = "12345",
+            userIDType = "Internal"
+        )
+        val output = server.getAppointmentsByPatient(request)
+        val expected = GetAppointmentsResponse(
+            appointments = listOf(),
+            error = "INVALID-END-DATE"
+        )
+        assertEquals(expected, output)
+    }
+
+    @Test
+    fun `bad date test 3`() {
+        val request = GetPatientAppointmentsRequest(
+            patientId = "TESTINGMRN",
+            patientIdType = "",
+            startDate = "01/01/2020",
+            endDate = "01/01/2019",
+            userID = "12345",
+            userIDType = "Internal"
+        )
+        val output = server.getAppointmentsByPatient(request)
+        val expected = GetAppointmentsResponse(
+            appointments = listOf(),
+            error = "END-DATE-BEFORE-START-DATE"
+        )
+        assertEquals(expected, output)
+    }
+
+    @Test
+    fun `no user test`() {
+        val request = GetPatientAppointmentsRequest(
+            patientId = "TESTINGMRN",
+            patientIdType = "",
+            userID = null,
+            startDate = "01/01/2020",
+            endDate = "01/01/2021",
+            userIDType = "Internal"
+        )
+        val output = server.getAppointmentsByPatient(request)
+        val expected = GetAppointmentsResponse(
+            appointments = listOf(),
+            error = "NO-USER-FOUND"
+        )
+        assertEquals(expected, output)
+    }
+
+    @Test
+    fun `provider bad date test 1`() {
+        val request = GetProviderAppointmentRequest(
+            providers = listOf(
+                ScheduleProvider(
+                    "PRACT#1",
+                    "External"
+                )
+            ),
+            startDate = "lalala",
+            endDate = "01/01/2021",
+            userID = "12345",
+            userIDType = "Internal"
+        )
+        val output = server.getAppointmentsByPractitioner(request)
+        val expected = GetAppointmentsResponse(
+            appointments = listOf(),
+            error = "INVALID-START-DATE"
+        )
+        assertEquals(expected, output)
+    }
+
+    @Test
+    fun `provider bad date test 2`() {
+        val request = GetProviderAppointmentRequest(
+            providers = listOf(
+                ScheduleProvider(
+                    "PRACT#1",
+                    "External"
+                )
+            ),
+            startDate = "01/01/2020",
+            endDate = "lalala",
+            userID = "12345",
+            userIDType = "Internal"
+        )
+        val output = server.getAppointmentsByPractitioner(request)
+        val expected = GetAppointmentsResponse(
+            appointments = listOf(),
+            error = "INVALID-END-DATE"
+        )
+        assertEquals(expected, output)
+    }
+
+    @Test
+    fun `provider bad date test 3`() {
+        val request = GetProviderAppointmentRequest(
+            providers = listOf(
+                ScheduleProvider(
+                    "PRACT#1",
+                    "External"
+                )
+            ),
+            startDate = "01/01/2020",
+            endDate = "01/01/2019",
+            userID = "12345",
+            userIDType = "Internal"
+        )
+        val output = server.getAppointmentsByPractitioner(request)
+        val expected = GetAppointmentsResponse(
+            appointments = listOf(),
+            error = "END-DATE-BEFORE-START-DATE"
+        )
+        assertEquals(expected, output)
+    }
+
+    @Test
+    fun `provider no user test`() {
+        val request = GetProviderAppointmentRequest(
+            providers = listOf(
+                ScheduleProvider(
+                    "PRACT#1",
+                    "External"
+                )
+            ),
+            startDate = "01/01/2020",
+            endDate = "01/01/2021",
+            userID = null,
+            userIDType = "Internal"
+        )
+        val output = server.getAppointmentsByPractitioner(request)
+        val expected = GetAppointmentsResponse(
+            appointments = listOf(),
+            error = "NO-USER-FOUND"
+        )
+        assertEquals(expected, output)
+    }
+
+    @Test
+    fun `no practitioners found test 1`() {
         val request = GetProviderAppointmentRequest(
             providers = listOf(
                 ScheduleProvider(
@@ -240,7 +401,25 @@ internal class EpicServerTest {
         val output = server.getAppointmentsByPractitioner(request)
         val expected = GetAppointmentsResponse(
             appointments = listOf(),
-            error = "No practitioners found matching request."
+            error = "NO-PROVIDER-FOUND"
+        )
+        assertEquals(expected, output)
+    }
+
+    @Test
+    fun `no practitioners found test 2`() {
+        val request = GetProviderAppointmentRequest(
+            providers = null,
+            startDate = "01/01/2020",
+            endDate = "01/01/2021",
+            userID = "12345",
+            userIDType = "Internal"
+        )
+
+        val output = server.getAppointmentsByPractitioner(request)
+        val expected = GetAppointmentsResponse(
+            appointments = listOf(),
+            error = "NO-PROVIDER-FOUND"
         )
         assertEquals(expected, output)
     }

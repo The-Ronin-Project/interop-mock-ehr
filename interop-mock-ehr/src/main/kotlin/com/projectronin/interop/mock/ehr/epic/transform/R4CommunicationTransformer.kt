@@ -38,7 +38,7 @@ class R4CommunicationTransformer {
             sendMessageRequest.contactID,
             sendMessageRequest.contactIDType
         )
-        val recipients = sendMessageRequest.recipients.map {
+        val recipients = sendMessageRequest.recipients?.map {
             val referenceType = when (it.isPool) {
                 true -> ResourceType.Group
                 false -> ResourceType.Practitioner
@@ -58,7 +58,7 @@ class R4CommunicationTransformer {
         return communication
     }
 
-    private fun buildReference(referenceType: ResourceType, id: String, idType: String): Reference {
+    private fun buildReference(referenceType: ResourceType, id: String?, idType: String?): Reference {
         val identifier = Identifier()
         identifier.type.text = idType
         identifier.value = id

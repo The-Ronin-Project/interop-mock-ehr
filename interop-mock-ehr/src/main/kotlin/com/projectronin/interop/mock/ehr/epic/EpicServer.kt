@@ -33,13 +33,24 @@ class EpicServer(private var dal: EpicDAL) {
 
     @RequestMapping("/api/epic/2013/Scheduling/Patient/GETPATIENTAPPOINTMENTS/GetPatientAppointments")
     fun getAppointmentsByPatient(@RequestBody request: GetPatientAppointmentsRequest): GetAppointmentsResponse {
-        val start = SimpleDateFormat("MM/dd/yyyy").parse(request.startDate)
-        val end = SimpleDateFormat("MM/dd/yyyy").parse(request.endDate)
+        // start date required
+        val start = kotlin.runCatching { SimpleDateFormat("MM/dd/yyyy").parse(request.startDate) }
+            .getOrElse { return errorResponse("INVALID-START-DATE") }
+
+        // end date not required
+        val end = request.endDate?.let {
+            kotlin.runCatching { SimpleDateFormat("MM/dd/yyyy").parse(request.endDate) }
+                .getOrElse { return errorResponse("INVALID-END-DATE") }
+        }
+        // more validation
+        if (start.after(end)) return errorResponse("END-DATE-BEFORE-START-DATE")
+        if (request.userID == null) return errorResponse("NO-USER-FOUND") // can check this 'for real' later
+
+        // try to find patient
         val patientID = Identifier().setValue(request.patientId).setSystem("MRN")
-        val patient = dal.r4PatientDAO.searchByIdentifier(patientID) ?: return GetAppointmentsResponse(
-            listOf(),
-            "No patient found."
-        )
+        val patient = dal.r4PatientDAO.searchByIdentifier(patientID) ?: return errorResponse("NO-PATIENT-FOUND")
+
+        // search for appointments
         val r4appointments = dal.r4AppointmentDAO.searchByQuery(
             references = listOf(Reference().setReference(patient.id)),
             fromDate = start,
@@ -52,18 +63,29 @@ class EpicServer(private var dal: EpicDAL) {
 
     @RequestMapping("/api/epic/2013/Scheduling/Provider/GetProviderAppointments/Scheduling/Provider/Appointments")
     fun getAppointmentsByPractitioner(@RequestBody request: GetProviderAppointmentRequest): GetAppointmentsResponse {
-        val epicAppointments = mutableListOf<EpicAppointment>()
-        val start = SimpleDateFormat("MM/dd/yyyy").parse(request.startDate)
-        val end = SimpleDateFormat("MM/dd/yyyy").parse(request.endDate)
-        val r4Practitioners = request.providers.mapNotNull {
-            dal.r4PractitionerDAO.searchByIdentifier(Identifier().setValue(it.id).setSystem(it.idType))
+
+        // start date required
+        val start = kotlin.runCatching { SimpleDateFormat("MM/dd/yyyy").parse(request.startDate) }
+            .getOrElse { return errorResponse("INVALID-START-DATE") }
+
+        // end date not required
+        val end = request.endDate?.let {
+            kotlin.runCatching { SimpleDateFormat("MM/dd/yyyy").parse(request.endDate) }
+                .getOrElse { return errorResponse("INVALID-END-DATE") }
         }
 
-        if (r4Practitioners.isEmpty()) return GetAppointmentsResponse(
-            listOf(),
-            "No practitioners found matching request."
-        )
+        // more validation
+        if (start.after(end)) return errorResponse("END-DATE-BEFORE-START-DATE")
+        if (request.userID == null) return errorResponse("NO-USER-FOUND")
 
+        // find practitioners
+        val r4Practitioners = request.providers?.mapNotNull {
+            dal.r4PractitionerDAO.searchByIdentifier(Identifier().setValue(it.id).setSystem(it.idType))
+        } ?: return errorResponse("NO-PROVIDER-FOUND")
+        if (r4Practitioners.isEmpty()) return errorResponse("NO-PROVIDER-FOUND")
+
+        // find all appointments for all practitioners
+        val epicAppointments = mutableListOf<EpicAppointment>()
         r4Practitioners.forEach {
             val r4Appointments = dal.r4AppointmentDAO.searchByQuery(
                 references = listOf(Reference().setReference(it.id)),
@@ -91,4 +113,8 @@ class EpicServer(private var dal: EpicDAL) {
         val newCommunicationId = dal.r4CommunicationDAO.insert(communication)
         return SendMessageResponse(listOf(IDType(id = newCommunicationId, type = "FHIR ID")))
     }
+}
+
+private fun errorResponse(msg: String): GetAppointmentsResponse {
+    return GetAppointmentsResponse(listOf(), msg)
 }
