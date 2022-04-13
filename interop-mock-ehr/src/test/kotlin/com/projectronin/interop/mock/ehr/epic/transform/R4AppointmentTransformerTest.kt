@@ -73,7 +73,7 @@ internal class R4AppointmentTransformerTest {
                     providerIDs = listOf(
                         IDType(
                             id = "PRACTID#1",
-                            type = "FHIR"
+                            type = "external"
                         )
                     ),
                     providerName = "",

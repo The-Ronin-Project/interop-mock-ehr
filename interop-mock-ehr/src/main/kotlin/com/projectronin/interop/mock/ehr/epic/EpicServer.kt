@@ -33,8 +33,8 @@ class EpicServer(private var dal: EpicDAL) {
 
     @RequestMapping("/api/epic/2013/Scheduling/Patient/GETPATIENTAPPOINTMENTS/GetPatientAppointments")
     fun getAppointmentsByPatient(@RequestBody request: GetPatientAppointmentsRequest): GetAppointmentsResponse {
-        val start = SimpleDateFormat("dd/MM/yyyy").parse(request.startDate)
-        val end = SimpleDateFormat("dd/MM/yyyy").parse(request.endDate)
+        val start = SimpleDateFormat("MM/dd/yyyy").parse(request.startDate)
+        val end = SimpleDateFormat("MM/dd/yyyy").parse(request.endDate)
         val patientID = Identifier().setValue(request.patientId).setSystem("MRN")
         val patient = dal.r4PatientDAO.searchByIdentifier(patientID) ?: return GetAppointmentsResponse(
             listOf(),
@@ -53,8 +53,8 @@ class EpicServer(private var dal: EpicDAL) {
     @RequestMapping("/api/epic/2013/Scheduling/Provider/GetProviderAppointments/Scheduling/Provider/Appointments")
     fun getAppointmentsByPractitioner(@RequestBody request: GetProviderAppointmentRequest): GetAppointmentsResponse {
         val epicAppointments = mutableListOf<EpicAppointment>()
-        val start = SimpleDateFormat("dd/MM/yyyy").parse(request.startDate)
-        val end = SimpleDateFormat("dd/MM/yyyy").parse(request.endDate)
+        val start = SimpleDateFormat("MM/dd/yyyy").parse(request.startDate)
+        val end = SimpleDateFormat("MM/dd/yyyy").parse(request.endDate)
         val r4Practitioners = request.providers.mapNotNull {
             dal.r4PractitionerDAO.searchByIdentifier(Identifier().setValue(it.id).setSystem(it.idType))
         }

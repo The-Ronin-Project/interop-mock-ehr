@@ -43,7 +43,7 @@ class R4AppointmentTransformer {
                     departmentName = "",
                     duration = "",
                     providerIDs = listOf(
-                        IDType(practitioner.actor.reference.removePrefix("Practitioner/"), "FHIR")
+                        IDType(practitioner.actor.reference.removePrefix("Practitioner/"), "external")
                     ),
                     providerName = "",
                     time = "",
