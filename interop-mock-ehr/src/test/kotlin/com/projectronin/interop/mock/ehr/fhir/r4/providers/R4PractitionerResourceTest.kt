@@ -2,6 +2,7 @@ package com.projectronin.interop.mock.ehr.fhir.r4.providers
 
 import ca.uhn.fhir.context.FhirContext
 import ca.uhn.fhir.rest.param.TokenParam
+import ca.uhn.fhir.rest.server.exceptions.ResourceNotFoundException
 import com.mysql.cj.xdevapi.Collection
 import com.mysql.cj.xdevapi.Schema
 import com.projectronin.interop.mock.ehr.BaseMySQLTest
@@ -22,12 +23,14 @@ class R4PractitionerResourceTest : BaseMySQLTest() {
 
     private lateinit var collection: Collection
     private lateinit var practitionerProvider: R4PractitionerResourceProvider
+    private lateinit var dao: R4PractitionerDAO
 
     @BeforeAll
     fun initTest() {
         collection = createCollection(Practitioner::class.simpleName!!)
         val database = mockk<Schema>()
         every { database.createCollection(Practitioner::class.simpleName, true) } returns collection
+        dao = R4PractitionerDAO(database)
         practitionerProvider = R4PractitionerResourceProvider(R4PractitionerDAO(database))
     }
 
@@ -72,5 +75,33 @@ class R4PractitionerResourceTest : BaseMySQLTest() {
     @Test
     fun `correct resource returned`() {
         assertEquals(practitionerProvider.resourceType, Practitioner::class.java)
+    }
+
+    @Test
+    fun `baseDAO findById test`() {
+        val practitioner = Practitioner()
+        practitioner.id = "TESTINGFINDID"
+        practitioner.birthDate = Date(87, 0, 15)
+        val identifier = Identifier()
+        identifier.value = "E2731"
+        identifier.system = "urn:oid:1.2.840.114350.1.1"
+        practitioner.addIdentifier(identifier)
+        practitioner.active = true
+
+        collection.add(FhirContext.forR4().newJsonParser().encodeResourceToString(practitioner)).execute()
+
+        var output = dao.findById("TESTINGFINDID")
+        assertEquals(output.active, practitioner.active)
+        assertEquals(output.identifier.get(0).value, practitioner.identifier.get(0).value)
+        assertEquals(output.identifier.get(0).system, practitioner.identifier.get(0).system)
+        assertEquals(output.birthDate, practitioner.birthDate)
+
+        collection.remove("true").execute() // Clear the collection in case other tests run first
+        var message = try {
+            dao.findById("TESTINGFINDID")
+        } catch (e: ResourceNotFoundException) {
+            e.message
+        }
+        assertEquals(message, "No resource found with id: TESTINGFINDID")
     }
 }

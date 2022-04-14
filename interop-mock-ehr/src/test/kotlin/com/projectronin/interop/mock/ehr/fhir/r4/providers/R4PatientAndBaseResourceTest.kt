@@ -160,7 +160,7 @@ class R4PatientAndBaseResourceTest : BaseMySQLTest() {
     }
 
     @Test
-    fun `code coverage test`() {
+    fun `read with includes test`() {
         val testPat = Patient()
         testPat.birthDate = Date(87, 0, 15)
         testPat.id = "TESTINGID9"
@@ -310,7 +310,34 @@ class R4PatientAndBaseResourceTest : BaseMySQLTest() {
     }
 
     @Test
-    fun `cove coverage test`() {
+    fun `baseDAO searchByQuery test`() {
+        collection.remove("true").execute() // Clear the collection in case other tests run first
         assertEquals(dao.searchByQuery().size, 0)
+    }
+
+    @Test
+    fun `baseDAO findById test`() {
+        val patient = Patient()
+        patient.id = "TESTINGFINDID"
+        patient.birthDate = Date(87, 0, 15)
+        val identifier = Identifier()
+        identifier.value = "E2731"
+        identifier.system = "MRN"
+        patient.addIdentifier(identifier)
+
+        collection.add(FhirContext.forR4().newJsonParser().encodeResourceToString(patient)).execute()
+
+        var output = dao.findById("TESTINGFINDID")
+        assertEquals(output.identifier.get(0).value, patient.identifier.get(0).value)
+        assertEquals(output.identifier.get(0).system, patient.identifier.get(0).system)
+        assertEquals(output.birthDate, patient.birthDate)
+
+        collection.remove("true").execute() // Clear the collection in case other tests run first
+        var message = try {
+            dao.findById("TESTINGFINDID")
+        } catch (e: ResourceNotFoundException) {
+            e.message
+        }
+        assertEquals(message, "No resource found with id: TESTINGFINDID")
     }
 }

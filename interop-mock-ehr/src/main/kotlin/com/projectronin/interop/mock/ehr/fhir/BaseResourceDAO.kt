@@ -35,10 +35,10 @@ abstract class BaseResourceDAO<T : Resource> {
     }
 
     fun findById(fhirId: String): T {
-        val patientJSON = findByIdQuery(fhirId)?.toString()
+        val resourceJSON = findByIdQuery(fhirId)?.toString()
             ?: throw ResourceNotFoundException("No resource found with id: $fhirId")
         return context.newJsonParser().parseResource(
-            resourceType, patientJSON
+            resourceType, resourceJSON
         )
     }
 
