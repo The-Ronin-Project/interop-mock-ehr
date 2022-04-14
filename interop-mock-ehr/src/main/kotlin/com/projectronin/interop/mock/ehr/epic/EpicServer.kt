@@ -10,9 +10,11 @@ import com.projectronin.interop.ehr.epic.auth.EpicAuthentication
 import com.projectronin.interop.mock.ehr.epic.dal.EpicDAL
 import org.hl7.fhir.r4.model.Identifier
 import org.hl7.fhir.r4.model.Reference
+import org.springframework.http.HttpStatus
 import org.springframework.web.bind.annotation.RequestBody
 import org.springframework.web.bind.annotation.RequestMapping
 import org.springframework.web.bind.annotation.RestController
+import org.springframework.web.server.ResponseStatusException
 import java.text.SimpleDateFormat
 import java.util.UUID
 import com.projectronin.interop.ehr.epic.apporchard.model.Appointment as EpicAppointment
@@ -43,7 +45,7 @@ class EpicServer(private var dal: EpicDAL) {
                 .getOrElse { return errorResponse("INVALID-END-DATE") }
         }
         // more validation
-        if (start.after(end)) return errorResponse("END-DATE-BEFORE-START-DATE")
+        end?.let { if (start.after(it)) return errorResponse("END-DATE-BEFORE-START-DATE") }
         if (request.userID == null) return errorResponse("NO-USER-FOUND") // can check this 'for real' later
 
         // try to find patient
@@ -75,7 +77,7 @@ class EpicServer(private var dal: EpicDAL) {
         }
 
         // more validation
-        if (start.after(end)) return errorResponse("END-DATE-BEFORE-START-DATE")
+        end?.let { if (start.after(it)) return errorResponse("END-DATE-BEFORE-START-DATE") }
         if (request.userID == null) return errorResponse("NO-USER-FOUND")
 
         // find practitioners
@@ -115,6 +117,7 @@ class EpicServer(private var dal: EpicDAL) {
     }
 }
 
+// wrapper for throwing 400 - Bad Request responses
 private fun errorResponse(msg: String): GetAppointmentsResponse {
-    return GetAppointmentsResponse(listOf(), msg)
+    throw ResponseStatusException(HttpStatus.BAD_REQUEST, msg)
 }

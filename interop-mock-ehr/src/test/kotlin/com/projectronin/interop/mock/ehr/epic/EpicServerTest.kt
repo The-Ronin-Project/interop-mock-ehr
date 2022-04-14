@@ -21,6 +21,8 @@ import org.hl7.fhir.r4.model.Practitioner
 import org.hl7.fhir.r4.model.Reference
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Test
+import org.junit.jupiter.api.assertThrows
+import org.springframework.web.server.ResponseStatusException
 import java.util.Date
 import java.util.UUID
 import com.projectronin.interop.ehr.epic.apporchard.model.Appointment as EpicAppointment
@@ -206,12 +208,8 @@ internal class EpicServerTest {
                 ident
             )
         } returns null
-        val output = server.getAppointmentsByPatient(request)
-        val expected = GetAppointmentsResponse(
-            appointments = listOf(),
-            error = "NO-PATIENT-FOUND"
-        )
-        assertEquals(expected, output)
+        val output = assertThrows<ResponseStatusException> { server.getAppointmentsByPatient(request) }
+        assertEquals("NO-PATIENT-FOUND", output.reason)
         unmockkAll()
     }
 
@@ -225,12 +223,8 @@ internal class EpicServerTest {
             userID = "12345",
             userIDType = "Internal"
         )
-        val output = server.getAppointmentsByPatient(request)
-        val expected = GetAppointmentsResponse(
-            appointments = listOf(),
-            error = "INVALID-START-DATE"
-        )
-        assertEquals(expected, output)
+        val output = assertThrows<ResponseStatusException> { server.getAppointmentsByPatient(request) }
+        assertEquals("INVALID-START-DATE", output.reason)
     }
 
     @Test
@@ -243,12 +237,8 @@ internal class EpicServerTest {
             userID = "12345",
             userIDType = "Internal"
         )
-        val output = server.getAppointmentsByPatient(request)
-        val expected = GetAppointmentsResponse(
-            appointments = listOf(),
-            error = "INVALID-END-DATE"
-        )
-        assertEquals(expected, output)
+        val output = assertThrows<ResponseStatusException> { server.getAppointmentsByPatient(request) }
+        assertEquals("INVALID-END-DATE", output.reason)
     }
 
     @Test
@@ -261,30 +251,22 @@ internal class EpicServerTest {
             userID = "12345",
             userIDType = "Internal"
         )
-        val output = server.getAppointmentsByPatient(request)
-        val expected = GetAppointmentsResponse(
-            appointments = listOf(),
-            error = "END-DATE-BEFORE-START-DATE"
-        )
-        assertEquals(expected, output)
+        val output = assertThrows<ResponseStatusException> { server.getAppointmentsByPatient(request) }
+        assertEquals("END-DATE-BEFORE-START-DATE", output.reason)
     }
 
     @Test
-    fun `no user test`() {
+    fun `no end date test`() {
         val request = GetPatientAppointmentsRequest(
             patientId = "TESTINGMRN",
             patientIdType = "",
-            userID = null,
             startDate = "01/01/2020",
-            endDate = "01/01/2021",
+            endDate = null,
+            userID = null,
             userIDType = "Internal"
         )
-        val output = server.getAppointmentsByPatient(request)
-        val expected = GetAppointmentsResponse(
-            appointments = listOf(),
-            error = "NO-USER-FOUND"
-        )
-        assertEquals(expected, output)
+        val output = assertThrows<ResponseStatusException> { server.getAppointmentsByPatient(request) }
+        assertEquals("NO-USER-FOUND", output.reason)
     }
 
     @Test
@@ -301,12 +283,8 @@ internal class EpicServerTest {
             userID = "12345",
             userIDType = "Internal"
         )
-        val output = server.getAppointmentsByPractitioner(request)
-        val expected = GetAppointmentsResponse(
-            appointments = listOf(),
-            error = "INVALID-START-DATE"
-        )
-        assertEquals(expected, output)
+        val output = assertThrows<ResponseStatusException> { server.getAppointmentsByPractitioner(request) }
+        assertEquals("INVALID-START-DATE", output.reason)
     }
 
     @Test
@@ -323,12 +301,8 @@ internal class EpicServerTest {
             userID = "12345",
             userIDType = "Internal"
         )
-        val output = server.getAppointmentsByPractitioner(request)
-        val expected = GetAppointmentsResponse(
-            appointments = listOf(),
-            error = "INVALID-END-DATE"
-        )
-        assertEquals(expected, output)
+        val output = assertThrows<ResponseStatusException> { server.getAppointmentsByPractitioner(request) }
+        assertEquals("INVALID-END-DATE", output.reason)
     }
 
     @Test
@@ -345,16 +319,12 @@ internal class EpicServerTest {
             userID = "12345",
             userIDType = "Internal"
         )
-        val output = server.getAppointmentsByPractitioner(request)
-        val expected = GetAppointmentsResponse(
-            appointments = listOf(),
-            error = "END-DATE-BEFORE-START-DATE"
-        )
-        assertEquals(expected, output)
+        val output = assertThrows<ResponseStatusException> { server.getAppointmentsByPractitioner(request) }
+        assertEquals("END-DATE-BEFORE-START-DATE", output.reason)
     }
 
     @Test
-    fun `provider no user test`() {
+    fun `provider no end date test`() {
         val request = GetProviderAppointmentRequest(
             providers = listOf(
                 ScheduleProvider(
@@ -363,16 +333,12 @@ internal class EpicServerTest {
                 )
             ),
             startDate = "01/01/2020",
-            endDate = "01/01/2021",
+            endDate = null,
             userID = null,
             userIDType = "Internal"
         )
-        val output = server.getAppointmentsByPractitioner(request)
-        val expected = GetAppointmentsResponse(
-            appointments = listOf(),
-            error = "NO-USER-FOUND"
-        )
-        assertEquals(expected, output)
+        val output = assertThrows<ResponseStatusException> { server.getAppointmentsByPractitioner(request) }
+        assertEquals("NO-USER-FOUND", output.reason)
     }
 
     @Test
@@ -398,12 +364,8 @@ internal class EpicServerTest {
             )
         } returns null
 
-        val output = server.getAppointmentsByPractitioner(request)
-        val expected = GetAppointmentsResponse(
-            appointments = listOf(),
-            error = "NO-PROVIDER-FOUND"
-        )
-        assertEquals(expected, output)
+        val output = assertThrows<ResponseStatusException> { server.getAppointmentsByPractitioner(request) }
+        assertEquals("NO-PROVIDER-FOUND", output.reason)
     }
 
     @Test
@@ -416,12 +378,8 @@ internal class EpicServerTest {
             userIDType = "Internal"
         )
 
-        val output = server.getAppointmentsByPractitioner(request)
-        val expected = GetAppointmentsResponse(
-            appointments = listOf(),
-            error = "NO-PROVIDER-FOUND"
-        )
-        assertEquals(expected, output)
+        val output = assertThrows<ResponseStatusException> { server.getAppointmentsByPractitioner(request) }
+        assertEquals("NO-PROVIDER-FOUND", output.reason)
     }
 
     @Test
