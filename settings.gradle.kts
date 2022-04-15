@@ -8,12 +8,15 @@ for (project in rootProject.children) {
 }
 
 pluginManagement {
-    val interopGradleVersion: String by settings
+    val interopGradleVersion = "1.0.0-SNAPSHOT"
     plugins {
         id("com.projectronin.interop.gradle.base") version interopGradleVersion
+        id("com.projectronin.interop.gradle.ktor") version interopGradleVersion
         id("com.projectronin.interop.gradle.mockk") version interopGradleVersion
         id("com.projectronin.interop.gradle.publish") version interopGradleVersion
         id("com.projectronin.interop.gradle.spring") version interopGradleVersion
+
+        id("org.springframework.boot") version "2.6.6"
     }
 
     repositories {
