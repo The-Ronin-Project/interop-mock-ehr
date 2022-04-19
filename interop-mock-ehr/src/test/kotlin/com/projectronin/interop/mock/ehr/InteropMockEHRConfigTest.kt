@@ -7,6 +7,7 @@ import io.mockk.mockkConstructor
 import io.mockk.slot
 import io.mockk.unmockkAll
 import org.junit.jupiter.api.Assertions.assertEquals
+import org.junit.jupiter.api.Assertions.assertNotNull
 import org.junit.jupiter.api.Test
 
 internal class InteropMockEHRConfigTest {
@@ -19,5 +20,11 @@ internal class InteropMockEHRConfigTest {
         InteropMockEHRConfig().database("host", "9090", "name", "user", "pass")
         assertEquals("mysqlx://host:9090/name?user=user&password=pass", slot.captured)
         unmockkAll()
+    }
+
+    @Test
+    fun `code coverage`() {
+        val filter = InteropMockEHRConfig().logFilter()
+        assertNotNull(filter)
     }
 }

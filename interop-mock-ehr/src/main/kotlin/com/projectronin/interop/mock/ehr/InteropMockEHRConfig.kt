@@ -5,6 +5,7 @@ import com.mysql.cj.xdevapi.SessionFactory
 import org.springframework.beans.factory.annotation.Value
 import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration
+import org.springframework.web.filter.CommonsRequestLoggingFilter
 
 @Configuration
 class InteropMockEHRConfig {
@@ -19,5 +20,17 @@ class InteropMockEHRConfig {
         return SessionFactory()
             .getSession("mysqlx://$host:$port/$name?user=$user&password=$pass")
             .defaultSchema
+    }
+
+    // adds HTTP request logging to the terminal output; very useful
+    @Bean
+    fun logFilter(): CommonsRequestLoggingFilter? {
+        val filter = CommonsRequestLoggingFilter()
+        filter.setIncludeQueryString(true)
+        filter.setIncludePayload(true)
+        filter.setMaxPayloadLength(10000)
+        filter.setIncludeHeaders(false)
+        filter.setAfterMessagePrefix("REQUEST DATA : ")
+        return filter
     }
 }

@@ -111,6 +111,15 @@ class EpicServer(private var dal: EpicDAL) {
 
     @RequestMapping("/api/epic/2014/Common/Utility/SENDMESSAGE/Message")
     fun createCommunication(@RequestBody sendMessageRequest: SendMessageRequest): SendMessageResponse {
+
+        // validate patient if it exists
+        sendMessageRequest.patientID?.let {
+            dal.r4PatientDAO.searchByIdentifier(Identifier().setValue(it).setSystem(sendMessageRequest.patientIDType))
+                ?: throw ResponseStatusException(
+                    HttpStatus.BAD_REQUEST,
+                    "INVALID-PATIENT"
+                )
+        }
         val communication = dal.r4CommunicationTransformer.transformFromSendMessage(sendMessageRequest)
         val newCommunicationId = dal.r4CommunicationDAO.insert(communication)
         return SendMessageResponse(listOf(IDType(id = newCommunicationId, type = "FHIR ID")))

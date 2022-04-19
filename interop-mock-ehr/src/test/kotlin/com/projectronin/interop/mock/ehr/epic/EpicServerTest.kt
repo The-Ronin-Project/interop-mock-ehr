@@ -386,7 +386,7 @@ internal class EpicServerTest {
     fun `working communication test`() {
         val request = SendMessageRequest(
             messageText = "Message Text",
-            patientID = "MRN#1",
+            patientID = "TESTINGMRN",
             recipients = listOf(
                 SendMessageRecipient("first", false, "External"),
                 SendMessageRecipient("second", true, "External"),
@@ -406,9 +406,27 @@ internal class EpicServerTest {
         every {
             dal.r4CommunicationDAO.insert(communication)
         } returns "NEW FHIR ID"
+        mockkConstructor(Identifier::class)
+        val ident = mockk<Identifier>()
+        val patient = Patient()
+        patient.id = "TESTINGID"
+        every { anyConstructed<Identifier>().setValue("TESTINGMRN").setSystem("MRN") } returns ident
+        every {
+            dal.r4PatientDAO.searchByIdentifier(
+                ident
+            )
+        } returns patient
         val output = server.createCommunication(request)
         assertEquals(1, output.idTypes.size)
         assertEquals("NEW FHIR ID", output.idTypes.first().id)
         assertEquals("FHIR ID", output.idTypes.first().type)
+
+        every { anyConstructed<Identifier>().setValue("TESTINGMRN").setSystem("MRN") } returns ident
+        every {
+            dal.r4PatientDAO.searchByIdentifier(
+                ident
+            )
+        } returns null
+        assertThrows<ResponseStatusException> { server.createCommunication(request) }
     }
 }
