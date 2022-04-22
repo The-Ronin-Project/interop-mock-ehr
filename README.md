@@ -37,7 +37,7 @@ The server itself and the MySQL database can be booted at the same time in a doc
 using the following command while inside the project root directory:
 ```
 ./gradlew bootJar
-docker-compose build --no-cache && docker-compose up --force-recreate
+docker compose build --no-cache && docker compose up --force-recreate
 ```
 The service will be available at port 8080 of your computer.
 
