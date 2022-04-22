@@ -6,7 +6,7 @@ interop-ehr-epic = "com.projectronin.interop.ehr:interop-ehr-epic:1.0.0-SNAPSHOT
 interop-fhir = "com.projectronin.interop.fhir:interop-fhir:1.0.0-SNAPSHOT"
 mysql-connector-java = "mysql:mysql-connector-java:8.0.28"
 protobuf-java = "com.google.protobuf:protobuf-java:3.20.0"
-spring-boot-parent = "org.springframework.boot:spring-boot-parent:2.6.6"
+spring-boot-parent = "org.springframework.boot:spring-boot-parent:2.6.7"
 testcontainers-bom = "org.testcontainers:testcontainers-bom:1.17.1"
 
 [bundles]
