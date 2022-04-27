@@ -39,7 +39,16 @@ using the following command while inside the project root directory:
 ./gradlew bootJar
 docker compose build --no-cache && docker compose up --force-recreate
 ```
-The service will be available at port 8080 of your computer.
+The service will be available at port 8080 of your computer. Assuming you downloaded the entire repo to run this, the
+server will be initialized with the data in the /init/resources directory. Feel free to modify these files locally.
+```
+Patient (eJzlzKe3KPzAV5TtkxmNivQ3) 
+ - with two appointments (06d7feb3-3326-4276-9535-83a622d8e217, 06d7feb3-3326-4276-9535-83a622d8e216) 
+ - each with the same condition (39bb2850-50e2-4bb0-a5ae-3a98bbaf199f), 
+ - location (3f1af7cb-a47e-4e1e-a8e3-d18e0d073e6c), 
+ - and practitioner (06d7feb3-3326-4276-9535-83a622d8e216). 
+Also included is a practitioner role (06d7feb3-3326-4276-9535-83a622d8e226).
+```
 
 ## Running via Testcontainer
 

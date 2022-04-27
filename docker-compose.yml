@@ -14,7 +14,18 @@ services:
     ports:
       - "8080:8080"
     depends_on:
-      - mockehrmysql
+      mockehrmysql:
+        condition: service_healthy
+
+  mysqlsetup:
+    restart: "no"
+    image: mysql/mysql-server:latest-aarch64
+    volumes:
+      - "./init/resources:/init"
+      - "./init/init.sh:/docker-entrypoint-initdb.d/init.sh"
+    depends_on:
+      mockehrmysql:
+        condition: service_healthy
 
   mockehrmysql:
     restart: always
@@ -26,3 +37,7 @@ services:
       - MYSQL_PASSWORD=ThePassword
     ports:
       - "33060:33060"
+    healthcheck:
+      test: [ "CMD", "mysqladmin" ,"ping", "-h", "localhost", "-u", "springuser", "-pThePassword" ]
+      timeout: 5s
+      retries: 3
