@@ -4,6 +4,7 @@ import ca.uhn.fhir.context.FhirContext
 import ca.uhn.fhir.rest.server.FifoMemoryPagingProvider
 import ca.uhn.fhir.rest.server.RestfulServer
 import com.projectronin.interop.mock.ehr.fhir.r4.providers.R4AppointmentResourceProvider
+import com.projectronin.interop.mock.ehr.fhir.r4.providers.R4BundleResourceProvider
 import com.projectronin.interop.mock.ehr.fhir.r4.providers.R4CommunicationResourceProvider
 import com.projectronin.interop.mock.ehr.fhir.r4.providers.R4ConditionResourceProvider
 import com.projectronin.interop.mock.ehr.fhir.r4.providers.R4LocationResourceProvider
@@ -22,7 +23,8 @@ class R4Server(
     private val r4PractitionerResourceProvider: R4PractitionerResourceProvider,
     private val r4LocationResourceProvider: R4LocationResourceProvider,
     private val r4PractitionerRoleResourceProvider: R4PractitionerRoleResourceProvider,
-    private val r4CommunicationResourceProvider: R4CommunicationResourceProvider
+    private val r4CommunicationResourceProvider: R4CommunicationResourceProvider,
+    private val r4BundleResourceProvider: R4BundleResourceProvider
 ) : RestfulServer(FhirContext.forR4()) {
 
     override fun initialize() {
@@ -33,7 +35,8 @@ class R4Server(
             r4PractitionerResourceProvider,
             r4LocationResourceProvider,
             r4PractitionerRoleResourceProvider,
-            r4CommunicationResourceProvider
+            r4CommunicationResourceProvider,
+            r4BundleResourceProvider
         )
         pagingProvider = FifoMemoryPagingProvider(10)
         maximumPageSize = 10 // in reality this is much higher, but this is easier to test with.

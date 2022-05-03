@@ -1,6 +1,7 @@
 package com.projectronin.interop.mock.ehr.fhir.r4
 
 import com.projectronin.interop.mock.ehr.fhir.r4.providers.R4AppointmentResourceProvider
+import com.projectronin.interop.mock.ehr.fhir.r4.providers.R4BundleResourceProvider
 import com.projectronin.interop.mock.ehr.fhir.r4.providers.R4CommunicationResourceProvider
 import com.projectronin.interop.mock.ehr.fhir.r4.providers.R4ConditionResourceProvider
 import com.projectronin.interop.mock.ehr.fhir.r4.providers.R4LocationResourceProvider
@@ -10,6 +11,7 @@ import com.projectronin.interop.mock.ehr.fhir.r4.providers.R4PractitionerRoleRes
 import io.mockk.every
 import io.mockk.mockk
 import org.hl7.fhir.r4.model.Appointment
+import org.hl7.fhir.r4.model.Bundle
 import org.hl7.fhir.r4.model.Communication
 import org.hl7.fhir.r4.model.Condition
 import org.hl7.fhir.r4.model.Location
@@ -37,7 +39,18 @@ internal class R4ServerTest {
         every { r4Location.resourceType } returns Location::class.java
         val r4Communication = mockk<R4CommunicationResourceProvider>()
         every { r4Communication.resourceType } returns Communication::class.java
-        val server = R4Server(r4Patient, r4Condition, r4Appointment, r4Practitioner, r4Location, r4PractitionerRole, r4Communication)
+        val r4Bundle = mockk<R4BundleResourceProvider>()
+        every { r4Bundle.resourceType } returns Bundle::class.java
+        val server = R4Server(
+            r4Patient,
+            r4Condition,
+            r4Appointment,
+            r4Practitioner,
+            r4Location,
+            r4PractitionerRole,
+            r4Communication,
+            r4Bundle
+        )
         server.init()
         assertTrue(
             server.resourceProviders.containsAll(
@@ -48,7 +61,8 @@ internal class R4ServerTest {
                     r4Practitioner,
                     r4Location,
                     r4PractitionerRole,
-                    r4Communication
+                    r4Communication,
+                    r4Bundle
                 )
             )
         )

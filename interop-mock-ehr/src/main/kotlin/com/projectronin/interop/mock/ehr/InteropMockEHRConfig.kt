@@ -27,7 +27,8 @@ class InteropMockEHRConfig {
     fun logFilter(): CommonsRequestLoggingFilter? {
         val filter = CommonsRequestLoggingFilter()
         filter.setIncludeQueryString(true)
-        filter.setIncludePayload(true)
+        // filter.setIncludePayload(true)
+        filter.setIncludePayload(false)
         filter.setMaxPayloadLength(10000)
         filter.setIncludeHeaders(false)
         filter.setAfterMessagePrefix("REQUEST DATA : ")

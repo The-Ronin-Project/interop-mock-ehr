@@ -14,7 +14,7 @@ abstract class BaseResourceDAO<T : Resource> {
     abstract var resourceType: Class<T>
     abstract var collection: Collection
 
-    fun insert(resource: T): String {
+    fun insert(resource: Resource): String {
         if (!resource.hasId()) {
             resource.id = UUID.randomUUID().toString()
         } // generate new ID for new resources
