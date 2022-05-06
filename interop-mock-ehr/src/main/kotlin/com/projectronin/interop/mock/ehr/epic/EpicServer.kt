@@ -8,9 +8,15 @@ import com.projectronin.interop.ehr.epic.apporchard.model.SendMessageRequest
 import com.projectronin.interop.ehr.epic.apporchard.model.SendMessageResponse
 import com.projectronin.interop.ehr.epic.auth.EpicAuthentication
 import com.projectronin.interop.mock.ehr.epic.dal.EpicDAL
+import io.swagger.v3.oas.annotations.Operation
+import io.swagger.v3.oas.annotations.media.Content
+import io.swagger.v3.oas.annotations.media.Schema
+import io.swagger.v3.oas.annotations.responses.ApiResponse
+import io.swagger.v3.oas.annotations.responses.ApiResponses
 import org.hl7.fhir.r4.model.Identifier
 import org.hl7.fhir.r4.model.Reference
 import org.springframework.http.HttpStatus
+import org.springframework.web.bind.annotation.PostMapping
 import org.springframework.web.bind.annotation.RequestBody
 import org.springframework.web.bind.annotation.RequestMapping
 import org.springframework.web.bind.annotation.RestController
@@ -23,7 +29,13 @@ import com.projectronin.interop.ehr.epic.apporchard.model.Appointment as EpicApp
 @RequestMapping("/epic")
 class EpicServer(private var dal: EpicDAL) {
 
-    @RequestMapping("/oauth2/token")
+    @Operation(summary = "Returns Mock Epic Authentication Token", description = "Returns token if successful")
+    @ApiResponses(
+        value = [
+            ApiResponse(responseCode = "200", description = "Successful operation", content = [Content(mediaType = "application/json", schema = Schema(implementation = EpicAuthentication::class))]),
+        ]
+    )
+    @PostMapping("/oauth2/token")
     fun getAuthToken(): EpicAuthentication {
         return EpicAuthentication(
             accessToken = UUID.randomUUID().toString(),
@@ -33,7 +45,14 @@ class EpicServer(private var dal: EpicDAL) {
         )
     }
 
-    @RequestMapping("/api/epic/2013/Scheduling/Patient/GETPATIENTAPPOINTMENTS/GetPatientAppointments")
+    @Operation(summary = "Returns Patient Appointments ", description = "returns list of epic appointments if successful")
+    @ApiResponses(
+        value = [
+            ApiResponse(responseCode = "200", description = "Successful Operation", content = [Content(mediaType = "application/json", schema = Schema(implementation = GetAppointmentsResponse::class))]),
+            ApiResponse(responseCode = "400", description = "Bad Request", content = [Content(mediaType = "application/text")])
+        ]
+    )
+    @PostMapping("/api/epic/2013/Scheduling/Patient/GETPATIENTAPPOINTMENTS/GetPatientAppointments")
     fun getAppointmentsByPatient(@RequestBody request: GetPatientAppointmentsRequest): GetAppointmentsResponse {
         // start date required
         val start = kotlin.runCatching { SimpleDateFormat("MM/dd/yyyy").parse(request.startDate) }
@@ -63,7 +82,14 @@ class EpicServer(private var dal: EpicDAL) {
         return GetAppointmentsResponse(appointments = epicAppointments, error = null)
     }
 
-    @RequestMapping("/api/epic/2013/Scheduling/Provider/GetProviderAppointments/Scheduling/Provider/Appointments")
+    @Operation(summary = "Returns Provider Appointments", description = "Returns list of epic appointments if successful")
+    @ApiResponses(
+        value = [
+            ApiResponse(responseCode = "200", description = "Successful operation", content = [Content(mediaType = "application/json", schema = Schema(implementation = GetAppointmentsResponse::class))]),
+            ApiResponse(responseCode = "400", description = "Bad Request", content = [Content(mediaType = "application/text")])
+        ]
+    )
+    @PostMapping("/api/epic/2013/Scheduling/Provider/GetProviderAppointments/Scheduling/Provider/Appointments")
     fun getAppointmentsByPractitioner(@RequestBody request: GetProviderAppointmentRequest): GetAppointmentsResponse {
 
         // start date required
@@ -109,7 +135,14 @@ class EpicServer(private var dal: EpicDAL) {
         return GetAppointmentsResponse(appointments = epicAppointments, error = null)
     }
 
-    @RequestMapping("/api/epic/2014/Common/Utility/SENDMESSAGE/Message")
+    @Operation(summary = "Send Message", description = "Returns pair of communication ID and FHIR ID if successful")
+    @ApiResponses(
+        value = [
+            ApiResponse(responseCode = "200", description = "Successful operation", content = [Content(mediaType = "application/json", schema = Schema(implementation = SendMessageResponse::class))]),
+            ApiResponse(responseCode = "400", description = "Bad Request", content = [Content(mediaType = "application/text")])
+        ]
+    )
+    @PostMapping("/api/epic/2014/Common/Utility/SENDMESSAGE/Message")
     fun createCommunication(@RequestBody sendMessageRequest: SendMessageRequest): SendMessageResponse {
 
         // validate patient if it exists

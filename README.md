@@ -62,3 +62,14 @@ docker build --tag=interop-mock-ehr:1.0.0-<VERSION>-SNAPSHOT ./interop-mock-ehr
 ```
 You can then update mock-ehr-testcontainer.yml with the new image tag temporarily, and install the
 new version into your other project (which requires Testcontainer).
+
+## Swagger/Open API when running locally
+The Swagger UI for both the Epic EHR and HAPI r4 APIs with examples for testing is available at 
+http://localhost:8080/swagger-ui/index.html. The EHR APIs will be displayed at initial load, use 
+the "Select a Definition" dropdown menu at the top of the page to toggle between the different APIs.
+
+The Swagger UI for the HAPI R4 APIs is also available [here](http://localhost:8080/fhir/r4/swagger-ui/index.html)
+and the same page is also available via an Epic-specific URL [here](http://localhost:8080/epic/api/FHIR/R4/swagger-ui/index.html). 
+The generated Open API YAML is available [here](http://localhost:8080/fhir/r4/api-docs) or [here](http://localhost:8080/epic/api/FHIR/R4/api-docs)
+
+The Open API JSON for the Epic EHR APIs is available [here](http://localhost:8080/v3/api-docs/)

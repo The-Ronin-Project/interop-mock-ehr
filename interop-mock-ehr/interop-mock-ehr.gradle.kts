@@ -15,6 +15,7 @@ dependencies {
     implementation(libs.interop.fhir)
 
     implementation(libs.bundles.hapi.fhir)
+    implementation(libs.bundles.springdoc.openapi)
 
     testImplementation(platform(libs.testcontainers.bom))
     testImplementation("org.testcontainers:junit-jupiter")
