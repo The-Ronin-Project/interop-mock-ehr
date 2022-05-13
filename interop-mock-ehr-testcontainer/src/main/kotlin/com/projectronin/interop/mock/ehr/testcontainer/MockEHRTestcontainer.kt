@@ -4,6 +4,7 @@ import io.ktor.client.HttpClient
 import io.ktor.client.engine.cio.CIO
 import io.ktor.client.request.headers
 import io.ktor.client.request.put
+import io.ktor.client.request.setBody
 import io.ktor.client.statement.HttpResponse
 import io.ktor.http.HttpHeaders
 import kotlinx.coroutines.runBlocking
@@ -19,6 +20,7 @@ class MockEHRTestcontainer {
 
     companion object {
         private val sharedNetwork = Network.newNetwork()
+
         // needs to start before MOCK_EHR_CONTAINER, but isn't used directly.
         @Suppress("unused")
         var MYSQL_CONTAINER = MySQLContainer<Nothing>("mysql:8.0.28-oracle").apply {
@@ -56,17 +58,17 @@ class MockEHRTestcontainer {
 
     /**
      * Convenience function for adding an R4 resource to the MockEHR database.
-     * @param type  the type of resource, e.g. "Patient"
-     * @param json  the json body of the resource to add. must include 'id' and 'resourceType'.
-     * @param fhirID    the fhir id of the object. must exactly match 'id' in the json body.
+     * @param type the type of resource, e.g. "Patient"
+     * @param json the json body of the resource to add. must include 'id' and 'resourceType'.
+     * @param fhirID the fhir id of the object. must exactly match 'id' in the json body.
      */
     fun addR4Resource(type: String, json: String, fhirID: String): HttpResponse {
         return runBlocking {
-            httpClient.put<HttpResponse>("${getURL()}/fhir/r4/$type/$fhirID") {
+            httpClient.put("${getURL()}/fhir/r4/$type/$fhirID") {
                 headers {
                     append(HttpHeaders.ContentType, "application/json")
                 }
-                body = json
+                setBody(json)
             }
         }
     }

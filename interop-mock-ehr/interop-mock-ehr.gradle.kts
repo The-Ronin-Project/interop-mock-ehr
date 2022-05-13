@@ -2,7 +2,7 @@ plugins {
     `maven-publish`
     id("org.springframework.boot")
     id("com.projectronin.interop.gradle.spring")
-    id("com.projectronin.interop.gradle.mockk")
+    id("com.projectronin.interop.gradle.junit")
 }
 
 dependencies {
@@ -17,11 +17,13 @@ dependencies {
     implementation(libs.bundles.hapi.fhir)
     implementation(libs.bundles.springdoc.openapi)
 
+    testImplementation(libs.mockk)
     testImplementation(platform(libs.testcontainers.bom))
     testImplementation("org.testcontainers:junit-jupiter")
     testImplementation("org.springframework.boot:spring-boot-starter-test")
     testImplementation("org.testcontainers:mysql")
 }
+
 publishing {
     repositories {
         maven {
