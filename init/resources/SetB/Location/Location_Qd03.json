@@ -1,0 +1,50 @@
+{
+  "resourceType": "Location",
+  "id": "e4W4rmGe9QzuGm2Dy4NBqVc0KDe6yGld6HW95UuN-Qd03",
+  "text": {
+    "status": "generated",
+    "div": "<div xmlns=\"http://www.w3.org/1999/xhtml\">EMC Family Medicine</div>"
+  },
+  "identifier": [
+    {
+      "value": "AUSFP"
+    }
+  ],
+  "status": "active",
+  "name": "EMC Family Medicine",
+  "description": "ECMAScript Family Medicine",
+  "mode": "instance",
+  "telecom": [
+    {
+      "system": "phone",
+      "value": "111-111-1111",
+      "use": "work"
+    },
+    {
+      "system": "fax",
+      "value": "111-111-1112",
+      "use": "work"
+    },
+    {
+      "system": "email",
+      "value": "emc@ecmascript.com"
+    }
+  ],
+  "address": {
+    "use": "work",
+    "line": [
+      "1 Academic Ave"
+    ],
+    "city": "College Town",
+    "postalCode": "99990",
+    "country": "USA"
+  },
+  "managingOrganization": {
+    "reference": "Organization/f001"
+  },
+  "endpoint": [
+    {
+      "reference": "Endpoint/example"
+    }
+  ]
+}

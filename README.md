@@ -7,7 +7,7 @@ which Ronin has full control over.
 
 As an example:
 
-HTTP GET on `http://localhost:8080/fhir/Patient/<patient fhir id>` will return an 
+HTTP GET on `http://localhost:8081/fhir/r4/Patient/<patient fhir id>` will return an 
 R4 Patient resource.
 
 
@@ -39,16 +39,8 @@ using the following command while inside the project root directory:
 ./gradlew bootJar
 docker compose build --no-cache && docker compose up --force-recreate
 ```
-The service will be available at port 8080 of your computer. Assuming you downloaded the entire repo to run this, the
-server will be initialized with the data in the /init/resources directory. Feel free to modify these files locally.
-```
-Patient (eJzlzKe3KPzAV5TtkxmNivQ3) 
- - with two appointments (06d7feb3-3326-4276-9535-83a622d8e217, 06d7feb3-3326-4276-9535-83a622d8e216) 
- - each with the same condition (39bb2850-50e2-4bb0-a5ae-3a98bbaf199f), 
- - location (3f1af7cb-a47e-4e1e-a8e3-d18e0d073e6c), 
- - and practitioner (06d7feb3-3326-4276-9535-83a622d8e216). 
-Also included is a practitioner role (06d7feb3-3326-4276-9535-83a622d8e226).
-```
+The service will be available at port 8081 of your computer. Assuming you downloaded the entire repo to run this, the
+server will be initialized with the data in the __/init/resources__ directory. Feel free to modify these files locally.
 
 ## Running via Testcontainer
 
@@ -65,11 +57,11 @@ new version into your other project (which requires Testcontainer).
 
 ## Swagger/Open API when running locally
 The Swagger UI for both the Epic EHR and HAPI r4 APIs with examples for testing is available at 
-http://localhost:8080/swagger-ui/index.html. The EHR APIs will be displayed at initial load, use 
+http://localhost:8081/swagger-ui/index.html. The EHR APIs will be displayed at initial load, use 
 the "Select a Definition" dropdown menu at the top of the page to toggle between the different APIs.
 
-The Swagger UI for the HAPI R4 APIs is also available [here](http://localhost:8080/fhir/r4/swagger-ui/index.html)
-and the same page is also available via an Epic-specific URL [here](http://localhost:8080/epic/api/FHIR/R4/swagger-ui/index.html). 
-The generated Open API YAML is available [here](http://localhost:8080/fhir/r4/api-docs) or [here](http://localhost:8080/epic/api/FHIR/R4/api-docs)
-
-The Open API JSON for the Epic EHR APIs is available [here](http://localhost:8080/v3/api-docs/)
+Also available:
+- The Swagger UI for the HAPI R4 APIs (  __/fhir/r4__ ): [here](http://localhost:8081/fhir/r4/swagger-ui/index.html)
+- The same page via an Epic-specific URL ( __/epic/api/fhir/r4__ ): [here](http://localhost:8081/epic/api/FHIR/R4/swagger-ui/index.html)
+- The generated Open API YAML: [HAPI R4 here](http://localhost:8081/fhir/r4/api-docs) and [Epic R4 here](http://localhost:8081/epic/api/FHIR/R4/api-docs)
+- The Open API JSON for the Epic EHR APIs: [here](http://localhost:8081/v3/api-docs/)

@@ -1,0 +1,76 @@
+{
+  "resourceType": "Condition",
+  "id": "39bb2850-50e2-4bb0-a5ae-3a98bbaf0001",
+  "text": {
+    "status": "generated",
+    "div": "<div xmlns=\"http://www.w3.org/1999/xhtml\">Head movements abnormal (finding)</div>"
+  },
+  "clinicalStatus": {
+    "coding": [
+      {
+        "system": "http://terminology.hl7.org/CodeSystem/condition-clinical",
+        "code": "active"
+      }
+    ]
+  },
+  "verificationStatus": {
+    "coding": [
+      {
+        "system": "http://terminology.hl7.org/CodeSystem/condition-ver-status",
+        "code": "confirmed"
+      }
+    ]
+  },
+  "category": [
+    {
+      "coding": [
+        {
+          "system": "http://terminology.hl7.org/CodeSystem/condition-category",
+          "code": "problem-list-item",
+          "display": "Problem List Item"
+        },
+        {
+          "system": "http://snomed.info/sct",
+          "code": "439401001",
+          "display": "Diagnosis"
+        }
+      ]
+    }
+  ],
+  "severity": {
+    "coding": [
+      {
+        "system": "http://snomed.info/sct",
+        "code": "24484000",
+        "display": "Severe"
+      }
+    ]
+  },
+  "code": {
+    "coding": [
+      {
+        "system": "http://snomed.info/sct",
+        "code": "271799000",
+        "display": "Head movements abnormal (finding)"
+      }
+    ],
+    "text": "Abnormal head movements"
+  },
+  "bodySite": [
+    {
+      "coding": [
+        {
+          "system": "http://snomed.info/sct",
+          "code": "302548004",
+          "display": "Entire head"
+        }
+      ],
+      "text": "Entire head"
+    }
+  ],
+  "subject": {
+    "reference": "Patient/eFs2zvgmbGfgWFfHliSRYZA3",
+    "display": "SMART, JOE"
+  },
+  "onsetDateTime": "2012-05-24"
+}

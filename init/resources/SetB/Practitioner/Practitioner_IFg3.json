@@ -1,0 +1,56 @@
+{
+  "resourceType": "Practitioner",
+  "id": "ejTHcJyAyLP9ittoMQVgIFg3",
+  "identifier": [
+    {
+      "system": "External",
+      "value": "ASMD"
+    }
+  ],
+  "active": true,
+  "name": [
+    {
+      "family": "Schmidt",
+      "given": [
+        "Autumn"
+      ]
+    }
+  ],
+  "address": [
+    {
+      "use": "home",
+      "line": [
+        "111 Erewhon St"
+      ],
+      "city": "PleasantVille",
+      "state": "MS",
+      "postalCode": "93399"
+    }
+  ],
+  "qualification": [
+    {
+      "identifier": [
+        {
+          "system": "http://example.org/UniversityIdentifier",
+          "value": "54545"
+        }
+      ],
+      "code": {
+        "coding": [
+          {
+            "system": "http://terminology.hl7.org/CodeSystem/v2-0360/2.7",
+            "code": "MS",
+            "display": "Master of Science"
+          }
+        ],
+        "text": "Master of Science"
+      },
+      "period": {
+        "start": "1975"
+      },
+      "issuer": {
+        "display": "Sample University"
+      }
+    }
+  ]
+}

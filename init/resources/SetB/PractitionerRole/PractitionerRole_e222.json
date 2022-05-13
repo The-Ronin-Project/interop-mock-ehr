@@ -1,10 +1,10 @@
 {
   "resourceType": "PractitionerRole",
-  "id": "06d7feb3-3326-4276-9535-83a622d8e226",
+  "id": "06d7feb3-3326-4276-9535-83a622d8e222",
   "identifier": [
     {
       "system": "http://www.acme.org/practitioners",
-      "value": "23"
+      "value": "24"
     }
   ],
   "active": true,
@@ -13,8 +13,8 @@
     "end": "2030-03-31"
   },
   "practitioner": {
-    "reference": "Practitioner/06d7feb3-3326-4276-9535-83a622d8e216",
-    "display": "Dr Adam Careful"
+    "reference": "Practitioner/ejTHcJyAyLP9ittoMQVgIFg3",
+    "display": "Autumn Schmidt"
   },
   "organization": {
     "reference": "Organization/f001"
@@ -42,8 +42,8 @@
   ],
   "location": [
     {
-      "reference": "Location/3f1af7cb-a47e-4e1e-a8e3-d18e0d073e6c",
-      "display": "South Wing, second floor"
+      "reference": "Location/e-ihfN9W6NFF9fqHMGzRyBw3",
+      "display": "AUS Family Medicine"
     }
   ],
   "healthcareService": [

@@ -1,0 +1,50 @@
+{
+  "resourceType": "Appointment",
+  "id": "eWLhfjXHp4RUczvtT2om.1Ii2uisGHcDc6rMEjO0xHBA3",
+  "identifier": [
+    {
+      "system": "urn:oid:1.2.840.114350.1.13.0.1.7.8.698084.27437",
+      "value": "27437"
+    }
+  ],
+  "status": "booked",
+  "serviceType": [
+    {
+      "coding": [
+        {
+          "system": "urn:oid:1.2.840.114350.1.13.0.1.7.2.808267",
+          "code": "1004",
+          "display": "Office Visit"
+        }
+      ]
+    }
+  ],
+  "start": "2025-07-10T16:00:00Z",
+  "end": "2025-07-10T16:15:00Z",
+  "minutesDuration": 15,
+  "comment": "Please bring any insurance information and a copayment if required by your insurance company.\n",
+  "participant": [
+    {
+    "actor": {
+      "reference": "Patient/eFs2zvgmbGfgWFfHliSRYZA3",
+      "display": "SMART, JOE"
+    },
+    "required": "required",
+    "status": "accepted"
+    },
+    {
+      "actor": {
+        "reference": "Practitioner/eM5CWtq15N0WJeuCet5bJlQ3",
+        "display": "Family Physician"
+      },
+      "status": "accepted"
+    },
+    {
+      "actor": {
+        "reference": "Location/e4W4rmGe9QzuGm2Dy4NBqVc0KDe6yGld6HW95UuN-Qd03",
+        "display": "EMC Family Medicine"
+      },
+      "status": "accepted"
+    }
+  ]
+}

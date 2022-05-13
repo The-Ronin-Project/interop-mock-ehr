@@ -1,27 +1,5 @@
 {
   "resourceType": "Patient",
-  "address": [
-    {
-      "city": "Madison",
-      "line": [
-        "123 Main St."
-      ],
-      "postalCode": "53703",
-      "state": "WI",
-      "use": "old"
-    },
-    {
-      "city": "Madison",
-      "line": [
-        "123 Main St."
-      ],
-      "postalCode": "53703",
-      "state": "WI",
-      "use": "home"
-    }
-  ],
-  "birthDate": "1987-01-15",
-  "gender": "female",
   "id": "eJzlzKe3KPzAV5TtkxmNivQ3",
   "identifier": [
     {
@@ -98,6 +76,28 @@
       "system": "email",
       "use": null,
       "value": "beau@beau.com"
+    }
+  ],
+  "gender": "female",
+  "birthDate": "1987-01-15",
+  "address": [
+    {
+      "city": "Madison",
+      "line": [
+        "123 Main St."
+      ],
+      "postalCode": "53703",
+      "state": "WI",
+      "use": "old"
+    },
+    {
+      "city": "Madison",
+      "line": [
+        "123 Main St."
+      ],
+      "postalCode": "53703",
+      "state": "WI",
+      "use": "home"
     }
   ]
 }

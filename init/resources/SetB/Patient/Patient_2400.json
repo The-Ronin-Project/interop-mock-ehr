@@ -1,0 +1,80 @@
+{
+  "resourceType": "Patient",
+  "id": "eFs2zvgmbGfg-12742400",
+  "identifier": [
+    {
+      "system": "MRN",
+      "value": "497202"
+    },
+    {
+      "system": "external",
+      "value": "Z6189"
+    },
+    {
+      "system": "http://open.epic.com/FHIR/StructureDefinition/patient-dstu2-fhir-id",
+      "value": "TJgJ7wgwgI32QvAhfdtE7bQsPYYBHx3YBhDm4egjwdyhm"
+    },
+    {
+      "system": "http://open.epic.com/FHIR/StructureDefinition/patient-fhir-id",
+      "value": "eJzlzKtkxmNivQ3e3KPzAV5T"
+    },
+    {
+      "system": "urn:oid:1.2.840.114350.1.13.0.1.7.2.698084",
+      "value": "     Z6189"
+    },
+    {
+      "system": "urn:oid:1.2.840.114350.1.13.0.1.7.5.737384.14",
+      "value": "497202"
+    },
+    {
+      "system": "urn:oid:1.2.840.114350.1.13.0.1.7.3.878082.110",
+      "value": "SMARTNANCYU"
+    },
+    {
+      "system": "urn:oid:1.2.840.114350.1.13.0.1.7.2.878082",
+      "value": "19"
+    },
+    {
+      "system": "https://open.epic.com/FHIR/StructureDefinition/PayerMemberId",
+      "value": "659874321A"
+    },
+    {
+      "system": "https://open.epic.com/FHIR/StructureDefinition/PayerMemberId",
+      "value": "BC321"
+    }
+  ],
+  "name": [
+    {
+      "family": "SMART",
+      "given": [
+        "NANCYU"
+      ],
+      "use": "official"
+    }
+  ],
+  "telecom": [
+    {
+      "system": "phone",
+      "use": "home",
+      "value": "608-987-6543"
+    },
+    {
+      "system": "email",
+      "use": null,
+      "value": "nancyu@smart.com"
+    }
+  ],
+  "gender": "female",
+  "birthDate": "1983-08-04",
+  "address": [
+    {
+      "city": "Madison",
+      "line": [
+        "456 Main St."
+      ],
+      "postalCode": "53703",
+      "state": "WI",
+      "use": "home"
+    }
+  ]
+}

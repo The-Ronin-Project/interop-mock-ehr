@@ -1,0 +1,56 @@
+{
+  "resourceType": "Practitioner",
+  "id": "eM5CWtq15N0WJeuCet5bJlQ3",
+  "identifier": [
+    {
+      "system": "External",
+      "value": "FMD"
+    }
+  ],
+  "active": true,
+  "name": [
+    {
+      "family": "Physician",
+      "given": [
+        "Family"
+      ]
+    }
+  ],
+  "address": [
+    {
+      "use": "home",
+      "line": [
+        "111 Wholesome St"
+      ],
+      "city": "PleasantVille",
+      "state": "MD",
+      "postalCode": "03399"
+    }
+  ],
+  "qualification": [
+    {
+      "identifier": [
+        {
+          "system": "http://example.org/UniversityIdentifier",
+          "value": "63636"
+        }
+      ],
+      "code": {
+        "coding": [
+          {
+            "system": "http://terminology.hl7.org/CodeSystem/v2-0360/2.7",
+            "code": "MS",
+            "display": "Master of Science"
+          }
+        ],
+        "text": "Master of Science"
+      },
+      "period": {
+        "start": "1995"
+      },
+      "issuer": {
+        "display": "Sample University"
+      }
+    }
+  ]
+}

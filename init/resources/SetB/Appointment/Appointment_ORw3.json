@@ -1,0 +1,81 @@
+{
+  "resourceType": "Appointment",
+  "id": "ePjxkyjA8gju08Vwqc.iiAAqNojpT2hDqLoM1pkTF0Rw3",
+  "identifier": [
+    {
+      "system": "urn:oid:1.2.840.114350.1.13.861.1.7.8.698084.10001644621",
+      "value": "10001644621"
+    }
+  ],
+  "status": "noshow",
+  "serviceType": [
+    {
+      "coding": [
+        {
+          "system": "urn:oid:1.2.840.114350.1.13.861.1.7.2.808267",
+          "code": "577",
+          "display": "AUS Office Visit"
+        }
+      ]
+    }
+  ],
+  "specialty": [
+    {
+      "coding": [
+        {
+          "system": "urn:oid:2.16.840.1.113883.6.101",
+          "code": "207KA0200X",
+          "display": "Allergy Physician"
+        }
+      ],
+      "text": "1"
+    }
+  ],
+  "appointmentType": {
+    "coding": [
+      {
+        "system": "urn:oid:2.16.840.1.113883.5.4",
+        "code": "IMP",
+        "display": "Inpatient Encounter"
+      }
+    ]
+  },
+  "reason": [
+    {
+      "coding": [
+        {
+          "system": "urn:oid:1.2.840.114350.1.13.861.1.7.2.728286",
+          "code": "41723"
+        }
+      ],
+      "text": "Head Bleed"
+    }
+  ],
+  "start": "2021-08-16T18:15:00Z",
+  "end": "2021-08-16T18:30:00Z",
+  "minutesDuration": 15,
+  "created": "2021-08-16",
+  "participant": [
+    {
+      "actor": {
+        "reference": "Patient/eFs2zvgmbGfgWFfHliSRYZA3",
+        "display": "SMART, JOE"
+      },
+      "status": "declined"
+    },
+    {
+      "actor": {
+        "reference": "Practitioner/ejTHcJyAyLP9ittoMQVgIFg3",
+        "display": "Autumn Schmidt"
+      },
+      "status": "declined"
+    },
+    {
+      "actor": {
+        "reference": "Location/e-ihfN9W6NFF9fqHMGzRyBw3",
+        "display": "AUS Family Medicine"
+      },
+      "status": "declined"
+    }
+  ]
+}

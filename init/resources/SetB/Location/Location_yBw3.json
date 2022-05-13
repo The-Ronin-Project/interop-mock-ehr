@@ -1,0 +1,50 @@
+{
+  "resourceType": "Location",
+  "id": "e-ihfN9W6NFF9fqHMGzRyBw3",
+  "text": {
+    "status": "generated",
+    "div": "<div xmlns=\"http://www.w3.org/1999/xhtml\">AUS Family Medicine</div>"
+  },
+  "identifier": [
+    {
+      "value": "AUSFP"
+    }
+  ],
+  "status": "active",
+  "name": "AUS Family Medicine",
+  "description": "Alabama University Systems Family Medicine",
+  "mode": "instance",
+  "telecom": [
+    {
+      "system": "phone",
+      "value": "205-111-1111",
+      "use": "work"
+    },
+    {
+      "system": "fax",
+      "value": "205-111-1112",
+      "use": "work"
+    },
+    {
+      "system": "email",
+      "value": "aus@aus.edu"
+    }
+  ],
+  "address": {
+    "use": "work",
+    "line": [
+      "1 Montgomery Ave"
+    ],
+    "city": "Montgomery",
+    "postalCode": "36113",
+    "country": "USA"
+  },
+  "managingOrganization": {
+    "reference": "Organization/f001"
+  },
+  "endpoint": [
+    {
+      "reference": "Endpoint/example"
+    }
+  ]
+}

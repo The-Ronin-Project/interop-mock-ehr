@@ -1,6 +1,6 @@
 {
   "resourceType": "Practitioner",
-  "id": "06d7feb3-3326-4276-9535-83a622d8e216",
+  "id": "06d7feb3-3326-4276-9535-83a622d8e215",
   "identifier": [
     {
       "system": "External",
@@ -26,8 +26,8 @@
         "534 Erewhon St"
       ],
       "city": "PleasantVille",
-      "state": "Vic",
-      "postalCode": "3999"
+      "state": "WA",
+      "postalCode": "33999"
     }
   ],
   "qualification": [

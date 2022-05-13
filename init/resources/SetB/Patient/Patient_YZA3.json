@@ -1,0 +1,119 @@
+{
+  "resourceType": "Patient",
+  "id": "eFs2zvgmbGfgWFfHliSRYZA3",
+  "identifier": [
+    {
+      "system": "MRN",
+      "value": "6931"
+    },
+    {
+      "system": "external",
+      "value": "Z2745"
+    },
+    {
+      "system": "http://open.epic.com/FHIR/StructureDefinition/patient-dstu2-fhir-id",
+      "value": "4egjwdyhmAhfdtE7bQsPYYBTJgJ7wgwgI32QvHx3YBhDm"
+    },
+    {
+      "system": "http://open.epic.com/FHIR/StructureDefinition/patient-fhir-id",
+      "value": "V5TtkxmNivQ3eJzlzKe3KPzA"
+    },
+    {
+      "system": "urn:oid:1.2.840.114350.1.13.0.1.7.2.698084",
+      "value": "     Z2745"
+    },
+    {
+      "system": "urn:oid:1.2.840.114350.1.13.0.1.7.5.737384.14",
+      "value": "6978"
+    },
+    {
+      "system": "urn:oid:1.2.840.114350.1.13.0.1.7.3.878082.110",
+      "value": "SMARTJOE"
+    },
+    {
+      "system": "urn:oid:1.2.840.114350.1.13.0.1.7.2.878082",
+      "value": "15"
+    },
+    {
+      "system": "https://open.epic.com/FHIR/StructureDefinition/PayerMemberId",
+      "value": "432198765A"
+    },
+    {
+      "system": "https://open.epic.com/FHIR/StructureDefinition/PayerMemberId",
+      "value": "BC456"
+    }
+  ],
+  "active": true,
+  "name": [
+    {
+      "use": "official",
+      "text": "SMART, JOE",
+      "family": "SMART",
+      "given": [
+        "JOE"
+      ]
+    },
+    {
+      "use": "old",
+      "text": "SMART, STEPHEN ALLEN",
+      "family": "SMART",
+      "given": [
+        "STEPHEN",
+        "ALLEN"
+      ]
+    }
+  ],
+  "telecom": [
+    {
+      "system": "email",
+      "value": "joesmart@yopmail.com",
+      "use": "home"
+    },
+    {
+      "system": "phone",
+      "value": "8168888886",
+      "use": "home"
+    }
+  ],
+  "gender": "male",
+  "birthDate": "1976-04-29",
+  "deceasedBoolean": false,
+  "address": [
+    {
+      "use": "home",
+      "text": "12345 Main St\\nKansas city, MO 64116\\nUS",
+      "line": [
+        "12345 Main St"
+      ],
+      "city": "Kansas city",
+      "district": "Jackson",
+      "state": "MO",
+      "postalCode": "64116",
+      "country": "US"
+    }
+  ],
+  "maritalStatus": {
+    "coding": [
+      {
+        "system": "https://fhir.cerner.com/ec2458f2-1e24-41c8-b71b-0e701af7583d/codeSet/38",
+        "code": "309237",
+        "display": "Married",
+        "userSelected": true
+      },
+      {
+        "system": "http://terminology.hl7.org/CodeSystem/v3-MaritalStatus",
+        "code": "M",
+        "display": "Married",
+        "userSelected": false
+      }
+    ],
+    "text": "Married"
+  },
+  "generalPractitioner": [
+    {
+      "reference": "Practitioner/euc69RmkeUC5UjZOIGu0FiA3",
+      "display": "Spence, Stephen"
+    }
+  ]
+}
+

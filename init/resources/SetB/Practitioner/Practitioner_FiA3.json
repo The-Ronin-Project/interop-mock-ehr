@@ -1,0 +1,56 @@
+{
+  "resourceType": "Practitioner",
+  "id": "euc69RmkeUC5UjZOIGu0FiA3",
+  "identifier": [
+    {
+      "system": "External",
+      "value": "SMD"
+    }
+  ],
+  "active": true,
+  "name": [
+    {
+      "family": "Spence",
+      "given": [
+        "Stephen"
+      ]
+    }
+  ],
+  "address": [
+    {
+      "use": "home",
+      "line": [
+        "345 Erewhon St"
+      ],
+      "city": "PleasantVille",
+      "state": "WI",
+      "postalCode": "11112"
+    }
+  ],
+  "qualification": [
+    {
+      "identifier": [
+        {
+          "system": "http://example.org/UniversityIdentifier",
+          "value": "54321"
+        }
+      ],
+      "code": {
+        "coding": [
+          {
+            "system": "http://terminology.hl7.org/CodeSystem/v2-0360/2.7",
+            "code": "BS",
+            "display": "Bachelor of Science"
+          }
+        ],
+        "text": "Bachelor of Science"
+      },
+      "period": {
+        "start": "2005"
+      },
+      "issuer": {
+        "display": "Example University"
+      }
+    }
+  ]
+}

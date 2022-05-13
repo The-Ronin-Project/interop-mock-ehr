@@ -1,0 +1,50 @@
+{
+  "resourceType": "Location",
+  "id": "e6gRswU5WJtj7msgU7NZiYw3",
+  "text": {
+    "status": "generated",
+    "div": "<div xmlns=\"http://www.w3.org/1999/xhtml\">ABF Family Practice</div>"
+  },
+  "identifier": [
+    {
+      "value": "ABFFP"
+    }
+  ],
+  "status": "active",
+  "name": "ABF Family Practice",
+  "description": "Allston-Boston-Framingham Family Practice",
+  "mode": "instance",
+  "telecom": [
+    {
+      "system": "phone",
+      "value": "617-111-1111",
+      "use": "work"
+    },
+    {
+      "system": "fax",
+      "value": "617-111-1112",
+      "use": "work"
+    },
+    {
+      "system": "email",
+      "value": "abf@abf.com"
+    }
+  ],
+  "address": {
+    "use": "work",
+    "line": [
+      "1 Commonwealth Ave"
+    ],
+    "city": "Brighton",
+    "postalCode": "02121",
+    "country": "USA"
+  },
+  "managingOrganization": {
+    "reference": "Organization/f001"
+  },
+  "endpoint": [
+    {
+      "reference": "Endpoint/example"
+    }
+  ]
+}
