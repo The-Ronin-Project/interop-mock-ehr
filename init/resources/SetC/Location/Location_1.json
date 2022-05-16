@@ -1,0 +1,65 @@
+{
+  "resourceType": "Location",
+  "id": "EHRFHIRIDLocation01Test",
+  "text": {
+    "status": "generated",
+    "div": "<div xmlns=\"http://www.w3.org/1999/xhtml\">North Center</div>"
+  },
+  "identifier": [
+    {
+      "value": "11111"
+    }
+  ],
+  "status": "active",
+  "name": "North Center",
+  "description": "North Center is the new home of Family Medicine, previously in the North Wing of the main hospital.",
+  "mode": "instance",
+  "telecom": [
+    {
+      "system": "phone",
+      "value": "1110",
+      "use": "work"
+    },
+    {
+      "system": "fax",
+      "value": "1111",
+      "use": "work"
+    },
+    {
+      "system": "email",
+      "value": "northcenter@sampleorg"
+    },
+    {
+      "system": "url",
+      "value": "http://sampleorg.com/northcenter",
+      "use": "work"
+    }
+  ],
+  "address": {
+    "use": "work",
+    "line": [
+      "3 Peony Ave"
+    ],
+    "city": "Revere",
+    "state": "MA",
+    "postalCode": "03232",
+    "country": "USA"
+  },
+  "physicalType": {
+    "coding": [
+      {
+        "system": "http://terminology.hl7.org/CodeSystem/location-physical-type",
+        "code": "bu",
+        "display": "Building"
+      }
+    ]
+  },
+  "managingOrganization": {
+    "reference": "Organization/f001"
+  },
+  "endpoint": [
+    {
+      "reference": "Endpoint/example"
+    }
+  ]
+}

@@ -1,0 +1,39 @@
+{
+  "resourceType": "Practitioner",
+  "id": "EHRFHIRIDPractitioner01Test",
+  "identifier": [
+    {
+      "system": "External",
+      "value": "HFMD"
+    },
+    {
+      "system": "http://hl7.org/fhir/sid/us-npi",
+      "value": "9988776655"
+    }
+  ],
+  "active": true,
+  "name": [
+    {
+      "given": [
+        "Harvey"
+      ],
+      "family": "Feest",
+      "prefix": [
+        "Dr."
+      ]
+    }
+  ],
+  "gender": "male",
+  "address": [
+    {
+      "use": "work",
+      "city": "Anytown",
+      "line": [
+        "567 Health Street"
+      ],
+      "state": "MA",
+      "country": "US",
+      "postalCode": "12345"
+    }
+  ]
+}

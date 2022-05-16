@@ -1,0 +1,48 @@
+{
+  "resourceType": "PractitionerRole",
+  "id": "EHRFHIRIDPractitionerRole02Test",
+  "identifier": [
+    {
+      "system": "http://www.acme.org/practitioners",
+      "value": "02"
+    }
+  ],
+  "active": true,
+  "practitioner": {
+    "display": "Dr. Alfred Gray",
+    "reference": "Practitioner/EHRFHIRIDPractitioner02Test"
+  },
+  "code": [
+    {
+      "coding": [
+        {
+          "system": "http://terminology.hl7.org/CodeSystem/v2-0286",
+          "code": "RP"
+        }
+      ]
+    }
+  ],
+  "location": [
+    {
+      "reference": "Location/EHRFHIRIDLocation01Test",
+      "display": "North Center"
+    }
+  ],
+  "healthcareService": [
+    {
+      "reference": "HealthcareService/example"
+    }
+  ],
+  "telecom": [
+    {
+      "system": "phone",
+      "value": "555-555-6474",
+      "use": "work"
+    },
+    {
+      "system": "email",
+      "value": "alfred.gray@example.org",
+      "use": "work"
+    }
+  ]
+}

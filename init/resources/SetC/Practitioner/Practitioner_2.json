@@ -1,0 +1,39 @@
+{
+  "resourceType": "Practitioner",
+  "id": "EHRFHIRIDPractitioner02Test",
+  "identifier": [
+    {
+      "system": "External",
+      "value": "AGMD"
+    },
+    {
+      "system": "http://hl7.org/fhir/sid/us-npi",
+      "value": "2281376654"
+    }
+  ],
+  "active": true,
+  "name": [
+    {
+      "given": [
+        "Alfred"
+      ],
+      "family": "Gray",
+      "prefix": [
+        "Dr."
+      ]
+    }
+  ],
+  "gender": "male",
+  "address": [
+    {
+      "use": "work",
+      "city": "Dallas",
+      "line": [
+        "91 Medicine Court"
+      ],
+      "state": "TX",
+      "country": "US",
+      "postalCode": "19234"
+    }
+  ]
+}

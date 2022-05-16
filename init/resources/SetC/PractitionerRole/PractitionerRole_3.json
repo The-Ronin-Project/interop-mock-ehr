@@ -1,0 +1,48 @@
+{
+  "resourceType": "PractitionerRole",
+  "id": "EHRFHIRIDPractitionerRole03Test",
+  "identifier": [
+    {
+      "system": "http://www.acme.org/practitioners",
+      "value": "03"
+    }
+  ],
+  "active": true,
+  "practitioner": {
+    "display": "Dr. Gabrielius Foster",
+    "reference": "Practitioner/EHRFHIRIDPractitioner03Test"
+  },
+  "code": [
+    {
+      "coding": [
+        {
+          "system": "http://terminology.hl7.org/CodeSystem/v2-0286",
+          "code": "RP"
+        }
+      ]
+    }
+  ],
+  "location": [
+    {
+      "reference": "Location/EHRFHIRIDLocation01Test",
+      "display": "North Center"
+    }
+  ],
+  "healthcareService": [
+    {
+      "reference": "HealthcareService/example"
+    }
+  ],
+  "telecom": [
+    {
+      "system": "phone",
+      "value": "555-555-6475",
+      "use": "work"
+    },
+    {
+      "system": "email",
+      "value": "gabrielius.foster@example.org",
+      "use": "work"
+    }
+  ]
+}

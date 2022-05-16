@@ -1,0 +1,39 @@
+{
+  "resourceType": "Practitioner",
+  "id": "EHRFHIRIDPractitioner04Test",
+  "identifier": [
+    {
+      "system": "External",
+      "value": "WKMD"
+    },
+    {
+      "system": "http://hl7.org/fhir/sid/us-npi",
+      "value": "2333230098"
+    }
+  ],
+  "active": true,
+  "name": [
+    {
+      "given": [
+        "Wendyline"
+      ],
+      "family": "Kebbe",
+      "prefix": [
+        "Dr."
+      ]
+    }
+  ],
+  "gender": "female",
+  "address": [
+    {
+      "use": "work",
+      "city": "Lebanon",
+      "line": [
+        "2020 Healthcare Lane"
+      ],
+      "state": "PA",
+      "country": "US",
+      "postalCode": "17042"
+    }
+  ]
+}

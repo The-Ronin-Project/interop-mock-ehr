@@ -1,0 +1,78 @@
+{
+  "resourceType": "Patient",
+  "id": "EHRFHIRIDPatient04Test",
+  "identifier": [
+    {
+      "system": "MRN",
+      "value": "20221"
+    },
+    {
+      "system": "external",
+      "value": "Z45555"
+    },
+    {
+      "system": "http://open.epic.com/FHIR/StructureDefinition/patient-fhir-id",
+      "value": "EHRFHIRIDPatient04Test"
+    },
+    {
+      "system": "urn:oid:1.2.840.114350.1.13.0.1.7.2.698084",
+      "value": "     Z45555"
+    },
+    {
+      "system": "urn:oid:1.2.840.114350.1.13.0.1.7.5.737384.14",
+      "value": "20221"
+    },
+    {
+      "system": "urn:oid:1.2.840.114350.1.13.0.1.7.3.878082.110",
+      "value": "OUDWILMATARZ"
+    }
+  ],
+  "name": [
+    {
+      "given": [
+        "Wilmatar",
+        "Z."
+      ],
+      "family": "Oud"
+    }
+  ],
+  "telecom": [
+    {
+      "use": "home",
+      "value": "544-555-6622",
+      "system": "phone"
+    },
+    {
+      "value": "oud.wilmatar@example.com",
+      "system": "email"
+    }
+  ],
+  "gender": "female",
+  "birthDate": "1959-05-11",
+  "address": [
+    {
+      "city": "Lebanon",
+      "line": [
+        "900 Tabbouli Street"
+      ],
+      "state": "PA",
+      "country": "US",
+      "postalCode": "17042"
+    }
+  ],
+  "maritalStatus": {
+    "text": "Married",
+    "coding": [
+      {
+        "code": "M",
+        "system": "http://terminology.hl7.org/CodeSystem/v3-MaritalStatus"
+      }
+    ]
+  },
+  "generalPractitioner": [
+    {
+      "display": "Dr. Wendyline Kebbe",
+      "reference": "Practitioner/EHRFHIRIDPractitioner04Test"
+    }
+  ]
+}

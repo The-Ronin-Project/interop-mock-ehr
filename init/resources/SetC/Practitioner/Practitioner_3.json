@@ -1,0 +1,39 @@
+{
+  "resourceType": "Practitioner",
+  "id": "EHRFHIRIDPractitioner03Test",
+  "identifier": [
+    {
+      "system": "External",
+      "value": "GFMD"
+    },
+    {
+      "system": "http://hl7.org/fhir/sid/us-npi",
+      "value": "1098276451"
+    }
+  ],
+  "active": true,
+  "name": [
+    {
+      "given": [
+        "Gabrielius"
+      ],
+      "family": "Foster",
+      "prefix": [
+        "Dr."
+      ]
+    }
+  ],
+  "gender": "female",
+  "address": [
+    {
+      "use": "work",
+      "city": "Little Italy",
+      "line": [
+        "567 Healthcare Drive"
+      ],
+      "state": "CA",
+      "country": "US",
+      "postalCode": "04345"
+    }
+  ]
+}

@@ -1,0 +1,78 @@
+{
+  "resourceType": "Patient",
+  "id": "EHRFHIRIDPatient02Test",
+  "identifier": [
+    {
+      "system": "MRN",
+      "value": "01112"
+    },
+    {
+      "system": "external",
+      "value": "Z23333"
+    },
+    {
+      "system": "http://open.epic.com/FHIR/StructureDefinition/patient-fhir-id",
+      "value": "EHRFHIRIDPatient02Test"
+    },
+    {
+      "system": "urn:oid:1.2.840.114350.1.13.0.1.7.2.698084",
+      "value": "     Z23333"
+    },
+    {
+      "system": "urn:oid:1.2.840.114350.1.13.0.1.7.5.737384.14",
+      "value": "01112"
+    },
+    {
+      "system": "urn:oid:1.2.840.114350.1.13.0.1.7.3.878082.110",
+      "value": "WYATTCHADA"
+    }
+  ],
+  "name": [
+    {
+      "given": [
+        "Chad",
+        "A."
+      ],
+      "family": "Wyatt"
+    }
+  ],
+  "telecom": [
+    {
+      "system": "phone",
+      "use": "home",
+      "value": "222-555-1111"
+    },
+    {
+      "value": "wyatt.chad@example.com",
+      "system": "email"
+    }
+  ],
+  "gender": "male",
+  "birthDate": "1951-01-20",
+  "address": [
+    {
+      "city": "Patras",
+      "line": [
+        "222 Feta Street"
+      ],
+      "state": "TX",
+      "country": "US",
+      "postalCode": "94340"
+    }
+  ],
+  "maritalStatus": {
+    "text": "Unmarried",
+    "coding": [
+      {
+        "code": "U",
+        "system": "http://terminology.hl7.org/CodeSystem/v3-MaritalStatus"
+      }
+    ]
+  },
+  "generalPractitioner": [
+    {
+      "display": "Dr. Alfred Gray",
+      "reference": "Practitioner/EHRFHIRIDPractitioner02Test"
+    }
+  ]
+}

@@ -59,4 +59,31 @@ Patient (eJzlzKe3KPzAV5TtkxmNivQ3)
 - One of the appointments (ePjxkyjA8gju08Vwqc.iiAFHBGCmkucuk3O15LOr0KFg3) is about the condition.
 - Also included are practitioner roles (06d7feb3-3326-4276-9535-83a622d8e222, 06d7feb3-3326-4276-9535-83a622d8e223).
 
+One of the practitioners (euc69RmkeUC5UjZOIGu0FiA3) sees both patients.
+
+### In SetC
+
+The appointments have various codes: CHECKUP, WALKIN, EMERGENCY, ROUTINE.
+
+There is one location (EHRFHIRIDLocation01Test) for all appointments and practitioner roles.
+
+Patient (EHRFHIRIDPatient01Test)
+- has one appointment (EHRFHIRIDAppointment01Test)
+- with one practitioner (EHRFHIRIDPractitioner01Test).
+
+Patient (EHRFHIRIDPatient02Test)
+- has one appointment (EHRFHIRIDAppointment02Test)
+- with one practitioner (EHRFHIRIDPractitioner02Test).
+
+Patient (EHRFHIRIDPatient03Test)
+- has one appointment (EHRFHIRIDAppointment03Test)
+- with one practitioner (EHRFHIRIDPractitioner03Test).
+
+Patient (EHRFHIRIDPatient04Test)
+- has one appointment (EHRFHIRIDAppointment04Test)
+- with one practitioner (EHRFHIRIDPractitioner04Test).
+
+Patient (EHRFHIRIDPatient05Test)
+- has one appointment (EHRFHIRIDAppointment05Test)
+- with one practitioner (EHRFHIRIDPractitioner05Test).
 

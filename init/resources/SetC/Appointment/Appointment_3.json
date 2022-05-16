@@ -1,0 +1,51 @@
+{
+  "resourceType": "Appointment",
+  "id": "EHRFHIRIDAppointment03Test",
+  "status": "checked-in",
+  "minutesDuration": 90,
+  "start": "2020-01-01T00:05:00.000Z",
+  "end": "2020-01-01T01:35:00.000Z",
+  "appointmentType": {
+    "coding": [
+      {
+        "system": "http://terminology.hl7.org/CodeSystem/v2-0276",
+        "code": "EMERGENCY",
+        "display": "Emergency appointment"
+      }
+    ]
+  },
+  "comment": "Patient having severe vomiting",
+  "participant": [
+    {
+      "actor": {
+        "reference": "Patient/EHRFHIRIDPatient03Test",
+        "display": "Vivaan B. Acostal"
+      },
+      "status": "accepted"
+    },
+    {
+      "type": [
+        {
+          "coding": [
+            {
+              "system": "http://terminology.hl7.org/CodeSystem/v3-ParticipationType",
+              "code": "ATND"
+            }
+          ]
+        }
+      ],
+      "actor": {
+        "display": "Dr. Gabrielius Foster",
+        "reference": "Practitioner/EHRFHIRIDPractitioner03Test"
+      },
+      "status": "accepted"
+    },
+    {
+      "actor": {
+        "reference": "Location/EHRFHIRIDLocation01Test",
+        "display": "North Center"
+      },
+      "status": "accepted"
+    }
+  ]
+}

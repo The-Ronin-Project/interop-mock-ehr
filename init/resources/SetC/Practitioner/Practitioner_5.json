@@ -1,0 +1,39 @@
+{
+  "resourceType": "Practitioner",
+  "id": "EHRFHIRIDPractitioner05Test",
+  "identifier": [
+    {
+      "system": "External",
+      "value": "BAMD"
+    },
+    {
+      "system": "http://hl7.org/fhir/sid/us-npi",
+      "value": "2312223033"
+    }
+  ],
+  "active": true,
+  "name": [
+    {
+      "given": [
+        "Brian"
+      ],
+      "family": "Allergy",
+      "prefix": [
+        "Dr."
+      ]
+    }
+  ],
+  "gender": "male",
+  "address": [
+    {
+      "use": "work",
+      "city": "Seacity",
+      "line": [
+        "5 Shellfish Healthcare Drive"
+      ],
+      "state": "TX",
+      "country": "US",
+      "postalCode": "923346"
+    }
+  ]
+}

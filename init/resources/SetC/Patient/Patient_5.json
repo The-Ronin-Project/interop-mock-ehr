@@ -1,0 +1,78 @@
+{
+  "resourceType": "Patient",
+  "id": "EHRFHIRIDPatient01Test",
+  "identifier": [
+    {
+      "system": "MRN",
+      "value": "20220"
+    },
+    {
+      "system": "external",
+      "value": "Z56666"
+    },
+    {
+      "system": "http://open.epic.com/FHIR/StructureDefinition/patient-fhir-id",
+      "value": "EHRFHIRIDPatient05Test"
+    },
+    {
+      "system": "urn:oid:1.2.840.114350.1.13.0.1.7.2.698084",
+      "value": "     Z56666"
+    },
+    {
+      "system": "urn:oid:1.2.840.114350.1.13.0.1.7.5.737384.14",
+      "value": "20220"
+    },
+    {
+      "system": "urn:oid:1.2.840.114350.1.13.0.1.7.3.878082.110",
+      "value": "RANDOMMKANE"
+    }
+  ],
+  "name": [
+    {
+      "given": [
+        "Kane",
+        "M."
+      ],
+      "family": "Random"
+    }
+  ],
+  "telecom": [
+    {
+      "use": "home",
+      "value": "999-555-1133",
+      "system": "phone"
+    },
+    {
+      "value": "kane.random@example.com",
+      "system": "email"
+    }
+  ],
+  "gender": "male",
+  "birthDate": "1930-08-19",
+  "address": [
+    {
+      "city": "Anytown",
+      "line": [
+        "123 Main St"
+      ],
+      "state": "MA",
+      "country": "US",
+      "postalCode": "12345"
+    }
+  ],
+  "maritalStatus": {
+    "text": "Divorced",
+    "coding": [
+      {
+        "code": "D",
+        "system": "http://terminology.hl7.org/CodeSystem/v3-MaritalStatus"
+      }
+    ]
+  },
+  "generalPractitioner": [
+    {
+      "display": "Dr. Brian Allergy",
+      "reference": "Practitioner/EHRFHIRIDPractitioner05Test"
+    }
+  ]
+}
