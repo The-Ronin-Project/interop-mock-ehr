@@ -53,7 +53,11 @@ class R4PractitionerResourceTest : BaseMySQLTest() {
         val identifier2 = Identifier()
         identifier2.value = "E1928341293"
         identifier2.system = "urn:oid:1.2.840.114350.1.1"
-        testPract.addIdentifier(identifier2)
+        testPract2.addIdentifier(identifier2)
+        val identifier3 = Identifier()
+        identifier3.value = "E2731"
+        identifier3.system = "NotTheSame"
+        testPract2.addIdentifier(identifier3)
         collection.add(FhirContext.forR4().newJsonParser().encodeResourceToString(testPract2)).execute()
 
         val token = TokenParam()
@@ -61,6 +65,35 @@ class R4PractitionerResourceTest : BaseMySQLTest() {
         token.system = "urn:oid:1.2.840.114350.1.1"
         val output = practitionerProvider.searchByIdentifier(token)
         assertEquals(output?.birthDate, testPract.birthDate)
+    }
+
+    @Test
+    fun `identifier search without system returns null when duplicates`() {
+        val testPract = Practitioner()
+        testPract.id = "TESTINGIDENTIFIER"
+        testPract.birthDate = Date(87, 0, 15)
+
+        val identifier = Identifier()
+        identifier.value = "E2731"
+        identifier.system = "urn:oid:1.2.840.114350.1.1"
+        testPract.addIdentifier(identifier)
+        collection.add(FhirContext.forR4().newJsonParser().encodeResourceToString(testPract)).execute()
+
+        val testPract2 = Practitioner()
+        testPract2.id = "TESTINGIDENTIFIER2"
+        testPract2.birthDate = Date(87, 1, 15)
+
+        val identifier2 = Identifier()
+        identifier2.value = "E2731"
+        identifier2.system = "urn:oid:1.2.840.114350.1.1"
+        testPract2.addIdentifier(identifier2)
+        collection.add(FhirContext.forR4().newJsonParser().encodeResourceToString(testPract2)).execute()
+
+        val token = TokenParam()
+        token.value = "E2731"
+        token.system = null
+        val output = practitionerProvider.searchByIdentifier(token)
+        assertNull(output)
     }
 
     @Test
@@ -103,5 +136,38 @@ class R4PractitionerResourceTest : BaseMySQLTest() {
             e.message
         }
         assertEquals(message, "No resource found with id: TESTINGFINDID")
+    }
+
+    @Test
+    fun `dao code coverage`() {
+        val testPract = Practitioner()
+        testPract.id = "TESTINGIDENTIFIER"
+        testPract.birthDate = Date(87, 0, 15)
+
+        val identifier1 = Identifier()
+        identifier1.value = "E2731"
+        identifier1.type.text = "External"
+        identifier1.system = "urn:oid:1.2.840.114350.1.1"
+        testPract.addIdentifier(identifier1)
+        collection.add(FhirContext.forR4().newJsonParser().encodeResourceToString(testPract)).execute()
+
+        val testPract2 = Practitioner()
+        testPract2.id = "TESTINGIDENTIFIER2"
+        testPract2.birthDate = Date(87, 1, 15)
+
+        val identifier2 = Identifier()
+        identifier2.value = "E1928341293"
+        identifier2.system = "urn:oid:1.2.840.114350.1.1"
+        testPract2.addIdentifier(identifier2)
+        val identifier3 = Identifier()
+        identifier3.value = "E2731"
+        identifier3.system = "NotTheSame"
+        testPract2.addIdentifier(identifier3)
+        collection.add(FhirContext.forR4().newJsonParser().encodeResourceToString(testPract2)).execute()
+        val identifier = Identifier()
+        identifier.value = "E2731"
+        identifier.type.text = "External"
+        val output = dao.searchByIdentifier(identifier)
+        assertEquals(output?.birthDate, testPract.birthDate)
     }
 }

@@ -13,6 +13,7 @@ import io.swagger.v3.oas.annotations.media.Content
 import io.swagger.v3.oas.annotations.media.Schema
 import io.swagger.v3.oas.annotations.responses.ApiResponse
 import io.swagger.v3.oas.annotations.responses.ApiResponses
+import org.hl7.fhir.r4.model.CodeableConcept
 import org.hl7.fhir.r4.model.Identifier
 import org.hl7.fhir.r4.model.Reference
 import org.springframework.http.HttpStatus
@@ -108,9 +109,9 @@ class EpicServer(private var dal: EpicDAL) {
 
         // find practitioners
         val r4Practitioners = request.providers?.mapNotNull {
-            dal.r4PractitionerDAO.searchByIdentifier(Identifier().setValue(it.id).setSystem(it.idType))
-        } ?: return errorResponse("NO-PROVIDER-FOUND")
-        if (r4Practitioners.isEmpty()) return errorResponse("NO-PROVIDER-FOUND")
+            dal.r4PractitionerDAO.searchByIdentifier(Identifier().setValue(it.id).setType(CodeableConcept().setText(it.idType)))
+        }
+        if (r4Practitioners.isNullOrEmpty()) return errorResponse("NO-PROVIDER-FOUND")
 
         // find all appointments for all practitioners
         val epicAppointments = mutableListOf<EpicAppointment>()

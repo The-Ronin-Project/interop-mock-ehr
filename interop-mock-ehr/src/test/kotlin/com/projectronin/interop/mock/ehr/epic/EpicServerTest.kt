@@ -14,6 +14,7 @@ import io.mockk.mockkConstructor
 import io.mockk.mockkStatic
 import io.mockk.unmockkAll
 import io.mockk.unmockkStatic
+import org.hl7.fhir.r4.model.CodeableConcept
 import org.hl7.fhir.r4.model.Communication
 import org.hl7.fhir.r4.model.Identifier
 import org.hl7.fhir.r4.model.Patient
@@ -136,8 +137,11 @@ internal class EpicServerTest {
         )
 
         mockkConstructor(Identifier::class)
+        mockkConstructor(CodeableConcept::class)
         val ident = mockk<Identifier>()
-        every { anyConstructed<Identifier>().setValue("PRACT#1").setSystem("External") } returns ident
+        val mockCodeableConcept = mockk<CodeableConcept>()
+        every { anyConstructed<CodeableConcept>().setText("External") } returns mockCodeableConcept
+        every { anyConstructed<Identifier>().setValue("PRACT#1").setType(mockCodeableConcept) } returns ident
         every {
             dal.r4PractitionerDAO.searchByIdentifier(
                 ident
@@ -356,8 +360,11 @@ internal class EpicServerTest {
             userIDType = "Internal"
         )
         mockkConstructor(Identifier::class)
+        mockkConstructor(CodeableConcept::class)
         val ident = mockk<Identifier>()
-        every { anyConstructed<Identifier>().setValue("PRACT#1").setSystem("External") } returns ident
+        val mockCodeableConcept = mockk<CodeableConcept>()
+        every { anyConstructed<CodeableConcept>().setText("External") } returns mockCodeableConcept
+        every { anyConstructed<Identifier>().setValue("PRACT#1").setType(mockCodeableConcept) } returns ident
         every {
             dal.r4PractitionerDAO.searchByIdentifier(
                 ident
