@@ -15,6 +15,7 @@ springdoc-openapi-data = "org.springdoc:springdoc-openapi-data-rest:1.6.8"
 springdoc-openapi-kotlin = "org.springdoc:springdoc-openapi-kotlin:1.6.8"
 springdoc-openapi-ui = "org.springdoc:springdoc-openapi-ui:1.6.8"
 testcontainers-bom = "org.testcontainers:testcontainers-bom:1.17.2"
+json-patch = "com.github.java-json-tools:json-patch:1.13"
 
 [bundles]
 hapi-fhir = ["hapi-fhir-base", "hapi-fhir-server", "hapi-fhir-structures-r4", "hapi-fhir-server-openapi"]

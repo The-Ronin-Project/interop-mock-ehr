@@ -6,4 +6,4 @@ for a in /init/*; do
     done
   done
 done
-exit
+exit 0

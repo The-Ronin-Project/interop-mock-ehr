@@ -5,12 +5,14 @@ import ca.uhn.fhir.rest.annotation.Create
 import ca.uhn.fhir.rest.annotation.Delete
 import ca.uhn.fhir.rest.annotation.IdParam
 import ca.uhn.fhir.rest.annotation.IncludeParam
+import ca.uhn.fhir.rest.annotation.Patch
 import ca.uhn.fhir.rest.annotation.Read
 import ca.uhn.fhir.rest.annotation.RequiredParam
 import ca.uhn.fhir.rest.annotation.ResourceParam
 import ca.uhn.fhir.rest.annotation.Search
 import ca.uhn.fhir.rest.annotation.Update
 import ca.uhn.fhir.rest.api.MethodOutcome
+import ca.uhn.fhir.rest.api.PatchTypeEnum
 import ca.uhn.fhir.rest.server.IResourceProvider
 import org.hl7.fhir.r4.model.IdType
 import org.hl7.fhir.r4.model.Resource
@@ -61,6 +63,14 @@ abstract class BaseResourceProvider<T : Resource, DAO : BaseResourceDAO<T>> : IR
     @Search
     fun returnAll(): List<T> {
         return resourceDAO.getAll()
+    }
+
+    @Patch
+    fun patch(@IdParam theID: IdType, patchType: PatchTypeEnum, @ResourceParam rawPatch: String): MethodOutcome {
+        if (patchType != PatchTypeEnum.JSON_PATCH)
+            throw java.lang.UnsupportedOperationException("Only JSON patch types allowed.")
+        resourceDAO.patch(theID.idPart, rawPatch)
+        return MethodOutcome()
     }
 
     // implementing functions should add this when necessary, but not required by default.

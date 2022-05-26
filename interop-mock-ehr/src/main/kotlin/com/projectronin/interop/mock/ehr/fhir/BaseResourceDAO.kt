@@ -2,6 +2,8 @@ package com.projectronin.interop.mock.ehr.fhir
 
 import ca.uhn.fhir.context.FhirContext
 import ca.uhn.fhir.rest.server.exceptions.ResourceNotFoundException
+import com.fasterxml.jackson.databind.ObjectMapper
+import com.github.fge.jsonpatch.JsonPatch
 import com.mysql.cj.xdevapi.Collection
 import com.mysql.cj.xdevapi.DbDoc
 import com.mysql.cj.xdevapi.JsonString
@@ -51,9 +53,21 @@ abstract class BaseResourceDAO<T : Resource> {
         return list
     }
 
+    fun patch(fhirId: String, rawPatch: String) {
+        val mapper = ObjectMapper()
+        val patch = mapper.readValue(rawPatch, JsonPatch::class.java)
+        val resourceJSON = findByIdQuery(fhirId)?.toString()
+        val patched = patch.apply(mapper.readTree(resourceJSON)).toString()
+        // deserialize first to make sure patched data isn't invalid
+        update(context.newJsonParser().parseResource(resourceType, patched))
+    }
+
     private fun findByIdQuery(fhirId: String?): DbDoc? {
         if (fhirId == null) return null
-        return collection.find("id = :id").bind("id", fhirId).execute().fetchOne()
+        return collection.find("id = :id")
+            .bind("id", fhirId.removePrefix("${resourceType.simpleName}/"))
+            .execute()
+            .fetchOne()
     }
 
     private fun getDatabaseId(fhirId: String): String? {

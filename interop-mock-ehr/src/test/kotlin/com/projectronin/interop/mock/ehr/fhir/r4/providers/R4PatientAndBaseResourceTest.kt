@@ -2,6 +2,7 @@ package com.projectronin.interop.mock.ehr.fhir.r4.providers
 
 import ca.uhn.fhir.context.FhirContext
 import ca.uhn.fhir.model.api.Include
+import ca.uhn.fhir.rest.api.PatchTypeEnum
 import ca.uhn.fhir.rest.param.DateParam
 import ca.uhn.fhir.rest.param.StringParam
 import ca.uhn.fhir.rest.param.TokenParam
@@ -327,17 +328,36 @@ class R4PatientAndBaseResourceTest : BaseMySQLTest() {
 
         collection.add(FhirContext.forR4().newJsonParser().encodeResourceToString(patient)).execute()
 
-        var output = dao.findById("TESTINGFINDID")
+        val output = dao.findById("TESTINGFINDID")
         assertEquals(output.identifier.get(0).value, patient.identifier.get(0).value)
         assertEquals(output.identifier.get(0).system, patient.identifier.get(0).system)
         assertEquals(output.birthDate, patient.birthDate)
 
         collection.remove("true").execute() // Clear the collection in case other tests run first
-        var message = try {
+        val message = try {
             dao.findById("TESTINGFINDID")
         } catch (e: ResourceNotFoundException) {
             e.message
         }
         assertEquals(message, "No resource found with id: TESTINGFINDID")
+    }
+
+    @Test
+    fun `patch test`() {
+        val patient = Patient()
+        patient.id = "TESTINGPATCH"
+        patient.gender = Enumerations.AdministrativeGender.FEMALE
+        collection.add(FhirContext.forR4().newJsonParser().encodeResourceToString(patient)).execute()
+        val patch = " [{ \"op\": \"replace\", \"path\": \"/gender\", \"value\": \"male\" }]"
+        patientProvider.patch(IdType("TESTINGPATCH"), PatchTypeEnum.JSON_PATCH, patch)
+        val output = dao.findById("TESTINGPATCH")
+        assertEquals(output.gender, Enumerations.AdministrativeGender.MALE)
+    }
+
+    @Test
+    fun `bad patch type test`() {
+        assertThrows<UnsupportedOperationException> {
+            patientProvider.patch(IdType("TESTINGPATCH"), PatchTypeEnum.FHIR_PATCH_JSON, "patch")
+        }
     }
 }

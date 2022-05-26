@@ -13,6 +13,7 @@ dependencies {
     implementation(libs.protobuf.java)
     implementation(libs.interop.ehr.epic)
     implementation(libs.interop.fhir)
+    implementation(libs.json.patch)
 
     implementation(libs.bundles.hapi.fhir)
     implementation(libs.bundles.springdoc.openapi)
