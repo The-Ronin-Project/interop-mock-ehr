@@ -286,7 +286,11 @@ class R4PatientAndBaseResourceTest : BaseMySQLTest() {
         val identifier2 = Identifier()
         identifier2.value = "E1928341293"
         identifier2.system = "urn:oid:1.2.840.114350.1.1"
-        testPat.addIdentifier(identifier2)
+        testPat2.addIdentifier(identifier2)
+        val identifier3 = Identifier()
+        identifier3.value = "E2731"
+        identifier3.system = "NotTheSame"
+        testPat2.addIdentifier(identifier3)
         collection.add(FhirContext.forR4().newJsonParser().encodeResourceToString(testPat2)).execute()
 
         val token = TokenParam()
@@ -294,6 +298,34 @@ class R4PatientAndBaseResourceTest : BaseMySQLTest() {
         token.system = "MRN"
         val output = patientProvider.searchByIdentifier(token)
         assertEquals(output?.birthDate, testPat.birthDate)
+    }
+    @Test
+    fun `identifier search without system returns null when duplicates`() {
+        val testPat = Patient()
+        testPat.id = "TESTINGIDENTIFIER"
+        testPat.birthDate = Date(87, 0, 15)
+
+        val identifier = Identifier()
+        identifier.value = "E2731"
+        identifier.system = "urn:oid:1.2.840.114350.1.1"
+        testPat.addIdentifier(identifier)
+        collection.add(FhirContext.forR4().newJsonParser().encodeResourceToString(testPat)).execute()
+
+        val testPat2 = Patient()
+        testPat2.id = "TESTINGIDENTIFIER2"
+        testPat2.birthDate = Date(87, 1, 15)
+
+        val identifier2 = Identifier()
+        identifier2.value = "E2731"
+        identifier2.system = "urn:oid:1.2.840.114350.1.1"
+        testPat2.addIdentifier(identifier2)
+        collection.add(FhirContext.forR4().newJsonParser().encodeResourceToString(testPat2)).execute()
+
+        val token = TokenParam()
+        token.value = "E2731"
+        token.system = null
+        val output = patientProvider.searchByIdentifier(token)
+        assertNull(output)
     }
 
     @Test
@@ -359,5 +391,38 @@ class R4PatientAndBaseResourceTest : BaseMySQLTest() {
         assertThrows<UnsupportedOperationException> {
             patientProvider.patch(IdType("TESTINGPATCH"), PatchTypeEnum.FHIR_PATCH_JSON, "patch")
         }
+    }
+
+    @Test
+    fun `dao code coverage`() {
+        val testPat = Patient()
+        testPat.id = "TESTINGIDENTIFIER"
+        testPat.birthDate = Date(87, 0, 15)
+
+        val identifier1 = Identifier()
+        identifier1.value = "E2731"
+        identifier1.type.text = "External"
+        identifier1.system = "urn:oid:1.2.840.114350.1.1"
+        testPat.addIdentifier(identifier1)
+        collection.add(FhirContext.forR4().newJsonParser().encodeResourceToString(testPat)).execute()
+
+        val testPat2 = Patient()
+        testPat2.id = "TESTINGIDENTIFIER2"
+        testPat2.birthDate = Date(87, 1, 15)
+
+        val identifier2 = Identifier()
+        identifier2.value = "E1928341293"
+        identifier2.system = "urn:oid:1.2.840.114350.1.1"
+        testPat2.addIdentifier(identifier2)
+        val identifier3 = Identifier()
+        identifier3.value = "E2731"
+        identifier3.system = "NotTheSame"
+        testPat2.addIdentifier(identifier3)
+        collection.add(FhirContext.forR4().newJsonParser().encodeResourceToString(testPat2)).execute()
+        val identifier = Identifier()
+        identifier.value = "E2731"
+        identifier.type.text = "External"
+        val output = dao.searchByIdentifier(identifier)
+        assertEquals(output?.birthDate, testPat.birthDate)
     }
 }

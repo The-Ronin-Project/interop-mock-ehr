@@ -2,10 +2,8 @@ package com.projectronin.interop.mock.ehr.epic.transform
 
 import com.projectronin.interop.ehr.epic.apporchard.model.IDType
 import com.projectronin.interop.ehr.epic.apporchard.model.ScheduleProviderReturnWithTime
-import com.projectronin.interop.fhir.r4.ExtensionMeanings
 import org.hl7.fhir.r4.model.Appointment.AppointmentParticipantComponent
 import org.hl7.fhir.r4.model.CodeableConcept
-import org.hl7.fhir.r4.model.Extension
 import org.hl7.fhir.r4.model.HumanName
 import org.hl7.fhir.r4.model.Identifier
 import org.hl7.fhir.r4.model.Patient
@@ -25,9 +23,6 @@ internal class R4AppointmentTransformerTest {
         patient.addName(HumanName().addGiven("given").setFamily("family").setUse(HumanName.NameUse.USUAL))
         val practitionerParticipant = AppointmentParticipantComponent()
         practitionerParticipant.actor = Reference().setReference("Practitioner/PRACTID#1").setType("Practitioner")
-        val partnerReference = Extension()
-        partnerReference.url = ExtensionMeanings.PARTNER_DEPARTMENT.uri.toString()
-        partnerReference.setValue(Reference("Organization/ORGID#1"))
         val input = R4Appointment()
         input.appointmentType = CodeableConcept().setText("type")
         input.minutesDuration = 30
@@ -39,7 +34,6 @@ internal class R4AppointmentTransformerTest {
         input.participant = listOf(
             practitionerParticipant
         )
-        input.addExtension(partnerReference)
 
         val expected = EpicAppointment(
             appointmentDuration = "30",
@@ -54,20 +48,7 @@ internal class R4AppointmentTransformerTest {
             patientName = "given family",
             providers = listOf(
                 ScheduleProviderReturnWithTime(
-                    departmentIDs = listOf(
-                        IDType(
-                            id = "ORGID#1",
-                            type = "FHIR"
-                        )
-                    ),
-                    departmentName = "",
-                    duration = "",
-                    providerIDs = listOf(),
-                    providerName = "",
-                    time = ""
-                ),
-                ScheduleProviderReturnWithTime(
-                    departmentIDs = listOf(),
+                    departmentIDs = emptyList(),
                     departmentName = "",
                     duration = "",
                     providerIDs = listOf(

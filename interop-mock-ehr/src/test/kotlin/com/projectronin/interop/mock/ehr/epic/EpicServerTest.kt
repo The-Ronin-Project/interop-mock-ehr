@@ -82,7 +82,7 @@ internal class EpicServerTest {
             dal.r4AppointmentDAO.searchByQuery(
                 references = listOf(ref),
                 fromDate = Date(120, 0, 1),
-                toDate = Date(121, 0, 1)
+                toDate = Date(121, 0, 1, 23, 59)
             )
         } returns listOf(appointment1, appointment2)
 
@@ -164,7 +164,7 @@ internal class EpicServerTest {
             dal.r4AppointmentDAO.searchByQuery(
                 references = listOf(ref),
                 fromDate = Date(120, 0, 1),
-                toDate = Date(121, 0, 1)
+                toDate = Date(121, 0, 1, 23, 59)
             )
         } returns listOf(appointment1, appointment2)
 

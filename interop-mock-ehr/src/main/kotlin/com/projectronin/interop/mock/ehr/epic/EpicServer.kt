@@ -66,6 +66,11 @@ class EpicServer(private var dal: EpicDAL) {
         }
         // more validation
         end?.let { if (start.after(it)) return errorResponse("END-DATE-BEFORE-START-DATE") }
+        // dates have milliseconds, but Epic's search doesn't allow for anything more granular than day
+        // so if someone passes "5/27" they should get appointments at like "5/27 at 8:00 AM"
+        // if you don't do this the search would end at "5/27 12:00 AM"
+        end?.hours = 23
+        end?.minutes = 59
         if (request.userID == null) return errorResponse("NO-USER-FOUND") // can check this 'for real' later
 
         // try to find patient
@@ -105,6 +110,11 @@ class EpicServer(private var dal: EpicDAL) {
 
         // more validation
         end?.let { if (start.after(it)) return errorResponse("END-DATE-BEFORE-START-DATE") }
+        // dates have milliseconds, but Epic's search doesn't allow for anything more granular than day
+        // so if someone passes "5/27" they should get appointments at like "5/27 at 8:00 AM"
+        // if you don't do this the search would end at "5/27 12:00 AM"
+        end?.hours = 23
+        end?.minutes = 59
         if (request.userID == null) return errorResponse("NO-USER-FOUND")
 
         // find practitioners
