@@ -17,26 +17,24 @@ services:
       mockehrmysql:
         condition: service_healthy
 
-  mysqlsetup:
+  mockehrinit:
     restart: "no"
-    image: mysql/mysql-server:latest-aarch64
-    volumes:
-      - "./init/resources:/init"
-      - "./init/init.sh:/docker-entrypoint-initdb.d/init.sh"
+    build:
+      context: ./init
+      dockerfile: Dockerfile
+    image: interop-mock-ehr-init:local
     depends_on:
       mockehrmysql:
         condition: service_healthy
 
   mockehrmysql:
     restart: always
-    image: mysql/mysql-server:latest-aarch64
+    image: mysql/mysql-server:latest
     environment:
       - MYSQL_DATABASE=mock_ehr_db
       - MYSQL_ROOT_PASSWORD=secret
       - MYSQL_USER=springuser
       - MYSQL_PASSWORD=ThePassword
-    ports:
-      - "33060:33060"
     healthcheck:
       test: [ "CMD", "mysqladmin" ,"ping", "-h", "localhost", "-u", "springuser", "-pThePassword" ]
       timeout: 5s
