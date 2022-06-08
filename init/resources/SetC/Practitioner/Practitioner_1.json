@@ -3,8 +3,11 @@
   "id": "EHRFHIRIDPractitioner01Test",
   "identifier": [
     {
-      "system": "External",
-      "value": "HFMD"
+      "type": {
+        "text": "External"
+      },
+      "value": "HFMD",
+      "system": "mockEHRProviderSystem"
     },
     {
       "system": "http://hl7.org/fhir/sid/us-npi",

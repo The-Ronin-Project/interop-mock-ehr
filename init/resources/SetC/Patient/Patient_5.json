@@ -3,10 +3,13 @@
   "id": "EHRFHIRIDPatient01Test",
   "identifier": [
     {
-      "system": "MRN",
+      "system": "mockEHRMRNSystem",
       "value": "20220"
     },
     {
+      "type": {
+        "text": "external"
+      },
       "system": "external",
       "value": "Z56666"
     },
@@ -33,7 +36,8 @@
         "Kane",
         "M."
       ],
-      "family": "Random"
+      "family": "Random",
+      "use": "usual"
     }
   ],
   "telecom": [

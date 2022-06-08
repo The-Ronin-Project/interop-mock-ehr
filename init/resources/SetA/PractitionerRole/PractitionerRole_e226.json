@@ -16,9 +16,6 @@
     "reference": "Practitioner/06d7feb3-3326-4276-9535-83a622d8e215",
     "display": "Dr Adam Careful"
   },
-  "organization": {
-    "reference": "Organization/f001"
-  },
   "code": [
     {
       "coding": [

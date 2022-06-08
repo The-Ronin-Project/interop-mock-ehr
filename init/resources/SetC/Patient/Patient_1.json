@@ -3,10 +3,13 @@
   "id": "EHRFHIRIDPatient01Test",
   "identifier": [
     {
-      "system": "MRN",
+      "system": "mockEHRMRNSystem",
       "value": "01111"
     },
     {
+      "type": {
+        "text": "external"
+      },
       "system": "external",
       "value": "Z12222"
     },
@@ -33,7 +36,8 @@
       "given": [
         "John",
         "B."
-      ]
+      ],
+      "use": "usual"
     }
   ],
   "telecom": [

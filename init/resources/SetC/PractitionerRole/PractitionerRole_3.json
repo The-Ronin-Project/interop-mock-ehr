@@ -28,11 +28,6 @@
       "display": "North Center"
     }
   ],
-  "healthcareService": [
-    {
-      "reference": "HealthcareService/example"
-    }
-  ],
   "telecom": [
     {
       "system": "phone",

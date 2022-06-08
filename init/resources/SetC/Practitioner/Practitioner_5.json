@@ -3,8 +3,11 @@
   "id": "EHRFHIRIDPractitioner05Test",
   "identifier": [
     {
-      "system": "External",
-      "value": "BAMD"
+      "type": {
+        "text": "External"
+      },
+      "value": "BAMD",
+      "system": "mockEHRProviderSystem"
     },
     {
       "system": "http://hl7.org/fhir/sid/us-npi",

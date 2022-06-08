@@ -16,9 +16,6 @@
     "reference": "Practitioner/eM5CWtq15N0WJeuCet5bJlQ3",
     "display": "Family Physician"
   },
-  "organization": {
-    "reference": "Organization/f001"
-  },
   "code": [
     {
       "coding": [

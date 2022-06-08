@@ -53,13 +53,5 @@
         "display": "Building"
       }
     ]
-  },
-  "managingOrganization": {
-    "reference": "Organization/f001"
-  },
-  "endpoint": [
-    {
-      "reference": "Endpoint/example"
-    }
-  ]
+  }
 }

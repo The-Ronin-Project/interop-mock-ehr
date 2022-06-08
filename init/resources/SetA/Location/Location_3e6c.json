@@ -62,9 +62,6 @@
     "latitude": 42.25475478,
     "altitude": 0
   },
-  "managingOrganization": {
-    "reference": "Organization/f001"
-  },
   "endpoint": [
     {
       "reference": "Endpoint/example"

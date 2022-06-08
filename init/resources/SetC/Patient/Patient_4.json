@@ -3,10 +3,13 @@
   "id": "EHRFHIRIDPatient04Test",
   "identifier": [
     {
-      "system": "MRN",
+      "system": "mockEHRMRNSystem",
       "value": "20221"
     },
     {
+      "type": {
+        "text": "external"
+      },
       "system": "external",
       "value": "Z45555"
     },
@@ -33,7 +36,8 @@
         "Wilmatar",
         "Z."
       ],
-      "family": "Oud"
+      "family": "Oud",
+      "use": "usual"
     }
   ],
   "telecom": [

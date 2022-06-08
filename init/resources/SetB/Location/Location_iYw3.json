@@ -40,9 +40,6 @@
     "postalCode": "02121",
     "country": "USA"
   },
-  "managingOrganization": {
-    "reference": "Organization/f001"
-  },
   "endpoint": [
     {
       "reference": "Endpoint/example"

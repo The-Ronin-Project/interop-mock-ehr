@@ -3,10 +3,13 @@
   "id": "EHRFHIRIDPatient03Test",
   "identifier": [
     {
-      "system": "MRN",
+      "system": "mockEHRMRNSystem",
       "value": "01113"
     },
     {
+      "type": {
+        "text": "external"
+      },
       "system": "external",
       "value": "Z34444"
     },
@@ -33,7 +36,8 @@
         "Vivaan",
         "B."
       ],
-      "family": "Acostal"
+      "family": "Acostal",
+      "use": "usual"
     }
   ],
   "telecom": [
