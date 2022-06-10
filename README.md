@@ -65,3 +65,9 @@ Also available:
 - The same page via an Epic-specific URL ( __/epic/api/fhir/r4__ ): [here](http://localhost:8081/epic/api/FHIR/R4/swagger-ui/index.html)
 - The generated Open API YAML: [HAPI R4 here](http://localhost:8081/fhir/r4/api-docs) and [Epic R4 here](http://localhost:8081/epic/api/FHIR/R4/api-docs)
 - The Open API JSON for the Epic EHR APIs: [here](http://localhost:8081/v3/api-docs/)
+
+## Test Data
+
+[/init](init) and [/init/resources](/init/resources)
+- Test data is available from the Mock EHR on port 8081.
+- For test data details see [here](https://github.com/projectronin/interop-mock-ehr/blob/master/init/README.md).

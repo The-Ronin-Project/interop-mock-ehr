@@ -39,10 +39,5 @@
     "state": "AL",
     "postalCode": "36113",
     "country": "USA"
-  },
-  "endpoint": [
-    {
-      "reference": "Endpoint/example"
-    }
-  ]
+  }
 }

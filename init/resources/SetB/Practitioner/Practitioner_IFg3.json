@@ -3,8 +3,11 @@
   "id": "ejTHcJyAyLP9ittoMQVgIFg3",
   "identifier": [
     {
-      "system": "External",
-      "value": "ASMD"
+      "type": {
+        "text": "External"
+      },
+      "value": "ASMD",
+      "system": "mockEHRProviderSystem"
     }
   ],
   "active": true,

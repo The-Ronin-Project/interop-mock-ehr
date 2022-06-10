@@ -39,10 +39,5 @@
     "state": "TX",
     "postalCode": "99990",
     "country": "USA"
-  },
-  "endpoint": [
-    {
-      "reference": "Endpoint/example"
-    }
-  ]
+  }
 }

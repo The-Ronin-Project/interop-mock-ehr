@@ -3,10 +3,13 @@
   "id": "eFs2zvgmbGfg-12742400",
   "identifier": [
     {
-      "system": "MRN",
+      "system": "mockEHRMRNSystem",
       "value": "497202"
     },
     {
+      "type": {
+        "text": "external"
+      },
       "system": "external",
       "value": "Z6189"
     },

@@ -25,12 +25,12 @@
   "comment": "Please bring any insurance information and a copayment if required by your insurance company.\n",
   "participant": [
     {
-    "actor": {
-      "reference": "Patient/eFs2zvgmbGfgWFfHliSRYZA3",
-      "display": "SMART, JOE"
-    },
-    "required": "required",
-    "status": "accepted"
+      "actor": {
+        "reference": "Patient/eFs2zvgmbGfgWFfHliSRYZA3",
+        "display": "SMART, JOE"
+      },
+      "required": "required",
+      "status": "accepted"
     },
     {
       "actor": {

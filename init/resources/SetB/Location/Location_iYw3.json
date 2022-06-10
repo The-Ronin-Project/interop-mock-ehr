@@ -39,10 +39,5 @@
     "state": "MA",
     "postalCode": "02121",
     "country": "USA"
-  },
-  "endpoint": [
-    {
-      "reference": "Endpoint/example"
-    }
-  ]
+  }
 }

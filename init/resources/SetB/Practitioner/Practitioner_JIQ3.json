@@ -3,8 +3,11 @@
   "id": "eM5CWtq15N0WJeuCet5bJlQ3",
   "identifier": [
     {
-      "system": "External",
-      "value": "FMD"
+      "type": {
+        "text": "External"
+      },
+      "value": "FMD",
+      "system": "mockEHRProviderSystem"
     }
   ],
   "active": true,

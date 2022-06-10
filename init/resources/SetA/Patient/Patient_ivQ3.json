@@ -3,10 +3,13 @@
   "id": "eJzlzKe3KPzAV5TtkxmNivQ3",
   "identifier": [
     {
-      "system": "MRN",
+      "system": "mockEHRMRNSystem",
       "value": "202497"
     },
     {
+      "type": {
+        "text": "External"
+      },
       "system": "external",
       "value": "Z4572"
     },

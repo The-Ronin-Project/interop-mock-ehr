@@ -3,8 +3,11 @@
   "id": "06d7feb3-3326-4276-9535-83a622d8e215",
   "identifier": [
     {
-      "system": "External",
-      "value": "IPMD"
+      "type": {
+        "text": "External"
+      },
+      "value": "IPMD",
+      "system": "mockEHRProviderSystem"
     }
   ],
   "active": true,

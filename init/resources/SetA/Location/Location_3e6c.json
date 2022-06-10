@@ -56,15 +56,5 @@
         "display": "Wing"
       }
     ]
-  },
-  "position": {
-    "longitude": -83.6945691,
-    "latitude": 42.25475478,
-    "altitude": 0
-  },
-  "endpoint": [
-    {
-      "reference": "Endpoint/example"
-    }
-  ]
+  }
 }

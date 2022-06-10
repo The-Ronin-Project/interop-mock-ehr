@@ -53,6 +53,7 @@
   "description": "Discussion on the results of your recent MRI",
   "start": "2022-01-02T09:00:00",
   "end": "2022-01-02T10:00:00",
+  "minutesDuration": 60,
   "created": "2013-10-10",
   "comment": "Follow-up appointment.",
   "participant": [

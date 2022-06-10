@@ -43,11 +43,6 @@
       "display": "South Wing, second floor"
     }
   ],
-  "healthcareService": [
-    {
-      "reference": "HealthcareService/example"
-    }
-  ],
   "telecom": [
     {
       "system": "phone",
@@ -88,10 +83,5 @@
       }
     }
   ],
-  "availabilityExceptions": "Adam is generally unavailable on public holidays and during the Christmas/New Year break",
-  "endpoint": [
-    {
-      "reference": "Endpoint/example"
-    }
-  ]
+  "availabilityExceptions": "Adam is generally unavailable on public holidays and during the Christmas/New Year break"
 }

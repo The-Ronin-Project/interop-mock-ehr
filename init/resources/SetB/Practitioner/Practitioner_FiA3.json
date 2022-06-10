@@ -3,8 +3,11 @@
   "id": "euc69RmkeUC5UjZOIGu0FiA3",
   "identifier": [
     {
-      "system": "External",
-      "value": "SMD"
+      "type": {
+        "text": "External"
+      },
+      "value": "SMD",
+      "system": "mockEHRProviderSystem"
     }
   ],
   "active": true,
