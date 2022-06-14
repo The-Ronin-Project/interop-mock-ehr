@@ -25,17 +25,33 @@ that manages a large number of similar data files without naming contention.
 - *fileName*.json can be any file name ending in .json
 - Example: __/init/resources__/SetB/Appointment/Appointment_ZbQ3.json
 
-When the MockEHR is started up the script __/init/init.sh__
+When the Mock EHR is started up, the script __/init/init.sh__
 automatically loads any files under __/init/resources__
 that match these folder and name conventions.
 This automation is enabled by docker-compose.yaml volume settings
 and MySql import conventions.
 
-You may add files or modify the files provided.
+This test data is loaded for the Mock EHR on port 8081 in either build scenario:
+* a standalone Mock EHR, using interop-mock-ehr, as [here](https://github.com/projectronin/interop-mock-ehr), or
+* a full Mirth local development environment that includes the Mock EHR, using interop-mirth-channels, as [here](https://github.com/projectronin/interop-mirth-channels)
 
-## Data Requirements
+### New Data and Data Sets
 
-At minimum, the following fields are populated:
+Before either build scenario for Mock EHR, you may add new data files locally.
+You need not create a pull request nor archive the data files in this repo, unless that is your goal.
+Any files you add or modify locally are brought into the Mock EHR when you build it.
+
+In your local folders for 
+[https://github.com/projectronin/interop-mock-ehr](https://github.com/projectronin/interop-mock-ehr), you may:
+* locally add __/init/resources__/*setName*/*resource*/*fileName*.json files, or
+* locally edit any __/init/resources__/*setName*/*resource*/*fileName*.json files
+
+When adding new data, follow any conventions you observe in the existing folder structure and file names in this repo.
+These conventions enable the __/init/init.sh__ script to find and load your data.
+
+### Data Requirements 
+
+At minimum, the following fields are populated in the test data this repo provides:
 
 - Appointment: Linked to a Patient and Provider
 - Condition: Linked to a Patient
@@ -44,7 +60,23 @@ At minimum, the following fields are populated:
 - Provider: First Name, Last Name
 - ProviderRole: Linked to a Location and Provider
 
-## Data Summary
+Try to meet these data requirements in the new data files you provide.
+Otherwise, parts of the Ronin application or some channels may fail unexpectedly, confusing your tests.
+
+### Adding Data vs. Patching Data
+
+Two data operations that you might need are:
+
+* Locally __adding__ data files or data sets before building the Mock EHR. 
+  Most of this README describes adding data.
+
+
+* Locally __patching__ specific fields in the data after it has been built into the Mock EHR.
+  One example of patching data is to make all the dates in Appointment resources "recent" relative to today.
+  This can be accomplished quickly with a MySql or REST API call to the Mock EHR once it is running.
+  Patch techniques are described in "Test Data" and "Development Only" [here](https://github.com/projectronin/interop-mirth-channels).
+
+## Existing Data Sets
 
 ### In SetA
 
