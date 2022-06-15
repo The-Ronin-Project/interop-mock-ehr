@@ -10,7 +10,7 @@
       "type": {
         "text": "External"
       },
-      "system": "external",
+      "system": "urn:oid:1.2.840.114350.1.13.0.1.7.2.698084",
       "value": "Z4572"
     },
     {
@@ -23,10 +23,16 @@
     },
     {
       "system": "urn:oid:1.2.840.114350.1.13.0.1.7.2.698084",
+      "type": {
+        "text": "Internal"
+      },
       "value": "     Z4572"
     },
     {
       "system": "urn:oid:1.2.840.114350.1.13.0.1.7.5.737384.14",
+      "type": {
+        "text": "MRN"
+      },
       "value": "202497"
     },
     {
