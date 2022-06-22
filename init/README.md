@@ -59,6 +59,7 @@ At minimum, the following fields are populated in the test data this repo provid
 - Patient: First Name, Last Name, Gender, Date of Birth, Zip code, Phone number
 - Provider: First Name, Last Name
 - ProviderRole: Linked to a Location and Provider
+- Observation: Linked to a Patient
 
 Try to meet these data requirements in the new data files you provide.
 Otherwise, parts of the Ronin application or some channels may fail unexpectedly, confusing your tests.
@@ -87,6 +88,7 @@ Patient (eJzlzKe3KPzAV5TtkxmNivQ3)
 - location (3f1af7cb-a47e-4e1e-a8e3-d18e0d073e6c),
 - and practitioner (06d7feb3-3326-4276-9535-83a622d8e215).
 - Also included is a practitioner role (06d7feb3-3326-4276-9535-83a622d8e226).
+- and Observation (3f1af7cb-a47e-4e1e-a8e3-d18e0d073e6d)
 
 ### In SetB
 

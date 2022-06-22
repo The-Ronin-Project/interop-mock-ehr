@@ -39,7 +39,8 @@ using the following command while inside the project root directory:
 ./gradlew bootJar
 docker compose build --no-cache && docker compose up --force-recreate
 ```
-The service will be available at port 8081 of your computer. Assuming you downloaded the entire repo to run this, the
+The service will be available at port 8081 of your computer. If you're changing code, you may need to delete the generated
+build folder from the module project structure before running these commands. Assuming you downloaded the entire repo to run this, the
 server will be initialized with the data in the __/init/resources__ directory. Feel free to modify these files locally.
 
 ## Running via Testcontainer

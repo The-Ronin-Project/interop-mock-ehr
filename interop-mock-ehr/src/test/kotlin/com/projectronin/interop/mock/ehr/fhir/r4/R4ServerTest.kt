@@ -5,6 +5,7 @@ import com.projectronin.interop.mock.ehr.fhir.r4.providers.R4BundleResourceProvi
 import com.projectronin.interop.mock.ehr.fhir.r4.providers.R4CommunicationResourceProvider
 import com.projectronin.interop.mock.ehr.fhir.r4.providers.R4ConditionResourceProvider
 import com.projectronin.interop.mock.ehr.fhir.r4.providers.R4LocationResourceProvider
+import com.projectronin.interop.mock.ehr.fhir.r4.providers.R4ObservationResourceProvider
 import com.projectronin.interop.mock.ehr.fhir.r4.providers.R4PatientResourceProvider
 import com.projectronin.interop.mock.ehr.fhir.r4.providers.R4PractitionerResourceProvider
 import com.projectronin.interop.mock.ehr.fhir.r4.providers.R4PractitionerRoleResourceProvider
@@ -15,6 +16,7 @@ import org.hl7.fhir.r4.model.Bundle
 import org.hl7.fhir.r4.model.Communication
 import org.hl7.fhir.r4.model.Condition
 import org.hl7.fhir.r4.model.Location
+import org.hl7.fhir.r4.model.Observation
 import org.hl7.fhir.r4.model.Patient
 import org.hl7.fhir.r4.model.Practitioner
 import org.hl7.fhir.r4.model.PractitionerRole
@@ -41,6 +43,8 @@ internal class R4ServerTest {
         every { r4Communication.resourceType } returns Communication::class.java
         val r4Bundle = mockk<R4BundleResourceProvider>()
         every { r4Bundle.resourceType } returns Bundle::class.java
+        val r4Observation = mockk<R4ObservationResourceProvider>()
+        every { r4Observation.resourceType } returns Observation::class.java
         val server = R4Server(
             r4Patient,
             r4Condition,
@@ -49,7 +53,8 @@ internal class R4ServerTest {
             r4Location,
             r4PractitionerRole,
             r4Communication,
-            r4Bundle
+            r4Bundle,
+            r4Observation
         )
         server.init()
         assertTrue(
@@ -62,7 +67,8 @@ internal class R4ServerTest {
                     r4Location,
                     r4PractitionerRole,
                     r4Communication,
-                    r4Bundle
+                    r4Bundle,
+                    r4Observation
                 )
             )
         )
