@@ -56,6 +56,7 @@ At minimum, the following fields are populated in the test data this repo provid
 - Appointment: Linked to a Patient and Provider
 - Condition: Linked to a Patient
 - Location: Street, Zip code
+- Observation: Status, Category, Code, Subject
 - Patient: First Name, Last Name, Gender, Date of Birth, Zip code, Phone number
 - Provider: First Name, Last Name
 - ProviderRole: Linked to a Location and Provider
@@ -143,4 +144,13 @@ Patient (EHRFHIRIDPatient05Test)
 
 - has one appointment (EHRFHIRIDAppointment05Test)
 - with one practitioner (EHRFHIRIDPractitioner05Test).
+
+### In SetD
+
+Patient (example), Practitioner (example), and many Observations.
+
+- This set leverages sample observation resources from [build.fhir.org](build.fhir.org).
+- This set covers many common use cases for data structure; differences are indicated in file names.
+- Each observation references the patient, and most also reference the practitioner, in this set.
+- The vital signs observation provides hasMember references to 4 other observations in the set.
 

@@ -1,0 +1,126 @@
+{
+  "resourceType": "Patient",
+  "id": "example",
+  "identifier": [
+    {
+      "system": "mockEHRMRNSystem",
+      "value": "302497"
+    },
+    {
+      "type": {
+        "text": "External"
+      },
+      "system": "urn:oid:1.2.840.114350.1.13.0.1.7.2.698084",
+      "value": "Z0572"
+    },
+    {
+      "system": "http://open.epic.com/FHIR/StructureDefinition/patient-dstu2-fhir-id",
+      "value": "exampleDSTU2"
+    },
+    {
+      "system": "http://open.epic.com/FHIR/StructureDefinition/patient-fhir-id",
+      "value": "exampleSTU3"
+    },
+    {
+      "system": "urn:oid:1.2.840.114350.1.13.0.1.7.2.698084",
+      "type": {
+        "text": "Internal"
+      },
+      "value": "     Z0572"
+    },
+    {
+      "system": "urn:oid:1.2.840.114350.1.13.0.1.7.5.737384.14",
+      "type": {
+        "text": "MRN"
+      },
+      "value": "302497"
+    },
+    {
+      "system": "urn:oid:1.2.840.114350.1.13.0.1.7.3.878082.110",
+      "value": "CHALMERSPETER"
+    },
+    {
+      "system": "urn:oid:1.2.840.114350.1.13.0.1.7.2.878082",
+      "value": "216"
+    },
+    {
+      "system": "https://open.epic.com/FHIR/StructureDefinition/PayerMemberId",
+      "value": "198765432Z"
+    },
+    {
+      "system": "https://open.epic.com/FHIR/StructureDefinition/PayerMemberId",
+      "value": "BC465"
+    }
+  ],
+  "name": [
+    {
+      "use": "official",
+      "family": "Chalmers",
+      "given": [
+        "Peter",
+        "James"
+      ]
+    },
+    {
+      "use": "usual",
+      "given": [
+        "Jim"
+      ]
+    },
+    {
+      "use": "maiden",
+      "family": "Windsor",
+      "given": [
+        "Peter",
+        "James"
+      ],
+      "period": {
+        "end": "2002"
+      }
+    }
+  ],
+  "telecom": [
+    {
+      "use": "home"
+    },
+    {
+      "system": "phone",
+      "value": "(03) 5555 6473",
+      "use": "work",
+      "rank": 1
+    },
+    {
+      "system": "phone",
+      "value": "(03) 3410 5613",
+      "use": "mobile",
+      "rank": 2
+    },
+    {
+      "system": "phone",
+      "value": "(03) 5555 8834",
+      "use": "old",
+      "period": {
+        "end": "2014"
+      }
+    }
+  ],
+  "gender": "male",
+  "birthDate": "1974-12-25",
+  "address": [
+    {
+      "use": "home",
+      "type": "both",
+      "text": "534 Erewhon St PeasantVille, Rainbow, MI 48881",
+      "line": [
+        "534 Erewhon St"
+      ],
+      "city": "PleasantVille",
+      "district": "Rainbow",
+      "state": "MI",
+      "postalCode": "48881",
+      "period": {
+        "start": "1974-12-25"
+      }
+    }
+  ]
+}
