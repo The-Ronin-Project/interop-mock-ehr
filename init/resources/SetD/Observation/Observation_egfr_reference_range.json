@@ -58,7 +58,7 @@
           {
             "system": "http://loinc.org",
             "code": "48643-1",
-            "display": "Glomerular filtration rate/1.73 sq M predicted among blacks [Volume Rate/?Area] in Serum or Plasma by Creatinine-based formula (MDRD)"
+            "display": "Glomerular filtration rate/1.73 sq M predicted among blacks [Volume Rate/Area] in Serum or Plasma by Creatinine-based formula (MDRD)"
           }
         ]
       },
