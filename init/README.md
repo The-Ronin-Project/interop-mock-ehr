@@ -78,9 +78,12 @@ Two data operations that you might need are:
   This can be accomplished quickly with a MySql or REST API call to the Mock EHR once it is running.
   Patch techniques are described in "Test Data" and "Development Only" [here](https://github.com/projectronin/interop-mirth-channels).
 
-## Existing Data Sets
+## Test Data Sets
 
-### In SetA
+Resources use Epic vendor conventions. 
+For example, Patient and Practitioner have typical Epic identifier lists.
+
+### In SetA - One Patient with Related Resources
 
 Patient (eJzlzKe3KPzAV5TtkxmNivQ3)
 
@@ -88,10 +91,11 @@ Patient (eJzlzKe3KPzAV5TtkxmNivQ3)
 - each with the same condition (39bb2850-50e2-4bb0-a5ae-3a98bbaf199f),
 - location (3f1af7cb-a47e-4e1e-a8e3-d18e0d073e6c),
 - and practitioner (06d7feb3-3326-4276-9535-83a622d8e215).
-- Also included is a practitioner role (06d7feb3-3326-4276-9535-83a622d8e226).
-- and Observation (3f1af7cb-a47e-4e1e-a8e3-d18e0d073e6d)
+- Also included is a practitioner role (06d7feb3-3326-4276-9535-83a622d8e226),
+- and an observation in [category](http://terminology.hl7.org/CodeSystem/observation-category) 
+  vital-signs, effective 2016-03-28 (3f1af7cb-a47e-4e1e-a8e3-d18e0d073e6d).
 
-### In SetB
+### In SetB - Interrelated Practitioners, Patients, Appointments, Locations, and Practitioner Roles
 
 Patient (eFs2zvgmbGfg-12742400)
 
@@ -114,43 +118,53 @@ Patient (eJzlzKe3KPzAV5TtkxmNivQ3)
 
 One of the practitioners (euc69RmkeUC5UjZOIGu0FiA3) sees both patients.
 
-### In SetC
+### In SetC - Appointments with Different Codes
 
 The appointments have various codes: CHECKUP, WALKIN, EMERGENCY, ROUTINE.
 
-There is one location (EHRFHIRIDLocation01Test) for all appointments and practitioner roles.
+- There is one location (EHRFHIRIDLocation01Test) for all appointments and practitioner roles.
+- Each patient (EHRFHIRIDPatient01Test)
+    - has one appointment (EHRFHIRIDAppointment01Test)
+    - with one practitioner (EHRFHIRIDPractitioner01Test)
+    - with one practitioner role (EHRFHIRIDPractitionerRole01Test).
+- ... and so on for 02, 03, 04, 05
 
-Patient (EHRFHIRIDPatient01Test)
+### In SetD - Observations with Different Categories
 
-- has one appointment (EHRFHIRIDAppointment01Test)
-- with one practitioner (EHRFHIRIDPractitioner01Test).
+Observation __category__ is not a required field, and has no required valueset, although
+the [FHIR Spec](http://hl7.org/fhir/observation-definitions.html#Observation.category) 
+suggests a [valueset](http://terminology.hl7.org/CodeSystem/observation-category).
+__status__, __code__, and __subject__ are the required fields, but 
+__category__ is vital to understanding observations and where they fit into the complex 
+[FHIR US Core Profile](https://hl7.org/fhir/us/core/).
 
-Patient (EHRFHIRIDPatient02Test)
+This data set:
 
-- has one appointment (EHRFHIRIDAppointment02Test)
-- with one practitioner (EHRFHIRIDPractitioner02Test).
+- Has a patient (example), practitioner (example), and many observations with different category values.
+- Leverages sample observation resources from
+  [build.fhir.org](http://build.fhir.org) and [Epic App Orchard API](https://apporchard.epic.com/Sandbox) documentation.
+- Has observations with the following category, status, effective and issued dates, and FHIR IDs.
 
-Patient (EHRFHIRIDPatient03Test)
-
-- has one appointment (EHRFHIRIDAppointment03Test)
-- with one practitioner (EHRFHIRIDPractitioner03Test).
-
-Patient (EHRFHIRIDPatient04Test)
-
-- has one appointment (EHRFHIRIDAppointment04Test)
-- with one practitioner (EHRFHIRIDPractitioner04Test).
-
-Patient (EHRFHIRIDPatient05Test)
-
-- has one appointment (EHRFHIRIDAppointment05Test)
-- with one practitioner (EHRFHIRIDPractitioner05Test).
-
-### In SetD
-
-Patient (example), Practitioner (example), and many Observations.
-
-- This set leverages sample observation resources from [build.fhir.org](build.fhir.org).
-- This set covers many common use cases for data structure; differences are indicated in file names.
-- Each observation references the patient, and most also reference the practitioner, in this set.
-- The vital signs observation provides hasMember references to 4 other observations in the set.
+category | status | effective | issued | id 
+-------- | --------- | -------- | ------ | ---
+- | final | - | 2013-04-04T14:34:00+01:00 | egfr-reference-range
+core-characteristics | final | - | - | epQLvEY3
+exam | final | 2018-04-02T10:30:10+01:00 | 2018-04-03T15:30:10+01:00 | abdo-tender-coded
+functional-mental-status | final | 2021-05-04 | - | eK.Ylq43
+laboratory | final | 2021-09-02T18:41:00Z | 2021-09-02T19:10:25Z | eAMXUhKX
+laboratory | final | 2021-11-18T06:00:00Z | 2021-11-18T16:50:32Z | ey4sw9N3
+LDA | final | 2022-01-17T18:30:00Z | - | eFPRgtg3
+procedure | final | 2015-02-19T09:30:35+01:00 | - | ekg-sampled-data
+smartdata | unknown | - | 2021-04-16T20:56:23Z | eBBGxpY3
+smartdata | unknown | - | 2021-04-16T20:56:23Z | e-YNPQo3
+smartdata | unknown | - | 2021-04-16T20:56:02Z | e4OG7jU3
+smartdata | unknown | - | 2021-04-16T20:56:02Z | eqA2EG83
+social-history | final | 2014-12-11T04:44:16Z | - | component-answers
+social-history | final | 2021-11-08T06:00:00Z | 2021-11-08T06:00:00Z | eqEP70B3
+vital-signs | cancelled | 2012-09-17 | - | blood-pressure-cancel
+vital-signs | final | 1999-07-02 | - | vitals-panel
+vital-signs | final | 1999-07-02 | - | body-temperature
+vital-signs | final | 1999-07-02 | - | blood-pressure
+vital-signs | final | 1999-07-02 | - | heart-rate
+vital-signs | final | 1999-07-02 | - | respiratory-rate
 

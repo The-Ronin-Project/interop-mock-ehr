@@ -1,0 +1,81 @@
+{
+  "resourceType": "Observation",
+  "id": "ey4sw9N3",
+  "status": "final",
+  "category": [
+    {
+      "coding": [
+        {
+          "system": "http://snomed.info/sct",
+          "code": "252275004",
+          "display": "Hematology test (procedure)"
+        }
+      ],
+      "text": "Hematology test (procedure)"
+    },
+    {
+      "coding": [
+        {
+          "system": "http://hl7.org/fhir/observation-category",
+          "code": "laboratory",
+          "display": "Laboratory"
+        }
+      ],
+      "text": "Laboratory"
+    },
+    {
+      "coding": [
+        {
+          "system": "urn:oid:1.2.840.114350.1.13.0.1.7.10.798268.30",
+          "code": "Lab",
+          "display": "Lab"
+        }
+      ],
+      "text": "Lab"
+    }
+  ],
+  "code": {
+    "coding": [
+      {
+        "system": "http://loinc.org",
+        "code": "4548-4",
+        "display": "Hemoglobin A1c/Hemoglobin.total in Blood"
+      },
+      {
+        "system": "urn:oid:1.2.840.114350.1.13.0.1.7.2.768282",
+        "code": "1526664",
+        "display": "Hemoglobin A1C"
+      }
+    ],
+    "text": "Hemoglobin A1C"
+  },
+  "subject": {
+    "reference": "Patient/example",
+    "display": "Peter Chalmers"
+  },
+  "effectiveDateTime": "2021-11-18T06:00:00Z",
+  "issued": "2021-11-18T16:50:32Z",
+  "valueQuantity": {
+    "value": 5,
+    "unit": "%",
+    "system": "http://unitsofmeasure.org",
+    "code": "%"
+  },
+  "referenceRange": [
+    {
+      "low": {
+        "value": 4,
+        "unit": "%",
+        "system": "http://unitsofmeasure.org",
+        "code": "%"
+      },
+      "high": {
+        "value": 6,
+        "unit": "%",
+        "system": "http://unitsofmeasure.org",
+        "code": "%"
+      },
+      "text": "4.0 - 6.0 %"
+    }
+  ]
+}

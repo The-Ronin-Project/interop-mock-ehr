@@ -1,0 +1,48 @@
+{
+  "resourceType": "Observation",
+  "id": "eK.Ylq43",
+  "status": "final",
+  "category": [
+    {
+      "coding": [
+        {
+          "system": "http://open.epic.com/FHIR/StructureDefinition/observation-category",
+          "code": "functional-mental-status",
+          "display": "Functional and Mental Status"
+        }
+      ]
+    },
+    {
+      "coding": [
+        {
+          "system": "http://snomed.info/sct",
+          "code": "118228005",
+          "display": "Functional finding"
+        }
+      ]
+    },
+    {
+      "coding": [
+        {
+          "system": "http://snomed.info/sct",
+          "code": "384821006",
+          "display": "Mental state, behavior and/or psychosocial function finding"
+        }
+      ]
+    }
+  ],
+  "code": {
+    "text": "Body Movement in Desired Range"
+  },
+  "subject": {
+    "reference": "Patient/example",
+    "display": "Peter James Chalmers"
+  },
+  "effectivePeriod": {
+    "start": "2021-05-04",
+    "end": "2021-05-07"
+  },
+  "valueCodeableConcept": {
+    "text": "Progressing"
+  }
+}

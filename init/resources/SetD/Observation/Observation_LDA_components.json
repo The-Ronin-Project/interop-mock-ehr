@@ -1,0 +1,175 @@
+{
+  "resourceType": "Observation",
+  "id": "eFPRgtg3",
+  "status": "final",
+  "category": [
+    {
+      "coding": [
+        {
+          "system": "http://open.epic.com/FHIR/StructureDefinition/observation-category",
+          "code": "LDA",
+          "display": "Line, Drains, and Airways"
+        }
+      ],
+      "text": "Line, Drains, and Airways"
+    },
+    {
+      "coding": [
+        {
+          "system": "http://open.epic.com/FHIR/StructureDefinition/observation-category",
+          "code": "LDA-property",
+          "display": "Lines, Drains, and Airways Properties"
+        }
+      ],
+      "text": "Lines, Drains, and Airways Properties"
+    }
+  ],
+  "code": {
+    "coding": [
+      {
+        "system": "urn:oid:1.2.840.114350.1.13.5325.1.7.2.707679",
+        "code": "110631",
+        "display": "Peripheral IV"
+      },
+      {
+        "system": "http://open.epic.com/FHIR/StructureDefinition/observation-flowsheet-id",
+        "code": "t6BvZ-T6vRrYAb8E3wEwf4Q0",
+        "display": "Peripheral IV"
+      }
+    ],
+    "text": "Peripheral IV"
+  },
+  "subject": {
+    "reference": "Patient/example",
+    "display": "Peter James Chalmers"
+  },
+  "effectivePeriod": {
+    "start": "2022-01-17T18:30:00Z"
+  },
+  "valueString": "Peripheral IV 01/17/22 Right Hand",
+  "component": [
+    {
+      "code": {
+        "coding": [
+          {
+            "system": "urn:oid:1.2.840.114350.1.13.5325.1.7.2.707679",
+            "code": "700",
+            "display": "Placement Date"
+          },
+          {
+            "system": "http://open.epic.com/FHIR/StructureDefinition/observation-flowsheet-id",
+            "code": "tfWy7Iki1auoDvR7iLy6-Hg0",
+            "display": "Placement Date"
+          }
+        ],
+        "text": "Placement Date"
+      },
+      "valueDateTime": "2022-01-17"
+    },
+    {
+      "code": {
+        "coding": [
+          {
+            "system": "urn:oid:1.2.840.114350.1.13.5325.1.7.2.707679",
+            "code": "701",
+            "display": "Placement Time"
+          },
+          {
+            "system": "http://open.epic.com/FHIR/StructureDefinition/observation-flowsheet-id",
+            "code": "tYt55O2NKZoq4zimxxUMZ6g0",
+            "display": "Placement Time"
+          }
+        ],
+        "text": "Placement Time"
+      },
+      "valueTime": "12:30:00"
+    },
+    {
+      "code": {
+        "coding": [
+          {
+            "system": "urn:oid:1.2.840.114350.1.13.5325.1.7.2.707679",
+            "code": "304820",
+            "display": "Location"
+          },
+          {
+            "system": "http://open.epic.com/FHIR/StructureDefinition/observation-flowsheet-id",
+            "code": "tdl3LyfOiLi3TKexqRYe3yA0",
+            "display": "Location"
+          }
+        ],
+        "text": "Location"
+      },
+      "valueCodeableConcept": {
+        "coding": [
+          {
+            "code": "Hand",
+            "display": "Hand"
+          }
+        ],
+        "text": "Hand"
+      }
+    },
+    {
+      "code": {
+        "coding": [
+          {
+            "system": "urn:oid:1.2.840.114350.1.13.5325.1.7.2.707679",
+            "code": "304830",
+            "display": "Orientation"
+          },
+          {
+            "system": "http://open.epic.com/FHIR/StructureDefinition/observation-flowsheet-id",
+            "code": "tjyrYFGargmdg1i-oo7qoyw0",
+            "display": "Orientation"
+          }
+        ],
+        "text": "Orientation"
+      },
+      "valueCodeableConcept": {
+        "coding": [
+          {
+            "code": "Right",
+            "display": "Right"
+          }
+        ],
+        "text": "Right"
+      }
+    },
+    {
+      "code": {
+        "coding": [
+          {
+            "system": "urn:oid:1.2.840.114350.1.13.5325.1.7.2.707679",
+            "code": "1120100473",
+            "display": "Unsuccessful Attempt Locations"
+          },
+          {
+            "system": "http://open.epic.com/FHIR/StructureDefinition/observation-flowsheet-id",
+            "code": "tPj3wPdrR6Io3OcVoTfqmjg0",
+            "display": "Unsuccessful Attempt Locations"
+          }
+        ],
+        "text": "Unsuccessful Attempt Locations"
+      },
+      "valueCodeableConcept": {
+        "coding": [
+          {
+            "code": "Left wrist;Right wrist",
+            "display": "Left wrist;Right wrist"
+          }
+        ],
+        "text": "Left wrist;Right wrist"
+      },
+      "interpretation": {
+        "coding": [
+          {
+            "system": "urn:oid:1.2.840.114350.1.13.5325.1.7.7.708368.1150",
+            "code": "SIG",
+            "display": "Significant"
+          }
+        ]
+      }
+    }
+  ]
+}

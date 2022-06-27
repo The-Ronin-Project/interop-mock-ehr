@@ -1,0 +1,32 @@
+{
+  "resourceType": "Observation",
+  "id": "epQLvEY3",
+  "status": "final",
+  "category": [
+    {
+      "coding": [
+        {
+          "system": "http://open.epic.com/FHIR/StructureDefinition/observation-category",
+          "code": "core-characteristics",
+          "display": "Core Characteristics"
+        }
+      ],
+      "text": "Core Characteristics"
+    }
+  ],
+  "code": {
+    "coding": [
+      {
+        "system": "http://loinc.org",
+        "code": "9272-6",
+        "display": "APGAR after 1 minute"
+      }
+    ],
+    "text": "APGAR after 1 minute"
+  },
+  "subject": {
+    "reference": "Patient/example",
+    "display": "Peter Chalmers"
+  },
+  "valueInteger": 7
+}

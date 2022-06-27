@@ -1,0 +1,48 @@
+{
+  "resourceType": "Observation",
+  "id": "e4OG7jU3",
+  "status": "unknown",
+  "category": [
+    {
+      "coding": [
+        {
+          "system": "http://open.epic.com/FHIR/StructureDefinition/observation-category",
+          "code": "smartdata",
+          "display": "SmartData"
+        }
+      ],
+      "text": "SmartData"
+    }
+  ],
+  "code": {
+    "coding": [
+      {
+        "system": "urn:oid:1.2.840.114350.1.13.5325.1.7.2.727688",
+        "code": "A32883",
+        "display": "NUMBER"
+      }
+    ],
+    "text": "NUMBER"
+  },
+  "subject": {
+    "reference": "Patient/example",
+    "display": "Peter James Chalmers"
+  },
+  "issued": "2021-04-16T20:56:02Z",
+  "performer": [
+    {
+      "reference": "Practitioner/example",
+      "display": "Dr Adam Careful"
+    }
+  ],
+  "component": [
+    {
+      "code": {
+        "text": "Line 1"
+      },
+      "valueQuantity": {
+        "value": 24
+      }
+    }
+  ]
+}
