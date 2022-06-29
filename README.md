@@ -10,6 +10,10 @@ As an example:
 HTTP GET on `http://localhost:8081/fhir/r4/Patient/<patient fhir id>` will return an 
 R4 Patient resource.
 
+There will also be a TCP/IP port open for HL7v2 communication at `http://localhost:1011`, or a REST endpoint at 
+`http:localhost:8081/HL7overHTTP/`.
+Only version 2.5.1 messages are accepted at the moment. If using HTTP, the Content-Type must be set to `application/hl7-v2`.
+
 
 ## Running Locally
 

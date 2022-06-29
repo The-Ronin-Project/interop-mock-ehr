@@ -16,6 +16,7 @@ dependencies {
     implementation(libs.json.patch)
 
     implementation(libs.bundles.hapi.fhir)
+    implementation(libs.bundles.hapi.hl7v2)
     implementation(libs.bundles.springdoc.openapi)
 
     testImplementation(libs.mockk)
