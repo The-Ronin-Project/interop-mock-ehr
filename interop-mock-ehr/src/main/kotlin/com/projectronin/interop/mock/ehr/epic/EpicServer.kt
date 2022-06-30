@@ -33,7 +33,16 @@ class EpicServer(private var dal: EpicDAL) {
     @Operation(summary = "Returns Mock Epic Authentication Token", description = "Returns token if successful")
     @ApiResponses(
         value = [
-            ApiResponse(responseCode = "200", description = "Successful operation", content = [Content(mediaType = "application/json", schema = Schema(implementation = EpicAuthentication::class))]),
+            ApiResponse(
+                responseCode = "200",
+                description = "Successful operation",
+                content = [
+                    Content(
+                        mediaType = "application/json",
+                        schema = Schema(implementation = EpicAuthentication::class)
+                    )
+                ]
+            ),
         ]
     )
     @PostMapping("/oauth2/token")
@@ -46,11 +55,27 @@ class EpicServer(private var dal: EpicDAL) {
         )
     }
 
-    @Operation(summary = "Returns Patient Appointments ", description = "returns list of epic appointments if successful")
+    @Operation(
+        summary = "Returns Patient Appointments ",
+        description = "returns list of epic appointments if successful"
+    )
     @ApiResponses(
         value = [
-            ApiResponse(responseCode = "200", description = "Successful Operation", content = [Content(mediaType = "application/json", schema = Schema(implementation = GetAppointmentsResponse::class))]),
-            ApiResponse(responseCode = "400", description = "Bad Request", content = [Content(mediaType = "application/text")])
+            ApiResponse(
+                responseCode = "200",
+                description = "Successful Operation",
+                content = [
+                    Content(
+                        mediaType = "application/json",
+                        schema = Schema(implementation = GetAppointmentsResponse::class)
+                    )
+                ]
+            ),
+            ApiResponse(
+                responseCode = "400",
+                description = "Bad Request",
+                content = [Content(mediaType = "application/text")]
+            )
         ]
     )
     @PostMapping("/api/epic/2013/Scheduling/Patient/GETPATIENTAPPOINTMENTS/GetPatientAppointments")
@@ -73,8 +98,8 @@ class EpicServer(private var dal: EpicDAL) {
         end?.minutes = 59
         if (request.userID == null) return errorResponse("NO-USER-FOUND") // can check this 'for real' later
 
-        // try to find patient
-        val patientID = Identifier().setValue(request.patientId).setSystem("MRN")
+        // try to find patient, we're expecting an MRN from the client so use mock EHR's internal mrn system
+        val patientID = Identifier().setValue(request.patientId).setSystem("mockEHRMRNSystem")
         val patient = dal.r4PatientDAO.searchByIdentifier(patientID) ?: return errorResponse("NO-PATIENT-FOUND")
 
         // search for appointments
@@ -88,11 +113,27 @@ class EpicServer(private var dal: EpicDAL) {
         return GetAppointmentsResponse(appointments = epicAppointments, error = null)
     }
 
-    @Operation(summary = "Returns Provider Appointments", description = "Returns list of epic appointments if successful")
+    @Operation(
+        summary = "Returns Provider Appointments",
+        description = "Returns list of epic appointments if successful"
+    )
     @ApiResponses(
         value = [
-            ApiResponse(responseCode = "200", description = "Successful operation", content = [Content(mediaType = "application/json", schema = Schema(implementation = GetAppointmentsResponse::class))]),
-            ApiResponse(responseCode = "400", description = "Bad Request", content = [Content(mediaType = "application/text")])
+            ApiResponse(
+                responseCode = "200",
+                description = "Successful operation",
+                content = [
+                    Content(
+                        mediaType = "application/json",
+                        schema = Schema(implementation = GetAppointmentsResponse::class)
+                    )
+                ]
+            ),
+            ApiResponse(
+                responseCode = "400",
+                description = "Bad Request",
+                content = [Content(mediaType = "application/text")]
+            )
         ]
     )
     @PostMapping("/api/epic/2013/Scheduling/Provider/GetProviderAppointments/Scheduling/Provider/Appointments")
@@ -119,7 +160,9 @@ class EpicServer(private var dal: EpicDAL) {
 
         // find practitioners
         val r4Practitioners = request.providers?.mapNotNull {
-            dal.r4PractitionerDAO.searchByIdentifier(Identifier().setValue(it.id).setType(CodeableConcept().setText(it.idType)))
+            dal.r4PractitionerDAO.searchByIdentifier(
+                Identifier().setValue(it.id).setType(CodeableConcept().setText(it.idType))
+            )
         }
         if (r4Practitioners.isNullOrEmpty()) return errorResponse("NO-PROVIDER-FOUND")
 
@@ -149,8 +192,21 @@ class EpicServer(private var dal: EpicDAL) {
     @Operation(summary = "Send Message", description = "Returns pair of communication ID and FHIR ID if successful")
     @ApiResponses(
         value = [
-            ApiResponse(responseCode = "200", description = "Successful operation", content = [Content(mediaType = "application/json", schema = Schema(implementation = SendMessageResponse::class))]),
-            ApiResponse(responseCode = "400", description = "Bad Request", content = [Content(mediaType = "application/text")])
+            ApiResponse(
+                responseCode = "200",
+                description = "Successful operation",
+                content = [
+                    Content(
+                        mediaType = "application/json",
+                        schema = Schema(implementation = SendMessageResponse::class)
+                    )
+                ]
+            ),
+            ApiResponse(
+                responseCode = "400",
+                description = "Bad Request",
+                content = [Content(mediaType = "application/text")]
+            )
         ]
     )
     @PostMapping("/api/epic/2014/Common/Utility/SENDMESSAGE/Message")

@@ -63,7 +63,9 @@ internal class EpicServerTest {
         )
         mockkConstructor(Identifier::class)
         val ident = mockk<Identifier>()
-        every { anyConstructed<Identifier>().setValue("TESTINGMRN").setSystem("MRN") } returns ident
+        every {
+            anyConstructed<Identifier>().setValue("TESTINGMRN").setSystem("mockEHRMRNSystem")
+        } returns ident
         every {
             dal.r4PatientDAO.searchByIdentifier(
                 ident
@@ -205,8 +207,11 @@ internal class EpicServerTest {
             userIDType = "Internal"
         )
         mockkConstructor(Identifier::class)
+        mockkConstructor(CodeableConcept::class)
         val ident = mockk<Identifier>()
-        every { anyConstructed<Identifier>().setValue("TESTINGMRN").setSystem("MRN") } returns ident
+        every {
+            anyConstructed<Identifier>().setValue("TESTINGMRN").setSystem("mockEHRMRNSystem")
+        } returns ident
         every {
             dal.r4PatientDAO.searchByIdentifier(
                 ident
@@ -417,7 +422,9 @@ internal class EpicServerTest {
         val ident = mockk<Identifier>()
         val patient = Patient()
         patient.id = "TESTINGID"
-        every { anyConstructed<Identifier>().setValue("TESTINGMRN").setSystem("MRN") } returns ident
+        every {
+            anyConstructed<Identifier>().setValue("TESTINGMRN").setSystem("MRN")
+        } returns ident
         every {
             dal.r4PatientDAO.searchByIdentifier(
                 ident
@@ -428,7 +435,9 @@ internal class EpicServerTest {
         assertEquals("NEW FHIR ID", output.idTypes.first().id)
         assertEquals("FHIR ID", output.idTypes.first().type)
 
-        every { anyConstructed<Identifier>().setValue("TESTINGMRN").setSystem("MRN") } returns ident
+        every {
+            anyConstructed<Identifier>().setValue("TESTINGMRN").setSystem("MRN")
+        } returns ident
         every {
             dal.r4PatientDAO.searchByIdentifier(
                 ident

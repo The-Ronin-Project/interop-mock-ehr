@@ -96,4 +96,57 @@ internal class R4AppointmentTransformerTest {
         val actual = R4AppointmentTransformer().transformToEpicAppointment(input, patient)
         assertEquals(expected, actual)
     }
+
+    @Test
+    fun `correctly translate the internal system`() {
+        val patient = Patient()
+        patient.identifier =
+            listOf(Identifier().setValue("PATMRN").setSystem("mockEHRMRNSystem"))
+        patient.addName(HumanName().addGiven("given").setFamily("family").setUse(HumanName.NameUse.USUAL))
+        val practitionerParticipant = AppointmentParticipantComponent()
+        practitionerParticipant.actor = Reference().setReference("Practitioner/PRACTID#1").setType("Practitioner")
+        val input = R4Appointment()
+        input.appointmentType = CodeableConcept().setText("type")
+        input.minutesDuration = 30
+        input.patientInstruction = "instruction"
+        input.comment = "comment"
+        input.start = Date(120, 0, 1)
+        input.status = org.hl7.fhir.r4.model.Appointment.AppointmentStatus.BOOKED
+        input.id = "Appointment/APPTID#1"
+        input.participant = listOf(
+            practitionerParticipant
+        )
+
+        val expected = EpicAppointment(
+            appointmentDuration = "30",
+            appointmentNotes = listOf("instruction", "comment"),
+            appointmentStartTime = "12:00 AM",
+            appointmentStatus = "booked",
+            contactIDs = listOf(IDType(id = "APPTID#1", type = "ASN")),
+            date = "01/01/2020",
+            extraExtensions = listOf(),
+            extraItems = listOf(),
+            patientIDs = listOf(IDType("PATMRN", "External")),
+            patientName = "given family",
+            providers = listOf(
+                ScheduleProviderReturnWithTime(
+                    departmentIDs = emptyList(),
+                    departmentName = "",
+                    duration = "",
+                    providerIDs = listOf(
+                        IDType(
+                            id = "PRACTID#1",
+                            type = "external"
+                        )
+                    ),
+                    providerName = "",
+                    time = ""
+                )
+            ),
+            visitTypeIDs = listOf(),
+            visitTypeName = "type"
+        )
+        val actual = R4AppointmentTransformer().transformToEpicAppointment(input, patient)
+        assertEquals(expected.patientIDs, actual.patientIDs)
+    }
 }
