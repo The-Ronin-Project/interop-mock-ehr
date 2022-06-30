@@ -17,7 +17,7 @@ spring-boot-parent = "org.springframework.boot:spring-boot-parent:2.7.1"
 springdoc-openapi-data = "org.springdoc:springdoc-openapi-data-rest:1.6.9"
 springdoc-openapi-kotlin = "org.springdoc:springdoc-openapi-kotlin:1.6.9"
 springdoc-openapi-ui = "org.springdoc:springdoc-openapi-ui:1.6.9"
-testcontainers-bom = "org.testcontainers:testcontainers-bom:1.17.2"
+testcontainers-bom = "org.testcontainers:testcontainers-bom:1.17.3"
 json-patch = "com.github.java-json-tools:json-patch:1.13"
 
 [bundles]
