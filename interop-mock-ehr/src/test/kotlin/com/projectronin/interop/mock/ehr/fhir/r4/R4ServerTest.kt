@@ -1,9 +1,11 @@
 package com.projectronin.interop.mock.ehr.fhir.r4
 
 import com.projectronin.interop.mock.ehr.fhir.r4.providers.R4AppointmentResourceProvider
+import com.projectronin.interop.mock.ehr.fhir.r4.providers.R4BinaryResourceProvider
 import com.projectronin.interop.mock.ehr.fhir.r4.providers.R4BundleResourceProvider
 import com.projectronin.interop.mock.ehr.fhir.r4.providers.R4CommunicationResourceProvider
 import com.projectronin.interop.mock.ehr.fhir.r4.providers.R4ConditionResourceProvider
+import com.projectronin.interop.mock.ehr.fhir.r4.providers.R4DocumentReferenceResourceProvider
 import com.projectronin.interop.mock.ehr.fhir.r4.providers.R4LocationResourceProvider
 import com.projectronin.interop.mock.ehr.fhir.r4.providers.R4ObservationResourceProvider
 import com.projectronin.interop.mock.ehr.fhir.r4.providers.R4PatientResourceProvider
@@ -12,9 +14,11 @@ import com.projectronin.interop.mock.ehr.fhir.r4.providers.R4PractitionerRoleRes
 import io.mockk.every
 import io.mockk.mockk
 import org.hl7.fhir.r4.model.Appointment
+import org.hl7.fhir.r4.model.Binary
 import org.hl7.fhir.r4.model.Bundle
 import org.hl7.fhir.r4.model.Communication
 import org.hl7.fhir.r4.model.Condition
+import org.hl7.fhir.r4.model.DocumentReference
 import org.hl7.fhir.r4.model.Location
 import org.hl7.fhir.r4.model.Observation
 import org.hl7.fhir.r4.model.Patient
@@ -45,6 +49,10 @@ internal class R4ServerTest {
         every { r4Bundle.resourceType } returns Bundle::class.java
         val r4Observation = mockk<R4ObservationResourceProvider>()
         every { r4Observation.resourceType } returns Observation::class.java
+        val r4DocumentReference = mockk<R4DocumentReferenceResourceProvider>()
+        every { r4DocumentReference.resourceType } returns DocumentReference::class.java
+        val r4Binary = mockk<R4BinaryResourceProvider>()
+        every { r4Binary.resourceType } returns Binary::class.java
         val server = R4Server(
             r4Patient,
             r4Condition,
@@ -54,7 +62,9 @@ internal class R4ServerTest {
             r4PractitionerRole,
             r4Communication,
             r4Bundle,
-            r4Observation
+            r4Observation,
+            r4DocumentReference,
+            r4Binary
         )
         server.init()
         assertTrue(
@@ -68,7 +78,9 @@ internal class R4ServerTest {
                     r4PractitionerRole,
                     r4Communication,
                     r4Bundle,
-                    r4Observation
+                    r4Observation,
+                    r4DocumentReference,
+                    r4Binary
                 )
             )
         )
