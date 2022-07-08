@@ -145,26 +145,26 @@ This data set:
   [build.fhir.org](http://build.fhir.org) and [Epic App Orchard API](https://apporchard.epic.com/Sandbox) documentation.
 - Has observations with the following category, status, effective and issued dates, and FHIR IDs.
 
-category | status | effective | issued | id 
--------- | --------- | -------- | ------ | ---
-- | final | - | 2013-04-04T14:34:00+01:00 | egfr-reference-range
-core-characteristics | final | - | - | epQLvEY3
-exam | final | 2018-04-02T10:30:10+01:00 | 2018-04-03T15:30:10+01:00 | abdo-tender-coded
-functional-mental-status | final | 2021-05-04 | - | eK.Ylq43
-laboratory | final | 2021-09-02T18:41:00Z | 2021-09-02T19:10:25Z | eAMXUhKX
-laboratory | final | 2021-11-18T06:00:00Z | 2021-11-18T16:50:32Z | ey4sw9N3
-LDA | final | 2022-01-17T18:30:00Z | - | eFPRgtg3
-procedure | final | 2015-02-19T09:30:35+01:00 | - | ekg-sampled-data
-smartdata | unknown | - | 2021-04-16T20:56:23Z | eBBGxpY3
-smartdata | unknown | - | 2021-04-16T20:56:23Z | e-YNPQo3
-smartdata | unknown | - | 2021-04-16T20:56:02Z | e4OG7jU3
-smartdata | unknown | - | 2021-04-16T20:56:02Z | eqA2EG83
-social-history | final | 2014-12-11T04:44:16Z | - | component-answers
-social-history | final | 2021-11-08T06:00:00Z | 2021-11-08T06:00:00Z | eqEP70B3
-vital-signs | cancelled | 2012-09-17 | - | blood-pressure-cancel
-vital-signs | final | 1999-07-02 | - | vitals-panel
-vital-signs | final | 1999-07-02 | - | body-temperature
-vital-signs | final | 1999-07-02 | - | blood-pressure
-vital-signs | final | 1999-07-02 | - | heart-rate
-vital-signs | final | 1999-07-02 | - | respiratory-rate
+| category | status | effective | issued | id 
+| -------- | --------- | -------- | ------ | ---
+| - | final | - | 2013-04-04T14:34:00+01:00 | egfr-reference-range
+| core-characteristics | final | - | - | epQLvEY3
+| exam | final | 2018-04-02T10:30:10+01:00 | 2018-04-03T15:30:10+01:00 | abdo-tender-coded
+| functional-mental-status | final | 2021-05-04 | - | eK.Ylq43
+| laboratory | final | 2021-09-02T18:41:00Z | 2021-09-02T19:10:25Z | eAMXUhKX
+| laboratory | final | 2021-11-18T06:00:00Z | 2021-11-18T16:50:32Z | ey4sw9N3
+| LDA | final | 2022-01-17T18:30:00Z | - | eFPRgtg3
+| procedure | final | 2015-02-19T09:30:35+01:00 | - | ekg-sampled-data
+| smartdata | unknown | - | 2021-04-16T20:56:23Z | eBBGxpY3
+| smartdata | unknown | - | 2021-04-16T20:56:23Z | e-YNPQo3
+| smartdata | unknown | - | 2021-04-16T20:56:02Z | e4OG7jU3
+| smartdata | unknown | - | 2021-04-16T20:56:02Z | eqA2EG83
+| social-history | final | 2014-12-11T04:44:16Z | - | component-answers
+| social-history | final | 2021-11-08T06:00:00Z | 2021-11-08T06:00:00Z | eqEP70B3
+| vital-signs | cancelled | 2012-09-17 | - | blood-pressure-cancel
+| vital-signs | final | 1999-07-02 | - | vitals-panel
+| vital-signs | final | 1999-07-02 | - | body-temperature
+| vital-signs | final | 1999-07-02 | - | blood-pressure
+| vital-signs | final | 1999-07-02 | - | heart-rate
+| vital-signs | final | 1999-07-02 | - | respiratory-rate
 
