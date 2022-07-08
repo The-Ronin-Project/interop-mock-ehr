@@ -214,7 +214,8 @@ class EpicServer(private var dal: EpicDAL) {
 
         // validate patient if it exists
         sendMessageRequest.patientID?.let {
-            dal.r4PatientDAO.searchByIdentifier(Identifier().setValue(it).setSystem(sendMessageRequest.patientIDType))
+            // expecting "MRN" or something similar, so hardcode MockEHR MRN system.
+            dal.r4PatientDAO.searchByIdentifier(Identifier().setValue(it).setSystem("mockEHRMRNSystem"))
                 ?: throw ResponseStatusException(
                     HttpStatus.BAD_REQUEST,
                     "INVALID-PATIENT"

@@ -423,7 +423,7 @@ internal class EpicServerTest {
         val patient = Patient()
         patient.id = "TESTINGID"
         every {
-            anyConstructed<Identifier>().setValue("TESTINGMRN").setSystem("MRN")
+            anyConstructed<Identifier>().setValue("TESTINGMRN").setSystem("mockEHRMRNSystem")
         } returns ident
         every {
             dal.r4PatientDAO.searchByIdentifier(
