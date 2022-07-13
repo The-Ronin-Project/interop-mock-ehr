@@ -18,7 +18,7 @@
       "value": "EHRFHIRIDPatient04Test"
     },
     {
-      "system": "urn:oid:1.2.840.114350.1.13.0.1.7.2.698084",
+      "system": "mockPatientInternalSystem",
       "value": "     Z45555"
     },
     {

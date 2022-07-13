@@ -14,8 +14,12 @@ class R4AppointmentTransformer {
     fun transformToEpicAppointment(r4Appointment: R4Appointment, r4Patient: Patient?): EpicAppointment {
 
         val patientIDs = r4Patient?.identifier?.map {
-            // mimic Epic here in that if we've got our MRN, it should be set as an external type
-            val system = if (it.system == "mockEHRMRNSystem") "External" else it.system
+            // mimic Epic for MRNs and Internal IDs
+            val system = when (it.system) {
+                "mockEHRMRNSystem" -> "MRN"
+                "mockPatientInternalSystem" -> "Internal"
+                else -> it.system
+            }
             IDType(it.value, system)
         }
         val providers = mutableListOf<ScheduleProviderReturnWithTime>()

@@ -22,7 +22,7 @@
       "value": "V5TtkxmNivQ3eJzlzKe3KPzA"
     },
     {
-      "system": "urn:oid:1.2.840.114350.1.13.0.1.7.2.698084",
+      "system": "mockPatientInternalSystem",
       "value": "     Z2745"
     },
     {

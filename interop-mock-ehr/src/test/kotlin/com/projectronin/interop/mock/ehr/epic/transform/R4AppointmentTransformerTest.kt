@@ -98,10 +98,13 @@ internal class R4AppointmentTransformerTest {
     }
 
     @Test
-    fun `correctly translate the internal system`() {
+    fun `correctly translate the special systems`() {
         val patient = Patient()
         patient.identifier =
-            listOf(Identifier().setValue("PATMRN").setSystem("mockEHRMRNSystem"))
+            listOf(
+                Identifier().setValue("PATMRN").setSystem("mockEHRMRNSystem"),
+                Identifier().setValue("   Z123").setSystem("mockPatientInternalSystem")
+            )
         patient.addName(HumanName().addGiven("given").setFamily("family").setUse(HumanName.NameUse.USUAL))
         val practitionerParticipant = AppointmentParticipantComponent()
         practitionerParticipant.actor = Reference().setReference("Practitioner/PRACTID#1").setType("Practitioner")
@@ -126,7 +129,10 @@ internal class R4AppointmentTransformerTest {
             date = "01/01/2020",
             extraExtensions = listOf(),
             extraItems = listOf(),
-            patientIDs = listOf(IDType("PATMRN", "External")),
+            patientIDs = listOf(
+                IDType("PATMRN", "MRN"),
+                IDType("   Z123", "Internal")
+            ),
             patientName = "given family",
             providers = listOf(
                 ScheduleProviderReturnWithTime(
