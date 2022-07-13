@@ -4,7 +4,29 @@ codecov:
 coverage:
   status:
     project:
+      mock-ehr:
+        target: auto
+        threshold: 1%
+        flags:
+          - mock-ehr
+      mock-ehr-testcontainer:
+        target: auto
+        threshold: 1%
+        flags:
+          - mock-ehr-testcontainer
       default:
+        mock-ehr:
+          target: 80
+          threshold: 1%
+          base: auto
+          flags:
+            - mock-ehr
+        mock-ehr-testcontainer:
+          target: 80
+          threshold: 1%
+          base: auto
+          flags:
+            - mock-ehr-testcontainer
         target: auto
         threshold: 1%
 
@@ -22,3 +44,13 @@ comment:
   require_head: yes
   branches: null
   show_carryforward_flags: false
+
+flags:
+  mock-ehr:
+    paths:
+      - interop-mock-ehr/
+    carryforward: true
+  mock-ehr-testcontainer:
+    paths:
+      - interop-mock-ehr-testcontainer/
+    carryforward: true
