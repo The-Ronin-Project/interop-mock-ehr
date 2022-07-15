@@ -1,3 +1,5 @@
+import org.gradle.api.tasks.testing.logging.TestLogEvent
+
 plugins {
     `maven-publish`
     id("org.springframework.boot")
@@ -50,4 +52,16 @@ publishing {
 // usually this is pulled in via interop-gradle.publish
 tasks.register("install") {
     dependsOn(tasks.publishToMavenLocal)
+}
+
+tasks.withType(Test::class) {
+    testLogging {
+        events(
+            TestLogEvent.PASSED,
+            TestLogEvent.SKIPPED,
+            TestLogEvent.FAILED,
+            TestLogEvent.STANDARD_OUT,
+            TestLogEvent.STANDARD_ERROR
+        )
+    }
 }
