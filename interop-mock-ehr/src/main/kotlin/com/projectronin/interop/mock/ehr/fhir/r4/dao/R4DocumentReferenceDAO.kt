@@ -1,6 +1,7 @@
 package com.projectronin.interop.mock.ehr.fhir.r4.dao
 
 import ca.uhn.fhir.context.FhirContext
+import ca.uhn.fhir.rest.param.TokenOrListParam
 import com.mysql.cj.xdevapi.Collection
 import com.mysql.cj.xdevapi.Schema
 import com.projectronin.interop.mock.ehr.fhir.BaseResourceDAO
@@ -15,7 +16,7 @@ class R4DocumentReferenceDAO(database: Schema) : BaseResourceDAO<DocumentReferen
 
     fun searchByQuery(
         subject: String? = null,
-        category: String? = null,
+        category: TokenOrListParam? = null,
         docStatus: String? = null,
         encounter: String? = null
     ): List<DocumentReference> {
@@ -24,7 +25,12 @@ class R4DocumentReferenceDAO(database: Schema) : BaseResourceDAO<DocumentReferen
         subject?.let { queryFragments.add("('$it' = subject.reference)") }
         docStatus?.let { queryFragments.add("('$it' = docStatus)") }
         encounter?.let { queryFragments.add("('$it' in context.encounter[*].reference)") }
-        category?.let { queryFragments.add("('$it' in category[*].coding[*].code OR '$it' in category[*].text)") }
+        category?.let { catList ->
+            val phrase = getSearchStringForFHIRTokens(catList)
+            if (!phrase.isNullOrEmpty()) {
+                queryFragments.add(phrase)
+            }
+        }
         if (queryFragments.isEmpty()) return listOf()
         val query = queryFragments.joinToString(" AND ")
 

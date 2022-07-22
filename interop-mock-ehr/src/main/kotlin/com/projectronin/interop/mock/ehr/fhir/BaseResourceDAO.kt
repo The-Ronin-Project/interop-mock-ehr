@@ -1,6 +1,8 @@
 package com.projectronin.interop.mock.ehr.fhir
 
 import ca.uhn.fhir.context.FhirContext
+import ca.uhn.fhir.rest.param.TokenOrListParam
+import ca.uhn.fhir.rest.param.TokenParam
 import ca.uhn.fhir.rest.server.exceptions.ResourceNotFoundException
 import com.fasterxml.jackson.databind.ObjectMapper
 import com.github.fge.jsonpatch.JsonPatch
@@ -73,5 +75,54 @@ abstract class BaseResourceDAO<T : Resource> {
     private fun getDatabaseId(fhirId: String): String? {
         // "_id" is the MySQL-specific document identifier, which is different from the FHIR "id"
         return findByIdQuery(fhirId)?.let { (it["_id"] as JsonString).string }
+    }
+
+    /**
+     * Input is a comma-separated list of FHIR tokens as system|code or |code or system| or code alone.
+     * Returns a search string suitable as part of a where clause in a query to mock EHR.
+     * Returns null if no search string can be formed from the input.
+     */
+    fun getSearchStringForFHIRTokens(fhirTokens: TokenOrListParam? = null): String? {
+        if (fhirTokens == null) {
+            return null
+        }
+        val queryFragments = mutableListOf<String>()
+        val categories = fhirTokens.getValuesAsQueryTokens()
+        val phraseList = categories.mapNotNull { token ->
+            getSearchStringForFHIRToken(token)
+        }
+        if (phraseList.isNotEmpty()) {
+            queryFragments.add(" ( ")
+            queryFragments.add(phraseList.joinToString(" OR "))
+            queryFragments.add(" ) ")
+            return queryFragments.joinToString("")
+        }
+        return null
+    }
+
+    /**
+     * Input is a FHIR token as system|code or |code or system| or code alone.
+     * Returns a search string suitable as part of a where clause in a query to mock EHR.
+     * Returns null if no search string can be formed from the input.
+     */
+    fun getSearchStringForFHIRToken(fhirToken: TokenParam? = null): String? {
+        if (fhirToken == null) {
+            return null
+        }
+        val system = fhirToken.system
+        val code = fhirToken.value
+        return if (system.isNotEmpty()) {
+            if (code.isNotEmpty()) {
+                "('$system' in category[*].coding[*].system AND '$code' in category[*].coding[*].code)"
+            } else {
+                "('$system' in category[*].coding[*].system)"
+            }
+        } else {
+            if (code.isNotEmpty()) {
+                "('$code' in category[*].coding[*].code OR '$code' in category[*].text)"
+            } else {
+                null
+            }
+        }
     }
 }

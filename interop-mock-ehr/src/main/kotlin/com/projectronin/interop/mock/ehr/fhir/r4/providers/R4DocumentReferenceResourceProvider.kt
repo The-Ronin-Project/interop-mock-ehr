@@ -4,7 +4,7 @@ import ca.uhn.fhir.rest.annotation.OptionalParam
 import ca.uhn.fhir.rest.annotation.Search
 import ca.uhn.fhir.rest.param.ReferenceParam
 import ca.uhn.fhir.rest.param.StringParam
-import ca.uhn.fhir.rest.param.TokenParam
+import ca.uhn.fhir.rest.param.TokenOrListParam
 import com.projectronin.interop.mock.ehr.fhir.BaseResourceProvider
 import com.projectronin.interop.mock.ehr.fhir.r4.dao.R4DocumentReferenceDAO
 import org.hl7.fhir.instance.model.api.IBaseResource
@@ -25,14 +25,14 @@ class R4DocumentReferenceResourceProvider(override var resourceDAO: R4DocumentRe
         @OptionalParam(name = Condition.SP_PATIENT) patientReferenceParam: ReferenceParam? = null,
         @OptionalParam(name = Condition.SP_SUBJECT) subjectReferenceParam: ReferenceParam? = null,
         @OptionalParam(name = Condition.SP_ENCOUNTER) encounterReferenceParam: ReferenceParam? = null,
-        @OptionalParam(name = Condition.SP_CATEGORY) categoryParam: TokenParam? = null,
+        @OptionalParam(name = Condition.SP_CATEGORY) categoryParam: TokenOrListParam? = null,
         @OptionalParam(name = "docStatus") docStatusParam: StringParam? = null,
     ): List<DocumentReference> {
         val subject = patientReferenceParam?.let { "Patient/${it.value}" } ?: subjectReferenceParam?.value
         val encounter = encounterReferenceParam?.let { "Encounter/${it.value}" }
         return resourceDAO.searchByQuery(
             subject,
-            categoryParam?.value,
+            categoryParam,
             docStatusParam?.value,
             encounter
         )
