@@ -3,10 +3,10 @@ hapi-fhir-base = "ca.uhn.hapi.fhir:hapi-fhir-base:6.0.4"
 hapi-fhir-server = "ca.uhn.hapi.fhir:hapi-fhir-server:6.0.4"
 hapi-fhir-server-openapi = "ca.uhn.hapi.fhir:hapi-fhir-server-openapi:6.0.4"
 hapi-fhir-structures-r4 = "ca.uhn.hapi.fhir:hapi-fhir-structures-r4:6.0.4"
-hapi-hl7v2-base ="ca.uhn.hapi:hapi-base:2.3"
-hapi-hl7v2-http ="ca.uhn.hapi:hapi-hl7overhttp:2.3"
-hapi-hl7v2-251 ="ca.uhn.hapi:hapi-structures-v251:2.3"
-interop-ehr-epic = "com.projectronin.interop.ehr:interop-ehr-epic:2.2.1"
+hapi-hl7v2-base = "ca.uhn.hapi:hapi-base:2.3"
+hapi-hl7v2-http = "ca.uhn.hapi:hapi-hl7overhttp:2.3"
+hapi-hl7v2-251 = "ca.uhn.hapi:hapi-structures-v251:2.3"
+interop-ehr-epic = "com.projectronin.interop.ehr:interop-ehr-epic:2.2.2"
 interop-fhir = "com.projectronin.interop.fhir:interop-fhir:1.2.1"
 ktor-client-cio = "io.ktor:ktor-client-cio:2.0.3"
 ktor-client-core = "io.ktor:ktor-client-core:2.0.3"
@@ -22,5 +22,5 @@ json-patch = "com.github.java-json-tools:json-patch:1.13"
 
 [bundles]
 hapi-fhir = ["hapi-fhir-base", "hapi-fhir-server", "hapi-fhir-structures-r4", "hapi-fhir-server-openapi"]
-hapi-hl7v2 = ["hapi-hl7v2-base","hapi-hl7v2-251","hapi-hl7v2-http"]
+hapi-hl7v2 = ["hapi-hl7v2-base", "hapi-hl7v2-251", "hapi-hl7v2-http"]
 springdoc-openapi = ["springdoc-openapi-data", "springdoc-openapi-kotlin", "springdoc-openapi-ui"]

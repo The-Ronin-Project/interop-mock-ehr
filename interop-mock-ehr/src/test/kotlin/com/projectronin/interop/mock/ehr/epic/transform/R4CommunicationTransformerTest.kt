@@ -1,4 +1,5 @@
 package com.projectronin.interop.mock.ehr.epic.transform
+
 import com.projectronin.interop.ehr.epic.apporchard.model.SendMessageRecipient
 import com.projectronin.interop.ehr.epic.apporchard.model.SendMessageRequest
 import org.hl7.fhir.r4.model.Communication
@@ -11,7 +12,7 @@ class R4CommunicationTransformerTest {
     @Test
     fun `can build communication`() {
         val sendMessageRequest = SendMessageRequest(
-            messageText = "Message Text",
+            messageText = listOf("Message Text", "Line 2"),
             patientID = "MRN#1",
             recipients = listOf(
                 SendMessageRecipient("first", false, "External"),
@@ -33,7 +34,7 @@ class R4CommunicationTransformerTest {
         assertEquals("messageType", communication.category.first().text)
 
         assertEquals(1, communication.payload.size)
-        assertEquals("Message Text", communication.payload.first().content.toString())
+        assertEquals("Message Text\nLine 2", communication.payload.first().content.toString())
 
         assertEquals(Communication.CommunicationStatus.COMPLETED, communication.status)
         assertEquals(Communication.CommunicationPriority.URGENT, communication.priority)
@@ -60,9 +61,33 @@ class R4CommunicationTransformerTest {
     }
 
     @Test
+    fun `message text is optional`() {
+        val sendMessageRequest = SendMessageRequest(
+            messageText = null,
+            patientID = "MRN#1",
+            recipients = listOf(
+                SendMessageRecipient("first", false, "External"),
+                SendMessageRecipient("second", true, "External"),
+            ),
+            senderID = "Sender#1",
+            messageType = "messageType",
+            senderIDType = "SendType#1",
+            patientIDType = "MRN",
+            contactID = "Con#1",
+            contactIDType = "ConType#1",
+            messagePriority = "just incoherent gibberish"
+        )
+
+        val communication = R4CommunicationTransformer().transformFromSendMessage(sendMessageRequest)
+        assertNotNull(communication)
+        assertEquals(1, communication.payload.size)
+        assertEquals("", communication.payload.first().content.toString())
+    }
+
+    @Test
     fun `priority defaults`() {
         val sendMessageRequest = SendMessageRequest(
-            messageText = "Message Text",
+            messageText = listOf("Message Text", "Line 2"),
             patientID = "MRN#1",
             recipients = listOf(
                 SendMessageRecipient("first", false, "External"),

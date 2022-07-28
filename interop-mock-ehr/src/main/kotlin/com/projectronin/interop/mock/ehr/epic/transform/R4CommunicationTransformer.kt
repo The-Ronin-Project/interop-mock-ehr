@@ -13,7 +13,12 @@ import org.springframework.stereotype.Component
 @Component
 class R4CommunicationTransformer {
     fun transformFromSendMessage(sendMessageRequest: SendMessageRequest): Communication {
-        val messageContent = Communication.CommunicationPayloadComponent(StringType(sendMessageRequest.messageText))
+        val messageContent =
+            Communication.CommunicationPayloadComponent(
+                StringType(
+                    sendMessageRequest.messageText?.joinToString("\n") ?: ""
+                )
+            )
         val messageType = CodeableConcept()
         messageType.text = sendMessageRequest.messageType
 

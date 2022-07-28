@@ -397,7 +397,7 @@ internal class EpicServerTest {
     @Test
     fun `working communication test`() {
         val request = SendMessageRequest(
-            messageText = "Message Text",
+            messageText = listOf("Message Text", "Line 2"),
             patientID = "TESTINGMRN",
             recipients = listOf(
                 SendMessageRecipient("first", false, "External"),
