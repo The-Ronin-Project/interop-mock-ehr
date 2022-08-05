@@ -1,4 +1,4 @@
-package com.projectronin.interop.mock.ehr.fhir.r4.providers
+package com.projectronin.interop.mock.ehr.fhir.stu3.providers
 
 import ca.uhn.fhir.rest.annotation.OptionalParam
 import ca.uhn.fhir.rest.annotation.RequiredParam
@@ -6,16 +6,16 @@ import ca.uhn.fhir.rest.annotation.Search
 import ca.uhn.fhir.rest.param.DateParam
 import ca.uhn.fhir.rest.param.StringParam
 import ca.uhn.fhir.rest.param.TokenParam
-import com.projectronin.interop.mock.ehr.fhir.r4.dao.R4PatientDAO
+import com.projectronin.interop.mock.ehr.fhir.stu3.dao.STU3PatientDAO
+import org.hl7.fhir.dstu3.model.ContactPoint
+import org.hl7.fhir.dstu3.model.Identifier
+import org.hl7.fhir.dstu3.model.Patient
 import org.hl7.fhir.instance.model.api.IBaseResource
-import org.hl7.fhir.r4.model.ContactPoint
-import org.hl7.fhir.r4.model.Identifier
-import org.hl7.fhir.r4.model.Patient
 import org.springframework.stereotype.Component
 
 @Component
-class R4PatientResourceProvider(override var resourceDAO: R4PatientDAO) :
-    BaseResourceProvider<Patient, R4PatientDAO>() {
+class STU3PatientResourceProvider(override var resourceDAO: STU3PatientDAO) :
+    STU3BaseResourceProvider<Patient, STU3PatientDAO>() {
 
     override fun getResourceType(): Class<out IBaseResource> {
         return Patient::class.java

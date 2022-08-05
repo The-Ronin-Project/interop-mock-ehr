@@ -17,6 +17,6 @@ abstract class BaseMySQLTest {
         val port = MYSQL_CONTAINER.getMappedPort(33060)
         val databaseSession =
             SessionFactory().getSession("mysqlx://$address:$port/test?user=test&password=test").defaultSchema
-        return databaseSession.createCollection(name)
+        return databaseSession.createCollection(name, true)
     }
 }

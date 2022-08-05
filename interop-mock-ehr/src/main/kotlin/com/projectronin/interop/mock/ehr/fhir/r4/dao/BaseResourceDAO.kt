@@ -1,4 +1,4 @@
-package com.projectronin.interop.mock.ehr.fhir
+package com.projectronin.interop.mock.ehr.fhir.r4.dao
 
 import ca.uhn.fhir.context.FhirContext
 import ca.uhn.fhir.rest.param.TokenOrListParam

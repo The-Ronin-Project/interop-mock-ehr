@@ -1,16 +1,16 @@
-package com.projectronin.interop.mock.ehr.fhir.r4.dao
+package com.projectronin.interop.mock.ehr.fhir.stu3.dao
 
 import ca.uhn.fhir.context.FhirContext
 import com.mysql.cj.xdevapi.Collection
 import com.mysql.cj.xdevapi.Schema
-import org.hl7.fhir.r4.model.ContactPoint
-import org.hl7.fhir.r4.model.Identifier
-import org.hl7.fhir.r4.model.Patient
+import org.hl7.fhir.dstu3.model.ContactPoint
+import org.hl7.fhir.dstu3.model.Identifier
+import org.hl7.fhir.dstu3.model.Patient
 import org.springframework.stereotype.Component
 
 @Component
-class R4PatientDAO(database: Schema) : BaseResourceDAO<Patient>() {
-    override var context: FhirContext = FhirContext.forR4()
+class STU3PatientDAO(database: Schema) : STU3BaseResourceDAO<Patient>() {
+    override var context: FhirContext = FhirContext.forDstu3()
     override var resourceType = Patient::class.java
     override var collection: Collection = database.createCollection(Patient::class.simpleName, true)
 

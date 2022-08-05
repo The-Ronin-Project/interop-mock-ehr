@@ -3,7 +3,7 @@ package com.projectronin.interop.mock.ehr.fhir.r4.providers
 import ca.uhn.fhir.rest.annotation.Transaction
 import ca.uhn.fhir.rest.annotation.TransactionParam
 import ca.uhn.fhir.rest.server.IResourceProvider
-import com.projectronin.interop.mock.ehr.fhir.BaseResourceDAO
+import com.projectronin.interop.mock.ehr.fhir.r4.dao.BaseResourceDAO
 import org.hl7.fhir.instance.model.api.IBaseResource
 import org.hl7.fhir.r4.model.Bundle
 import org.hl7.fhir.r4.model.Bundle.BundleEntryComponent

@@ -4,7 +4,6 @@ import ca.uhn.fhir.context.FhirContext
 import ca.uhn.fhir.rest.param.TokenOrListParam
 import com.mysql.cj.xdevapi.Collection
 import com.mysql.cj.xdevapi.Schema
-import com.projectronin.interop.mock.ehr.fhir.BaseResourceDAO
 import org.hl7.fhir.r4.model.DocumentReference
 import org.springframework.stereotype.Component
 

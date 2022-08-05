@@ -1,16 +1,17 @@
-package com.projectronin.interop.mock.ehr.fhir.r4.dao
+package com.projectronin.interop.mock.ehr.fhir.stu3.dao
 
 import ca.uhn.fhir.context.FhirContext
 import com.mysql.cj.xdevapi.Collection
 import com.mysql.cj.xdevapi.Schema
-import org.hl7.fhir.r4.model.Appointment
-import org.hl7.fhir.r4.model.Reference
+import mu.KotlinLogging
+import org.hl7.fhir.dstu3.model.Appointment
+import org.hl7.fhir.dstu3.model.Reference
 import org.springframework.stereotype.Component
 import java.util.Date
 
 @Component
-class R4AppointmentDAO(database: Schema) : BaseResourceDAO<Appointment>() {
-    override var context: FhirContext = FhirContext.forR4()
+class STU3AppointmentDAO(database: Schema) : STU3BaseResourceDAO<Appointment>() {
+    override var context: FhirContext = FhirContext.forDstu3()
     override var resourceType = Appointment::class.java
     override var collection: Collection = database.createCollection(Appointment::class.simpleName, true)
 
@@ -23,19 +24,20 @@ class R4AppointmentDAO(database: Schema) : BaseResourceDAO<Appointment>() {
     fun searchByQuery(
         references: List<Reference> = listOf(),
         fromDate: Date? = null,
-        toDate: Date? = null
+        toDate: Date? = null,
+        status: String? = null
     ): List<Appointment> {
         val queryFragments = mutableListOf<String>()
 
         references.forEach { ref ->
             ref.reference?.let { queryFragments.add("'$it' in participant[*].actor.reference") }
         }
-
+        status?.let { queryFragments.add("'$it' in status") }
         val query = queryFragments.joinToString(" AND ")
 
         val apptList = mutableListOf<Appointment>()
         val parser = context.newJsonParser()
-
+        KotlinLogging.logger { }.info { query }
         collection.find(query).execute().forEach {
             apptList.add(parser.parseResource(resourceType, it.toString()))
         }

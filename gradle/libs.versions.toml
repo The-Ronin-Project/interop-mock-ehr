@@ -3,6 +3,7 @@ hapi-fhir-base = "ca.uhn.hapi.fhir:hapi-fhir-base:6.0.4"
 hapi-fhir-server = "ca.uhn.hapi.fhir:hapi-fhir-server:6.0.4"
 hapi-fhir-server-openapi = "ca.uhn.hapi.fhir:hapi-fhir-server-openapi:6.0.4"
 hapi-fhir-structures-r4 = "ca.uhn.hapi.fhir:hapi-fhir-structures-r4:6.0.4"
+hapi-fhir-structures-stu3 = "ca.uhn.hapi.fhir:hapi-fhir-structures-dstu3:6.0.4"
 hapi-hl7v2-base = "ca.uhn.hapi:hapi-base:2.3"
 hapi-hl7v2-http = "ca.uhn.hapi:hapi-hl7overhttp:2.3"
 hapi-hl7v2-251 = "ca.uhn.hapi:hapi-structures-v251:2.3"
@@ -21,6 +22,6 @@ testcontainers-bom = "org.testcontainers:testcontainers-bom:1.17.3"
 json-patch = "com.github.java-json-tools:json-patch:1.13"
 
 [bundles]
-hapi-fhir = ["hapi-fhir-base", "hapi-fhir-server", "hapi-fhir-structures-r4", "hapi-fhir-server-openapi"]
+hapi-fhir = ["hapi-fhir-base", "hapi-fhir-server", "hapi-fhir-structures-r4", "hapi-fhir-server-openapi", "hapi-fhir-structures-stu3"]
 hapi-hl7v2 = ["hapi-hl7v2-base", "hapi-hl7v2-251", "hapi-hl7v2-http"]
 springdoc-openapi = ["springdoc-openapi-data", "springdoc-openapi-kotlin", "springdoc-openapi-ui"]

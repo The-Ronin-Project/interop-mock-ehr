@@ -8,7 +8,6 @@ import ca.uhn.fhir.rest.annotation.Search
 import ca.uhn.fhir.rest.param.ReferenceAndListParam
 import ca.uhn.fhir.rest.param.ReferenceParam
 import ca.uhn.fhir.rest.param.TokenParam
-import com.projectronin.interop.mock.ehr.fhir.BaseResourceProvider
 import com.projectronin.interop.mock.ehr.fhir.r4.dao.R4LocationDAO
 import com.projectronin.interop.mock.ehr.fhir.r4.dao.R4PractitionerDAO
 import com.projectronin.interop.mock.ehr.fhir.r4.dao.R4PractitionerRoleDAO
