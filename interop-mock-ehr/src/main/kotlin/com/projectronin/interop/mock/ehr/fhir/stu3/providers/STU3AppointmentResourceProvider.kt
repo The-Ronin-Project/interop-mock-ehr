@@ -6,15 +6,17 @@ import ca.uhn.fhir.rest.annotation.Search
 import ca.uhn.fhir.rest.param.DateRangeParam
 import ca.uhn.fhir.rest.param.ReferenceParam
 import ca.uhn.fhir.rest.param.StringParam
-import com.projectronin.interop.mock.ehr.fhir.stu3.dao.STU3AppointmentDAO
+import com.projectronin.interop.mock.ehr.fhir.r4.dao.R4AppointmentDAO
+import com.projectronin.interop.mock.ehr.fhir.stu3.toDSTU3
 import org.hl7.fhir.dstu3.model.Appointment
-import org.hl7.fhir.dstu3.model.Reference
 import org.hl7.fhir.instance.model.api.IBaseResource
+import org.hl7.fhir.r4.model.Reference
 import org.springframework.stereotype.Component
+import org.hl7.fhir.r4.model.Appointment as R4Appointment
 
 @Component
-class STU3AppointmentResourceProvider(override var resourceDAO: STU3AppointmentDAO) :
-    STU3BaseResourceProvider<Appointment, STU3AppointmentDAO>() {
+class STU3AppointmentResourceProvider(override var resourceDAO: R4AppointmentDAO) :
+    STU3BaseResourceProvider<Appointment, R4Appointment, R4AppointmentDAO>() {
 
     override fun getResourceType(): Class<out IBaseResource> {
         return Appointment::class.java
@@ -32,6 +34,6 @@ class STU3AppointmentResourceProvider(override var resourceDAO: STU3AppointmentD
 
         return resourceDAO.searchByQuery(
             referenceList, dateRangeParam?.lowerBoundAsInstant, dateRangeParam?.upperBoundAsInstant, statusParam?.value
-        )
+        ).map { it.toDSTU3() }
     }
 }

@@ -23,13 +23,15 @@ class R4AppointmentDAO(database: Schema) : BaseResourceDAO<Appointment>() {
     fun searchByQuery(
         references: List<Reference> = listOf(),
         fromDate: Date? = null,
-        toDate: Date? = null
+        toDate: Date? = null,
+        status: String? = null
     ): List<Appointment> {
         val queryFragments = mutableListOf<String>()
 
         references.forEach { ref ->
             ref.reference?.let { queryFragments.add("'$it' in participant[*].actor.reference") }
         }
+        status?.let { queryFragments.add("'$it' in status") }
 
         val query = queryFragments.joinToString(" AND ")
 
