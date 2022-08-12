@@ -44,7 +44,7 @@ class R4PatientAndBaseResourceTest : BaseMySQLTest() {
         collection = createCollection(Patient::class.simpleName!!)
         val database = mockk<Schema>()
         every { database.createCollection(Patient::class.simpleName, true) } returns collection
-        dao = R4PatientDAO(database)
+        dao = R4PatientDAO(database, FhirContext.forR4())
         patientProvider = R4PatientResourceProvider(dao)
     }
 

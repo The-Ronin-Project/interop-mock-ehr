@@ -9,8 +9,7 @@ import org.springframework.stereotype.Component
 import java.util.Date
 
 @Component
-class R4AppointmentDAO(database: Schema) : BaseResourceDAO<Appointment>() {
-    override var context: FhirContext = FhirContext.forR4()
+class R4AppointmentDAO(database: Schema, override var context: FhirContext) : BaseResourceDAO<Appointment>() {
     override var resourceType = Appointment::class.java
     override var collection: Collection = database.createCollection(Appointment::class.simpleName, true)
 

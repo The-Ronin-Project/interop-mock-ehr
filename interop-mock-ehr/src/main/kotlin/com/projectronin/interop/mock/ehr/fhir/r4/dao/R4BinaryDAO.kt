@@ -7,8 +7,7 @@ import org.hl7.fhir.r4.model.Binary
 import org.springframework.stereotype.Component
 
 @Component
-class R4BinaryDAO(database: Schema) : BaseResourceDAO<Binary>() {
-    override var context: FhirContext = FhirContext.forR4()
+class R4BinaryDAO(database: Schema, override var context: FhirContext) : BaseResourceDAO<Binary>() {
     override var resourceType = Binary::class.java
     override var collection: Collection = database.createCollection(Binary::class.simpleName, true)
 }

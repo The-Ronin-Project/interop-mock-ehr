@@ -5,14 +5,16 @@ import ca.uhn.fhir.rest.openapi.OpenApiInterceptor
 import ca.uhn.fhir.rest.server.FifoMemoryPagingProvider
 import ca.uhn.fhir.rest.server.RestfulServer
 import com.projectronin.interop.mock.ehr.fhir.stu3.providers.STU3AppointmentResourceProvider
+import org.springframework.beans.factory.annotation.Qualifier
 import org.springframework.stereotype.Component
 import javax.servlet.annotation.WebServlet
 
 @WebServlet(urlPatterns = ["/fhir/stu3/*", "/epic/api/FHIR/STU3/*"])
 @Component
 class STU3Server(
+    @Qualifier("DSTU3") context: FhirContext,
     private val stu3AppointmentProvider: STU3AppointmentResourceProvider,
-) : RestfulServer(FhirContext.forDstu3()) {
+) : RestfulServer(context) {
 
     override fun initialize() {
         setResourceProviders(

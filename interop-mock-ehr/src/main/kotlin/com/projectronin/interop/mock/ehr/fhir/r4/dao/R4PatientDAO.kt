@@ -9,8 +9,7 @@ import org.hl7.fhir.r4.model.Patient
 import org.springframework.stereotype.Component
 
 @Component
-class R4PatientDAO(database: Schema) : BaseResourceDAO<Patient>() {
-    override var context: FhirContext = FhirContext.forR4()
+class R4PatientDAO(database: Schema, override var context: FhirContext) : BaseResourceDAO<Patient>() {
     override var resourceType = Patient::class.java
     override var collection: Collection = database.createCollection(Patient::class.simpleName, true)
 

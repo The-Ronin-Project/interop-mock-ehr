@@ -1,5 +1,6 @@
 package com.projectronin.interop.mock.ehr.fhir.r4.providers
 
+import ca.uhn.fhir.context.FhirContext
 import com.mysql.cj.xdevapi.Collection
 import com.mysql.cj.xdevapi.Schema
 import com.projectronin.interop.mock.ehr.BaseMySQLTest
@@ -21,7 +22,8 @@ class R4BinaryResourceTest : BaseMySQLTest() {
         collection = createCollection(Binary::class.simpleName!!)
         val database = mockk<Schema>()
         every { database.createCollection(Binary::class.simpleName, true) } returns collection
-        binaryProvider = R4BinaryResourceProvider(R4BinaryDAO(database))
+        val dao = R4BinaryDAO(database, FhirContext.forR4())
+        binaryProvider = R4BinaryResourceProvider(dao)
     }
 
     @Test

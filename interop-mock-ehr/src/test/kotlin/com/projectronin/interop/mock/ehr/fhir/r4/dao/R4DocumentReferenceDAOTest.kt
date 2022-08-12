@@ -1,5 +1,6 @@
 package com.projectronin.interop.mock.ehr.fhir.r4.dao
 
+import ca.uhn.fhir.context.FhirContext
 import com.mysql.cj.xdevapi.Collection
 import com.mysql.cj.xdevapi.Schema
 import io.mockk.every
@@ -22,7 +23,7 @@ internal class R4DocumentReferenceDAOTest {
         val collection = mockk<Collection>()
         val database = mockk<Schema>()
         every { database.createCollection(DocumentReference::class.simpleName, true) } returns collection
-        dao = R4DocumentReferenceDAO(database)
+        dao = R4DocumentReferenceDAO(database, FhirContext.forR4())
     }
 
     @Test

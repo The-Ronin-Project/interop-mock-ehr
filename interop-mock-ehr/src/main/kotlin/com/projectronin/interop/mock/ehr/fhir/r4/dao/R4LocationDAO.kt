@@ -8,8 +8,7 @@ import org.hl7.fhir.r4.model.Location
 import org.springframework.stereotype.Component
 
 @Component
-class R4LocationDAO(database: Schema) : BaseResourceDAO<Location>() {
-    override var context: FhirContext = FhirContext.forR4()
+class R4LocationDAO(database: Schema, override var context: FhirContext) : BaseResourceDAO<Location>() {
     override var resourceType = Location::class.java
     override var collection: Collection = database.createCollection(Location::class.simpleName, true)
 

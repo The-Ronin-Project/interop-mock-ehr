@@ -30,8 +30,8 @@ class R4PractitionerResourceTest : BaseMySQLTest() {
         collection = createCollection(Practitioner::class.simpleName!!)
         val database = mockk<Schema>()
         every { database.createCollection(Practitioner::class.simpleName, true) } returns collection
-        dao = R4PractitionerDAO(database)
-        practitionerProvider = R4PractitionerResourceProvider(R4PractitionerDAO(database))
+        dao = R4PractitionerDAO(database, FhirContext.forR4())
+        practitionerProvider = R4PractitionerResourceProvider(dao)
     }
 
     @Test

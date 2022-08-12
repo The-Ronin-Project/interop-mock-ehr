@@ -8,8 +8,7 @@ import org.hl7.fhir.r4.model.Observation
 import org.springframework.stereotype.Component
 
 @Component
-class R4ObservationDAO(database: Schema) : BaseResourceDAO<Observation>() {
-    override var context: FhirContext = FhirContext.forR4()
+class R4ObservationDAO(database: Schema, override var context: FhirContext) : BaseResourceDAO<Observation>() {
     override var resourceType = Observation::class.java
     override var collection: Collection = database.createCollection(Observation::class.simpleName, true)
 

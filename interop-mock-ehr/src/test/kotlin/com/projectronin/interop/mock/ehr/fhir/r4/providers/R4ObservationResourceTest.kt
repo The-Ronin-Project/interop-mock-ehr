@@ -31,7 +31,8 @@ class R4ObservationResourceTest : BaseMySQLTest() {
         collection = createCollection(Observation::class.simpleName!!)
         val database = mockk<Schema>()
         every { database.createCollection(Observation::class.simpleName, true) } returns collection
-        observationProvider = R4ObservationResourceProvider(R4ObservationDAO(database))
+        val dao = R4ObservationDAO(database, FhirContext.forR4())
+        observationProvider = R4ObservationResourceProvider(dao)
     }
 
     @Test

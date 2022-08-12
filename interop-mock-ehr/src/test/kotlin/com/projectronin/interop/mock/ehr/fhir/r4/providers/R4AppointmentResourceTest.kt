@@ -29,7 +29,7 @@ class R4AppointmentResourceTest : BaseMySQLTest() {
         collection = createCollection(Appointment::class.simpleName!!)
         val database = mockk<Schema>()
         every { database.createCollection(Appointment::class.simpleName, true) } returns collection
-        dao = R4AppointmentDAO(database)
+        dao = R4AppointmentDAO(database, FhirContext.forR4())
         appointmentProvider = R4AppointmentResourceProvider(dao)
     }
 

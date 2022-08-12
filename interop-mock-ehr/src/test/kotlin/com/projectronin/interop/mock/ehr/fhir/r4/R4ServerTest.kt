@@ -1,5 +1,6 @@
 package com.projectronin.interop.mock.ehr.fhir.r4
 
+import ca.uhn.fhir.context.FhirContext
 import com.projectronin.interop.mock.ehr.fhir.r4.providers.R4AppointmentResourceProvider
 import com.projectronin.interop.mock.ehr.fhir.r4.providers.R4BinaryResourceProvider
 import com.projectronin.interop.mock.ehr.fhir.r4.providers.R4BundleResourceProvider
@@ -31,6 +32,7 @@ internal class R4ServerTest {
 
     @Test
     fun `add resources correctly test`() {
+        val ctx = FhirContext.forR4()
         val r4Patient = mockk<R4PatientResourceProvider>()
         every { r4Patient.resourceType } returns Patient::class.java
         val r4Condition = mockk<R4ConditionResourceProvider>()
@@ -54,6 +56,7 @@ internal class R4ServerTest {
         val r4Binary = mockk<R4BinaryResourceProvider>()
         every { r4Binary.resourceType } returns Binary::class.java
         val server = R4Server(
+            ctx,
             r4Patient,
             r4Condition,
             r4Appointment,

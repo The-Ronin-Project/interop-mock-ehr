@@ -21,6 +21,7 @@ import javax.servlet.annotation.WebServlet
 @WebServlet(urlPatterns = ["/fhir/r4/*", "/epic/api/FHIR/R4/*"])
 @Component
 class R4Server(
+    context: FhirContext, // autowired
     private val r4PatientProvider: R4PatientResourceProvider,
     private val r4ConditionProvider: R4ConditionResourceProvider,
     private val r4AppointmentProvider: R4AppointmentResourceProvider,
@@ -32,7 +33,7 @@ class R4Server(
     private val r4ObservationResourceProvider: R4ObservationResourceProvider,
     private val r4DocumentReferenceResourceProvider: R4DocumentReferenceResourceProvider,
     private val r4BinaryResourceProvider: R4BinaryResourceProvider
-) : RestfulServer(FhirContext.forR4()) {
+) : RestfulServer(context) {
 
     override fun initialize() {
         setResourceProviders(

@@ -27,7 +27,8 @@ class R4LocationResourceTest : BaseMySQLTest() {
         collection = createCollection(Location::class.simpleName!!)
         val database = mockk<Schema>()
         every { database.createCollection(Location::class.simpleName, true) } returns collection
-        locationProvider = R4LocationResourceProvider(R4LocationDAO(database))
+        val dao = R4LocationDAO(database, FhirContext.forR4())
+        locationProvider = R4LocationResourceProvider(dao)
     }
 
     @Test

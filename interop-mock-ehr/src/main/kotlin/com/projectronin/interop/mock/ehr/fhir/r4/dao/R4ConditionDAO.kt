@@ -7,8 +7,7 @@ import org.hl7.fhir.r4.model.Condition
 import org.springframework.stereotype.Component
 
 @Component
-class R4ConditionDAO(database: Schema) : BaseResourceDAO<Condition>() {
-    override var context: FhirContext = FhirContext.forR4()
+class R4ConditionDAO(database: Schema, override var context: FhirContext) : BaseResourceDAO<Condition>() {
     override var resourceType = Condition::class.java
     override var collection: Collection = database.createCollection(Condition::class.simpleName, true)
 

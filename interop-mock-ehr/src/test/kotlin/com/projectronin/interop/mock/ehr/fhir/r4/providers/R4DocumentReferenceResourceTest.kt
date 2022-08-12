@@ -32,7 +32,8 @@ class R4DocumentReferenceResourceTest : BaseMySQLTest() {
         collection = createCollection(DocumentReference::class.simpleName!!)
         val database = mockk<Schema>()
         every { database.createCollection(DocumentReference::class.simpleName, true) } returns collection
-        documentReferenceProvider = R4DocumentReferenceResourceProvider(R4DocumentReferenceDAO(database))
+        val dao = R4DocumentReferenceDAO(database, FhirContext.forR4())
+        documentReferenceProvider = R4DocumentReferenceResourceProvider(dao)
     }
 
     @Test

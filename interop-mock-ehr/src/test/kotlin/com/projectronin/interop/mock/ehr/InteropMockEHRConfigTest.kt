@@ -1,5 +1,6 @@
 package com.projectronin.interop.mock.ehr
 
+import ca.uhn.fhir.context.FhirVersionEnum
 import com.mysql.cj.xdevapi.SessionFactory
 import io.mockk.every
 import io.mockk.mockk
@@ -26,5 +27,15 @@ internal class InteropMockEHRConfigTest {
     fun `code coverage`() {
         val filter = InteropMockEHRConfig().logFilter()
         assertNotNull(filter)
+    }
+
+    @Test
+    fun `return r4`() {
+        assertEquals(InteropMockEHRConfig().r4Context().version, FhirVersionEnum.R4.versionImplementation)
+    }
+
+    @Test
+    fun `return dstu3`() {
+        assertEquals(InteropMockEHRConfig().dstu3Context().version, FhirVersionEnum.DSTU3.versionImplementation)
     }
 }

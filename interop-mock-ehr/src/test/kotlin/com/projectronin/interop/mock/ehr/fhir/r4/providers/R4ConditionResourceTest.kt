@@ -31,7 +31,7 @@ class R4ConditionResourceTest : BaseMySQLTest() {
         collection = createCollection(Condition::class.simpleName!!)
         val database = mockk<Schema>()
         every { database.createCollection(Condition::class.simpleName, true) } returns collection
-        dao = R4ConditionDAO(database)
+        dao = R4ConditionDAO(database, FhirContext.forR4())
         conditionProvider = R4ConditionResourceProvider(dao)
     }
 

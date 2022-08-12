@@ -1,10 +1,14 @@
 package com.projectronin.interop.mock.ehr
 
+import ca.uhn.fhir.context.FhirContext
+import ca.uhn.fhir.parser.LenientErrorHandler
 import com.mysql.cj.xdevapi.Schema
 import com.mysql.cj.xdevapi.SessionFactory
+import org.springframework.beans.factory.annotation.Qualifier
 import org.springframework.beans.factory.annotation.Value
 import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration
+import org.springframework.context.annotation.Primary
 import org.springframework.web.filter.CommonsRequestLoggingFilter
 
 @Configuration
@@ -20,6 +24,18 @@ class InteropMockEHRConfig {
         return SessionFactory()
             .getSession("mysqlx://$host:$port/$name?user=$user&password=$pass")
             .defaultSchema
+    }
+
+    @Bean
+    @Primary
+    fun r4Context(): FhirContext {
+        return FhirContext.forR4().setParserErrorHandler(LenientErrorHandler(false))
+    }
+
+    @Bean
+    @Qualifier("DSTU3")
+    fun dstu3Context(): FhirContext {
+        return FhirContext.forDstu3().setParserErrorHandler(LenientErrorHandler(false))
     }
 
     // adds HTTP request logging to the terminal output; very useful

@@ -8,8 +8,7 @@ import org.hl7.fhir.r4.model.Practitioner
 import org.springframework.stereotype.Component
 
 @Component
-class R4PractitionerDAO(database: Schema) : BaseResourceDAO<Practitioner>() {
-    override var context: FhirContext = FhirContext.forR4()
+class R4PractitionerDAO(database: Schema, override var context: FhirContext) : BaseResourceDAO<Practitioner>() {
     override var resourceType = Practitioner::class.java
     override var collection: Collection = database.createCollection(Practitioner::class.simpleName, true)
 

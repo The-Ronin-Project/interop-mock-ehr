@@ -41,9 +41,9 @@ class R4PractitionerRoleResourceTest : BaseMySQLTest() {
         every { database.createCollection(Location::class.simpleName, true) } returns collection
         every { database.createCollection(Practitioner::class.simpleName, true) } returns collection
         practitionerRoleProvider = R4PractitionerRoleResourceProvider(
-            R4PractitionerRoleDAO(database),
-            R4LocationDAO(database),
-            R4PractitionerDAO(database)
+            R4PractitionerRoleDAO(database, FhirContext.forR4()),
+            R4LocationDAO(database, FhirContext.forR4()),
+            R4PractitionerDAO(database, FhirContext.forR4())
         )
     }
 

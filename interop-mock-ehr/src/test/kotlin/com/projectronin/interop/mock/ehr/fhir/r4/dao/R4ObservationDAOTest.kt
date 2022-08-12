@@ -1,5 +1,6 @@
 package com.projectronin.interop.mock.ehr.fhir.r4.dao
 
+import ca.uhn.fhir.context.FhirContext
 import com.mysql.cj.xdevapi.Collection
 import com.mysql.cj.xdevapi.Schema
 import io.mockk.every
@@ -22,7 +23,7 @@ internal class R4ObservationDAOTest {
         val collection = mockk<Collection>()
         val database = mockk<Schema>()
         every { database.createCollection(Observation::class.simpleName, true) } returns collection
-        dao = R4ObservationDAO(database)
+        dao = R4ObservationDAO(database, FhirContext.forR4())
     }
 
     @Test

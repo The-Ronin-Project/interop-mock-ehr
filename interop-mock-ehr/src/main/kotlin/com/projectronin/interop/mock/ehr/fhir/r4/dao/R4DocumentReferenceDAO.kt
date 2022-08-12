@@ -8,8 +8,8 @@ import org.hl7.fhir.r4.model.DocumentReference
 import org.springframework.stereotype.Component
 
 @Component
-class R4DocumentReferenceDAO(database: Schema) : BaseResourceDAO<DocumentReference>() {
-    override var context: FhirContext = FhirContext.forR4()
+class R4DocumentReferenceDAO(database: Schema, override var context: FhirContext) :
+    BaseResourceDAO<DocumentReference>() {
     override var resourceType = DocumentReference::class.java
     override var collection: Collection = database.createCollection(DocumentReference::class.simpleName, true)
 

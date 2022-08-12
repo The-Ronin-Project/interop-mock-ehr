@@ -7,8 +7,7 @@ import org.hl7.fhir.r4.model.Communication
 import org.springframework.stereotype.Component
 
 @Component
-class R4CommunicationDAO(database: Schema) : BaseResourceDAO<Communication>() {
-    override var context: FhirContext = FhirContext.forR4()
+class R4CommunicationDAO(database: Schema, override var context: FhirContext) : BaseResourceDAO<Communication>() {
     override var resourceType = Communication::class.java
     override var collection: Collection = database.createCollection(Communication::class.simpleName, true)
 }
