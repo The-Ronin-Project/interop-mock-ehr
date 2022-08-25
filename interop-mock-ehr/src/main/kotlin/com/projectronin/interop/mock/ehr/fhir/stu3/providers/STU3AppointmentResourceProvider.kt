@@ -6,6 +6,7 @@ import ca.uhn.fhir.rest.annotation.Search
 import ca.uhn.fhir.rest.param.DateRangeParam
 import ca.uhn.fhir.rest.param.ReferenceParam
 import ca.uhn.fhir.rest.param.StringParam
+import ca.uhn.fhir.rest.param.TokenParam
 import com.projectronin.interop.mock.ehr.fhir.r4.dao.R4AppointmentDAO
 import com.projectronin.interop.mock.ehr.fhir.stu3.toDSTU3
 import org.hl7.fhir.dstu3.model.Appointment
@@ -27,7 +28,15 @@ class STU3AppointmentResourceProvider(override var resourceDAO: R4AppointmentDAO
         @RequiredParam(name = Appointment.SP_PATIENT) patientReferenceParam: ReferenceParam,
         @OptionalParam(name = Appointment.SP_DATE) dateRangeParam: DateRangeParam? = null,
         @OptionalParam(name = Appointment.SP_STATUS) statusParam: StringParam? = null,
+        @OptionalParam(name = Appointment.SP_IDENTIFIER) identifierParam: TokenParam? = null
     ): List<Appointment> {
+
+        identifierParam?.let {
+            if (it.system == "mockEncounterCSNSystem") {
+                return listOf(resourceDAO.findById(it.value).toDSTU3())
+            } else throw UnsupportedOperationException("Identifier system '${it.system}' not supported.")
+        }
+
         val referenceList = mutableListOf<Reference>()
 
         referenceList.add(Reference("Patient/${patientReferenceParam.value}"))

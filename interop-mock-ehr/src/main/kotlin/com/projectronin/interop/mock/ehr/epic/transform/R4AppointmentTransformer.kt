@@ -46,7 +46,7 @@ class R4AppointmentTransformer {
             appointmentNotes = listOf(r4Appointment.patientInstruction ?: "", r4Appointment.comment ?: ""),
             appointmentStartTime = SimpleDateFormat("hh:mm aa").format(r4Appointment.start),
             appointmentStatus = r4Appointment.status.toCode(),
-            contactIDs = listOf(IDType(r4Appointment.id.removePrefix("Appointment/"), "ASN")),
+            contactIDs = listOf(IDType(r4Appointment.id.removePrefix("Appointment/"), "CSN")),
             date = SimpleDateFormat("MM/dd/yyyy").format(r4Appointment.start),
             extraExtensions = listOf(),
             extraItems = listOf(),

@@ -5,6 +5,7 @@ import ca.uhn.fhir.rest.param.DateParam
 import ca.uhn.fhir.rest.param.DateRangeParam
 import ca.uhn.fhir.rest.param.ReferenceParam
 import ca.uhn.fhir.rest.param.StringParam
+import ca.uhn.fhir.rest.param.TokenParam
 import com.mysql.cj.xdevapi.Collection
 import com.mysql.cj.xdevapi.Schema
 import com.projectronin.interop.mock.ehr.BaseMySQLTest
@@ -25,6 +26,7 @@ import org.junit.jupiter.api.Assertions.assertTrue
 import org.junit.jupiter.api.BeforeAll
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.TestInstance
+import org.junit.jupiter.api.assertThrows
 import java.util.Date
 import java.util.UUID
 import org.hl7.fhir.r4.model.Appointment as R4Appointment
@@ -153,6 +155,30 @@ class STU3AppointmentResourceTest : BaseMySQLTest() {
         val output = appointmentProvider.search(patientReferenceParam = ReferenceParam("TESTINGID1"))
         assertEquals(1, output.size)
         assertEquals("Appointment/${testAppt.id}", output[0].id)
+    }
+
+    @Test
+    fun `search by csn`() {
+        val testAppt = Appointment()
+        testAppt.addParticipant().actor = Reference("Patient/TESTINGID9")
+        testAppt.id = "TESTAPPT9"
+        collection.add(FhirContext.forDstu3().newJsonParser().encodeResourceToString(testAppt)).execute()
+
+        val output = appointmentProvider.search(
+            patientReferenceParam = ReferenceParam("TESTINGID9"),
+            identifierParam = TokenParam("mockEncounterCSNSystem", "TESTAPPT9")
+        )
+        assertEquals(1, output.size)
+        assertEquals("Appointment/${testAppt.id}", output[0].id)
+
+        assertThrows<UnsupportedOperationException> {
+            appointmentProvider.search(
+                patientReferenceParam = ReferenceParam(
+                    "TESTINGID9"
+                ),
+                identifierParam = TokenParam("badSystem", "12345")
+            )
+        }
     }
 
     @Test
