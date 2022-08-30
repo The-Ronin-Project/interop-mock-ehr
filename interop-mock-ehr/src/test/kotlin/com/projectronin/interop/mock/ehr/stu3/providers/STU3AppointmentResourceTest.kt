@@ -5,7 +5,7 @@ import ca.uhn.fhir.rest.param.DateParam
 import ca.uhn.fhir.rest.param.DateRangeParam
 import ca.uhn.fhir.rest.param.ReferenceParam
 import ca.uhn.fhir.rest.param.StringParam
-import ca.uhn.fhir.rest.param.TokenParam
+import ca.uhn.fhir.rest.param.TokenOrListParam
 import com.mysql.cj.xdevapi.Collection
 import com.mysql.cj.xdevapi.Schema
 import com.projectronin.interop.mock.ehr.BaseMySQLTest
@@ -163,22 +163,42 @@ class STU3AppointmentResourceTest : BaseMySQLTest() {
         testAppt.addParticipant().actor = Reference("Patient/TESTINGID9")
         testAppt.id = "TESTAPPT9"
         collection.add(FhirContext.forDstu3().newJsonParser().encodeResourceToString(testAppt)).execute()
+        val testAppt2 = Appointment()
+        testAppt2.addParticipant().actor = Reference("Patient/TESTINGID10")
+        testAppt2.id = "TESTAPPT10"
+        collection.add(FhirContext.forDstu3().newJsonParser().encodeResourceToString(testAppt2)).execute()
 
         val output = appointmentProvider.search(
             patientReferenceParam = ReferenceParam("TESTINGID9"),
-            identifierParam = TokenParam("mockEncounterCSNSystem", "TESTAPPT9")
+            identifiersParam = TokenOrListParam("mockEncounterCSNSystem", "TESTAPPT9")
         )
         assertEquals(1, output.size)
         assertEquals("Appointment/${testAppt.id}", output[0].id)
+
+        val output2 = appointmentProvider.search(
+            patientReferenceParam = ReferenceParam("TESTINGID9"),
+            identifiersParam = TokenOrListParam("mockEncounterCSNSystem", "TESTAPPT9", "TESTAPPT10")
+        )
+        assertEquals(2, output2.size)
 
         assertThrows<UnsupportedOperationException> {
             appointmentProvider.search(
                 patientReferenceParam = ReferenceParam(
                     "TESTINGID9"
                 ),
-                identifierParam = TokenParam("badSystem", "12345")
+                identifiersParam = TokenOrListParam("badSystem", "12345")
             )
         }
+
+        assertEquals(
+            emptyList<Appointment>(),
+            appointmentProvider.search(
+                patientReferenceParam = ReferenceParam(
+                    "TESTINGID9"
+                ),
+                identifiersParam = TokenOrListParam()
+            )
+        )
     }
 
     @Test

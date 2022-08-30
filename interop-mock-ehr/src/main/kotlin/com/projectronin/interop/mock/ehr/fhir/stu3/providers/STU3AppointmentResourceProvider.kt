@@ -6,7 +6,7 @@ import ca.uhn.fhir.rest.annotation.Search
 import ca.uhn.fhir.rest.param.DateRangeParam
 import ca.uhn.fhir.rest.param.ReferenceParam
 import ca.uhn.fhir.rest.param.StringParam
-import ca.uhn.fhir.rest.param.TokenParam
+import ca.uhn.fhir.rest.param.TokenOrListParam
 import com.projectronin.interop.mock.ehr.fhir.r4.dao.R4AppointmentDAO
 import com.projectronin.interop.mock.ehr.fhir.stu3.toDSTU3
 import org.hl7.fhir.dstu3.model.Appointment
@@ -28,21 +28,22 @@ class STU3AppointmentResourceProvider(override var resourceDAO: R4AppointmentDAO
         @RequiredParam(name = Appointment.SP_PATIENT) patientReferenceParam: ReferenceParam,
         @OptionalParam(name = Appointment.SP_DATE) dateRangeParam: DateRangeParam? = null,
         @OptionalParam(name = Appointment.SP_STATUS) statusParam: StringParam? = null,
-        @OptionalParam(name = Appointment.SP_IDENTIFIER) identifierParam: TokenParam? = null
+        @OptionalParam(name = Appointment.SP_IDENTIFIER) identifiersParam: TokenOrListParam? = null
     ): List<Appointment> {
 
-        identifierParam?.let {
-            if (it.system == "mockEncounterCSNSystem") {
-                return listOf(resourceDAO.findById(it.value).toDSTU3())
-            } else throw UnsupportedOperationException("Identifier system '${it.system}' not supported.")
+        identifiersParam?.let {
+            return it.valuesAsQueryTokens!!.map { identifier ->
+                if (identifier.system != "mockEncounterCSNSystem")
+                    throw UnsupportedOperationException("Identifier system '${identifier.system}' not supported.")
+                resourceDAO.findById(identifier.value).toDSTU3()
+            }
         }
 
-        val referenceList = mutableListOf<Reference>()
-
-        referenceList.add(Reference("Patient/${patientReferenceParam.value}"))
-
         return resourceDAO.searchByQuery(
-            referenceList, dateRangeParam?.lowerBoundAsInstant, dateRangeParam?.upperBoundAsInstant, statusParam?.value
+            listOf(Reference("Patient/${patientReferenceParam.value}")),
+            dateRangeParam?.lowerBoundAsInstant,
+            dateRangeParam?.upperBoundAsInstant,
+            statusParam?.value
         ).map { it.toDSTU3() }
     }
 }
