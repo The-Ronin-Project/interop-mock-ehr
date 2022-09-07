@@ -1,11 +1,11 @@
 package com.projectronin.interop.mock.ehr.epic.transform
 
+import com.projectronin.interop.ehr.epic.apporchard.model.EpicAppointment
 import com.projectronin.interop.ehr.epic.apporchard.model.IDType
 import com.projectronin.interop.ehr.epic.apporchard.model.ScheduleProviderReturnWithTime
 import org.hl7.fhir.r4.model.Patient
 import org.springframework.stereotype.Component
 import java.text.SimpleDateFormat
-import com.projectronin.interop.ehr.epic.apporchard.model.Appointment as EpicAppointment
 import org.hl7.fhir.r4.model.Appointment as R4Appointment
 
 @Component
@@ -48,13 +48,10 @@ class R4AppointmentTransformer {
             appointmentStatus = r4Appointment.status.toCode(),
             contactIDs = listOf(IDType(r4Appointment.id.removePrefix("Appointment/"), "CSN")),
             date = SimpleDateFormat("MM/dd/yyyy").format(r4Appointment.start),
-            extraExtensions = listOf(),
-            extraItems = listOf(),
             patientIDs = patientIDs ?: listOf(),
             patientName = r4Patient?.name?.find { it.use.toCode() == "usual" }?.nameAsSingleString
                 ?: r4Patient?.nameFirstRep?.nameAsSingleString ?: "",
             providers = providers,
-            visitTypeIDs = listOf(),
             visitTypeName = r4Appointment.appointmentType.text ?: ""
         )
     }

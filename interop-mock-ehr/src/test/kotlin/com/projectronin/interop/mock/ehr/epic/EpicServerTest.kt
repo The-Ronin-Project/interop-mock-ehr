@@ -1,5 +1,6 @@
 package com.projectronin.interop.mock.ehr.epic
 
+import com.projectronin.interop.ehr.epic.apporchard.model.EpicAppointment
 import com.projectronin.interop.ehr.epic.apporchard.model.GetAppointmentsResponse
 import com.projectronin.interop.ehr.epic.apporchard.model.GetPatientAppointmentsRequest
 import com.projectronin.interop.ehr.epic.apporchard.model.GetProviderAppointmentRequest
@@ -26,7 +27,6 @@ import org.junit.jupiter.api.assertThrows
 import org.springframework.web.server.ResponseStatusException
 import java.util.Date
 import java.util.UUID
-import com.projectronin.interop.ehr.epic.apporchard.model.Appointment as EpicAppointment
 import org.hl7.fhir.r4.model.Appointment as R4Appointment
 
 internal class EpicServerTest {

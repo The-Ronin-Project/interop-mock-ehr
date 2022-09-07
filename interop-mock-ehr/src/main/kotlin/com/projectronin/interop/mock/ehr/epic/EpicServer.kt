@@ -1,5 +1,6 @@
 package com.projectronin.interop.mock.ehr.epic
 
+import com.projectronin.interop.ehr.epic.apporchard.model.EpicAppointment
 import com.projectronin.interop.ehr.epic.apporchard.model.GetAppointmentsResponse
 import com.projectronin.interop.ehr.epic.apporchard.model.GetPatientAppointmentsRequest
 import com.projectronin.interop.ehr.epic.apporchard.model.GetProviderAppointmentRequest
@@ -24,7 +25,6 @@ import org.springframework.web.bind.annotation.RestController
 import org.springframework.web.server.ResponseStatusException
 import java.text.SimpleDateFormat
 import java.util.UUID
-import com.projectronin.interop.ehr.epic.apporchard.model.Appointment as EpicAppointment
 
 @RestController
 @RequestMapping("/epic")

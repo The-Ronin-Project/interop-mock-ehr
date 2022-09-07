@@ -1,5 +1,6 @@
 package com.projectronin.interop.mock.ehr.epic.transform
 
+import com.projectronin.interop.ehr.epic.apporchard.model.EpicAppointment
 import com.projectronin.interop.ehr.epic.apporchard.model.IDType
 import com.projectronin.interop.ehr.epic.apporchard.model.ScheduleProviderReturnWithTime
 import org.hl7.fhir.r4.model.Appointment.AppointmentParticipantComponent
@@ -11,7 +12,6 @@ import org.hl7.fhir.r4.model.Reference
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Test
 import java.util.Date
-import com.projectronin.interop.ehr.epic.apporchard.model.Appointment as EpicAppointment
 import org.hl7.fhir.r4.model.Appointment as R4Appointment
 
 internal class R4AppointmentTransformerTest {
@@ -42,8 +42,6 @@ internal class R4AppointmentTransformerTest {
             appointmentStatus = "booked",
             contactIDs = listOf(IDType(id = "APPTID#1", type = "CSN")),
             date = "01/01/2020",
-            extraExtensions = listOf(),
-            extraItems = listOf(),
             patientIDs = listOf(IDType("PATMRN", "MRN")),
             patientName = "given family",
             providers = listOf(
@@ -61,7 +59,6 @@ internal class R4AppointmentTransformerTest {
                     time = ""
                 )
             ),
-            visitTypeIDs = listOf(),
             visitTypeName = "type"
         )
         val actual = R4AppointmentTransformer().transformToEpicAppointment(input, patient)
@@ -85,12 +82,9 @@ internal class R4AppointmentTransformerTest {
             appointmentStatus = "booked",
             contactIDs = listOf(IDType(id = "APPTID#1", type = "CSN")),
             date = "01/01/2020",
-            extraExtensions = listOf(),
-            extraItems = listOf(),
             patientIDs = listOf(),
             patientName = "",
             providers = listOf(),
-            visitTypeIDs = listOf(),
             visitTypeName = ""
         )
         val actual = R4AppointmentTransformer().transformToEpicAppointment(input, patient)
@@ -127,8 +121,6 @@ internal class R4AppointmentTransformerTest {
             appointmentStatus = "booked",
             contactIDs = listOf(IDType(id = "APPTID#1", type = "CSN")),
             date = "01/01/2020",
-            extraExtensions = listOf(),
-            extraItems = listOf(),
             patientIDs = listOf(
                 IDType("PATMRN", "MRN"),
                 IDType("   Z123", "Internal")
@@ -149,7 +141,6 @@ internal class R4AppointmentTransformerTest {
                     time = ""
                 )
             ),
-            visitTypeIDs = listOf(),
             visitTypeName = "type"
         )
         val actual = R4AppointmentTransformer().transformToEpicAppointment(input, patient)
