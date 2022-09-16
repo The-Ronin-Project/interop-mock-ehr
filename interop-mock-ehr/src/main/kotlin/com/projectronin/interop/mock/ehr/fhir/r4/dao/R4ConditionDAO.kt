@@ -1,6 +1,7 @@
 package com.projectronin.interop.mock.ehr.fhir.r4.dao
 
 import ca.uhn.fhir.context.FhirContext
+import ca.uhn.fhir.rest.param.TokenOrListParam
 import com.mysql.cj.xdevapi.Collection
 import com.mysql.cj.xdevapi.Schema
 import org.hl7.fhir.r4.model.Condition
@@ -19,14 +20,19 @@ class R4ConditionDAO(database: Schema, override var context: FhirContext) : Base
      */
     fun searchByQuery(
         subject: String? = null,
-        category: String? = null,
+        category: TokenOrListParam? = null,
         clinicalStatus: String? = null,
     ): List<Condition> {
 
         // Build queryFragments into query conditions joined with 'AND'
         val queryFragments = mutableListOf<String>()
         subject?.let { queryFragments.add("('$it' = subject.reference)") }
-        category?.let { queryFragments.add("('$it' in category[*].coding[*].code OR '$it' in category[*].text)") }
+        category?.let { catList ->
+            val phrase = getSearchStringForFHIRTokens(catList)
+            if (!phrase.isNullOrEmpty()) {
+                queryFragments.add(phrase)
+            }
+        }
         clinicalStatus?.let { queryFragments.add("('$it' in clinicalStatus.coding[*].code OR '$it' in clinicalStatus.text)") }
 
         // Join query conditions with 'AND'

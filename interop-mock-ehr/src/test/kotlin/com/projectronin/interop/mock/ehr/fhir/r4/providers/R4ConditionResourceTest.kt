@@ -3,6 +3,7 @@ package com.projectronin.interop.mock.ehr.fhir.r4.providers
 import ca.uhn.fhir.context.FhirContext
 import ca.uhn.fhir.rest.param.ReferenceParam
 import ca.uhn.fhir.rest.param.StringParam
+import ca.uhn.fhir.rest.param.TokenOrListParam
 import com.mysql.cj.xdevapi.Collection
 import com.mysql.cj.xdevapi.Schema
 import com.projectronin.interop.mock.ehr.BaseMySQLTest
@@ -82,7 +83,7 @@ class R4ConditionResourceTest : BaseMySQLTest() {
         collection.add(FhirContext.forR4().newJsonParser().encodeResourceToString(testCondition1)).execute()
 
         val testCondition2 = Condition()
-        testCondition2.category = listOf(CodeableConcept(Coding("otherSystem", "otherCode", "otherDisplay")))
+        testCondition2.category = listOf(CodeableConcept(Coding("mySystem", "otherCode", "otherDisplay")))
         testCondition2.id = "${prefix}TESTCOND2"
         collection.add(FhirContext.forR4().newJsonParser().encodeResourceToString(testCondition2)).execute()
 
@@ -115,12 +116,8 @@ class R4ConditionResourceTest : BaseMySQLTest() {
         testCondition7.id = "${prefix}TESTCOND7"
         collection.add(FhirContext.forR4().newJsonParser().encodeResourceToString(testCondition7)).execute()
 
-        val output = conditionProvider.search(categoryParam = StringParam("myCode"))
-        assertEquals(4, output.size)
-        assertEquals("Condition/${testCondition1.id}", output[0].id)
-        assertEquals("Condition/${testCondition3.id}", output[1].id)
-        assertEquals("Condition/${testCondition4.id}", output[2].id)
-        assertEquals("Condition/${testCondition5.id}", output[3].id)
+        val output = conditionProvider.search(categoryParam = TokenOrListParam("", "myCode", "otherCode"))
+        assertEquals(6, output.size)
     }
 
     @Test
@@ -219,7 +216,10 @@ class R4ConditionResourceTest : BaseMySQLTest() {
         collection.add(FhirContext.forR4().newJsonParser().encodeResourceToString(testCondition4)).execute()
 
         // AND match on "myCode" for 3 mixed properties matches only conditions 1 and 4
-        var output = conditionProvider.search(clinicalStatusParam = StringParam("myCode"), categoryParam = StringParam("myCode"))
+        var output = conditionProvider.search(
+            clinicalStatusParam = StringParam("myCode"),
+            categoryParam = TokenOrListParam("", "myCode")
+        )
         assertEquals(2, output.size)
         assertEquals("Condition/${testCondition1.id}", output[0].id)
         assertEquals("Condition/${testCondition4.id}", output[1].id)
@@ -234,7 +234,10 @@ class R4ConditionResourceTest : BaseMySQLTest() {
         collection.add(FhirContext.forR4().newJsonParser().encodeResourceToString(testConditionNoMatch)).execute()
 
         // no match for mixed AND condition
-        output = conditionProvider.search(clinicalStatusParam = StringParam("myCode"), categoryParam = StringParam("myCode"))
+        output = conditionProvider.search(
+            clinicalStatusParam = StringParam("myCode"),
+            categoryParam = TokenOrListParam("", "myCode")
+        )
         assertEquals(0, output.size)
     }
 

@@ -87,7 +87,7 @@ abstract class BaseResourceDAO<T : Resource> {
             return null
         }
         val queryFragments = mutableListOf<String>()
-        val categories = fhirTokens.getValuesAsQueryTokens()
+        val categories = fhirTokens.valuesAsQueryTokens
         val phraseList = categories.mapNotNull { token ->
             getSearchStringForFHIRToken(token)
         }
