@@ -111,14 +111,14 @@ abstract class BaseResourceDAO<T : Resource> {
         }
         val system = fhirToken.system
         val code = fhirToken.value
-        return if (system.isNotEmpty()) {
-            if (code.isNotEmpty()) {
+        return if (!system.isNullOrEmpty()) {
+            if (!code.isNullOrEmpty()) {
                 "('$system' in category[*].coding[*].system AND '$code' in category[*].coding[*].code)"
             } else {
                 "('$system' in category[*].coding[*].system)"
             }
         } else {
-            if (code.isNotEmpty()) {
+            if (!code.isNullOrEmpty()) {
                 "('$code' in category[*].coding[*].code OR '$code' in category[*].text)"
             } else {
                 null

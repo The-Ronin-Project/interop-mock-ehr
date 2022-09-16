@@ -32,6 +32,7 @@ internal class BaseResourceDAOTest {
     @Test
     fun `tokens null`() {
         assertNull(dao.getSearchStringForFHIRTokens(null))
+        assertNull(dao.getSearchStringForFHIRTokens())
     }
 
     @Test
@@ -69,11 +70,11 @@ internal class BaseResourceDAOTest {
         token2.system = "i"
         token2.value = "j"
         val token3 = TokenParam()
-        token3.system = ""
+        token3.system = null
         token3.value = "x"
         val token4 = TokenParam()
         token4.system = "y"
-        token4.value = ""
+        token4.value = null
         val token5 = TokenParam()
         token5.system = ""
         token5.value = "z"
@@ -93,5 +94,6 @@ internal class BaseResourceDAOTest {
     @Test
     fun `token null`() {
         assertNull(dao.getSearchStringForFHIRToken(null))
+        assertNull(dao.getSearchStringForFHIRToken())
     }
 }

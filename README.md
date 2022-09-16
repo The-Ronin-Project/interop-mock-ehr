@@ -47,6 +47,13 @@ The service will be available at port 8081 of your computer. If you're changing 
 build folder from the module project structure before running these commands. Assuming you downloaded the entire repo to run this, the
 server will be initialized with the data in the __/init/resources__ directory. Feel free to modify these files locally.
 
+For building M1 images:
+```
+docker buildx create --name mybuilder
+docker buildx use mybuilder
+docker buildx build --tag mock-ehr-test3 -o type=docker --platform=linux/arm64 ./interop-mock-ehr
+```
+
 ## Running via Testcontainer
 
 If you want to run tests against this service, you can add the project to your dependencies 

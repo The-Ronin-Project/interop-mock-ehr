@@ -3,8 +3,8 @@ package com.projectronin.interop.mock.ehr.fhir.r4.providers
 import ca.uhn.fhir.rest.annotation.OptionalParam
 import ca.uhn.fhir.rest.annotation.Search
 import ca.uhn.fhir.rest.param.ReferenceParam
-import ca.uhn.fhir.rest.param.StringParam
 import ca.uhn.fhir.rest.param.TokenOrListParam
+import ca.uhn.fhir.rest.param.TokenParam
 import com.projectronin.interop.mock.ehr.fhir.r4.dao.R4ConditionDAO
 import org.hl7.fhir.instance.model.api.IBaseResource
 import org.hl7.fhir.r4.model.Condition
@@ -22,7 +22,7 @@ class R4ConditionResourceProvider(override var resourceDAO: R4ConditionDAO) :
     fun search(
         @OptionalParam(name = Condition.SP_PATIENT) patientReferenceParam: ReferenceParam? = null,
         @OptionalParam(name = Condition.SP_CATEGORY) categoryParam: TokenOrListParam? = null,
-        @OptionalParam(name = Condition.SP_CLINICAL_STATUS) clinicalStatusParam: StringParam? = null,
+        @OptionalParam(name = Condition.SP_CLINICAL_STATUS) clinicalStatusParam: TokenParam? = null,
     ): List<Condition> {
         val reference = patientReferenceParam?.let { "Patient/${it.value}" }
         return resourceDAO.searchByQuery(
