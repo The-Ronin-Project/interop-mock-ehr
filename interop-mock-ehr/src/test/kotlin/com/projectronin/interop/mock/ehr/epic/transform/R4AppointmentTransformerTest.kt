@@ -47,7 +47,7 @@ internal class R4AppointmentTransformerTest {
             appointmentDuration = "30",
             appointmentNotes = listOf("instruction", "comment"),
             appointmentStartTime = "12:00 AM",
-            appointmentStatus = "booked",
+            appointmentStatus = "Scheduled",
             contactIDs = listOf(IDType(id = "APPTID#1", type = "CSN")),
             date = "01/01/2020",
             patientIDs = listOf(IDType("PATMRN", "MRN")),
@@ -90,7 +90,7 @@ internal class R4AppointmentTransformerTest {
             appointmentDuration = "30",
             appointmentNotes = listOf("", ""),
             appointmentStartTime = "12:00 AM",
-            appointmentStatus = "booked",
+            appointmentStatus = "Scheduled",
             contactIDs = listOf(IDType(id = "APPTID#1", type = "CSN")),
             date = "01/01/2020",
             patientIDs = listOf(),
@@ -139,7 +139,7 @@ internal class R4AppointmentTransformerTest {
             appointmentDuration = "30",
             appointmentNotes = listOf("instruction", "comment"),
             appointmentStartTime = "12:00 AM",
-            appointmentStatus = "booked",
+            appointmentStatus = "Scheduled",
             contactIDs = listOf(IDType(id = "APPTID#1", type = "CSN")),
             date = "01/01/2020",
             patientIDs = listOf(
@@ -198,7 +198,7 @@ internal class R4AppointmentTransformerTest {
             appointmentDuration = "30",
             appointmentNotes = listOf("instruction", "comment"),
             appointmentStartTime = "12:00 AM",
-            appointmentStatus = "booked",
+            appointmentStatus = "Scheduled",
             contactIDs = listOf(IDType(id = "APPTID#1", type = "CSN")),
             date = "01/01/2020",
             patientIDs = listOf(
@@ -225,5 +225,16 @@ internal class R4AppointmentTransformerTest {
         )
         val actual = R4AppointmentTransformer(practDAO).transformToEpicAppointment(input, patient)
         assertEquals(expected.patientIDs, actual.patientIDs)
+    }
+
+    @Test
+    fun `test appointment status values`() {
+        assertEquals("Scheduled", transformAppointmentStatus("booked"))
+        assertEquals("Scheduled", transformAppointmentStatus("pending"))
+        assertEquals("No Show", transformAppointmentStatus("noshow"))
+        assertEquals("Arrived", transformAppointmentStatus("arrived"))
+        assertEquals("Arrived", transformAppointmentStatus("checked-in"))
+        assertEquals("Completed", transformAppointmentStatus("fulfilled"))
+        assertEquals("?", transformAppointmentStatus("bad"))
     }
 }

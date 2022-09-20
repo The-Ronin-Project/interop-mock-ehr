@@ -31,7 +31,6 @@ class R4AppointmentTransformer(private val r4PractitionerDAO: R4PractitionerDAO)
 
                 // check actual R4 practitioner for internal ID
                 val identifierVal = practitioner?.identifier?.find { it.system == "mockEHRProviderSystem" }?.value
-                    // then check if an identifier exists on the reference (unlikely)
                     ?: practitionerRef.actor.identifier.takeIf { it.system == "mockEHRProviderSystem" }?.value
 
                 ScheduleProviderReturnWithTime(
@@ -50,7 +49,7 @@ class R4AppointmentTransformer(private val r4PractitionerDAO: R4PractitionerDAO)
             appointmentDuration = r4Appointment.minutesDuration.toString(),
             appointmentNotes = listOf(r4Appointment.patientInstruction ?: "", r4Appointment.comment ?: ""),
             appointmentStartTime = SimpleDateFormat("hh:mm aa").format(r4Appointment.start),
-            appointmentStatus = r4Appointment.status.toCode(),
+            appointmentStatus = transformAppointmentStatus(r4Appointment.status.toCode()),
             contactIDs = listOf(IDType(r4Appointment.id.removePrefix("Appointment/"), "CSN")),
             date = SimpleDateFormat("MM/dd/yyyy").format(r4Appointment.start),
             patientIDs = patientIDs ?: listOf(),
@@ -59,5 +58,17 @@ class R4AppointmentTransformer(private val r4PractitionerDAO: R4PractitionerDAO)
             providers = providers,
             visitTypeName = r4Appointment.appointmentType.text ?: ""
         )
+    }
+}
+
+fun transformAppointmentStatus(r4StatusCode: String): String {
+    return when (r4StatusCode) {
+        "booked" -> "Scheduled"
+        "pending" -> "Scheduled"
+        "noshow" -> "No Show"
+        "arrived" -> "Arrived"
+        "fulfilled" -> "Completed"
+        "checked-in" -> "Arrived"
+        else -> "?"
     }
 }
