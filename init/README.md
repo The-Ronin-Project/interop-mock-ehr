@@ -88,9 +88,10 @@ For example, Patient and Practitioner have typical Epic identifier lists.
 Patient (eJzlzKe3KPzAV5TtkxmNivQ3)
 
 - with two appointments (06d7feb3-3326-4276-9535-83a622d8e217, 06d7feb3-3326-4276-9535-83a622d8e216)
-- each with the same condition (39bb2850-50e2-4bb0-a5ae-3a98bbaf199f),
-- location (3f1af7cb-a47e-4e1e-a8e3-d18e0d073e6c),
-- and practitioner (06d7feb3-3326-4276-9535-83a622d8e215).
+- each with a different condition category
+  (39bb2850-50e2-4bb0-a5ae-3a98bbaf199f, ejfhyCtPxusbaWaQRKlBQV6LLDg5BFzfVP-addkBOIvnu6EtLcwN8Tkna95oMl5iRy4cY9mJsn-Z1U36H.hTI7Q3),
+- at the same location (3f1af7cb-a47e-4e1e-a8e3-d18e0d073e6c),
+- and with the same practitioner (06d7feb3-3326-4276-9535-83a622d8e215).
 - Also included is a practitioner role (06d7feb3-3326-4276-9535-83a622d8e226),
 - and an observation in [category](http://terminology.hl7.org/CodeSystem/observation-category) 
   vital-signs, effective 2016-03-28 (3f1af7cb-a47e-4e1e-a8e3-d18e0d073e6d).
