@@ -5,6 +5,7 @@ import ca.uhn.fhir.rest.param.TokenOrListParam
 import com.mysql.cj.xdevapi.Collection
 import com.mysql.cj.xdevapi.Schema
 import org.hl7.fhir.r4.model.DocumentReference
+import org.hl7.fhir.r4.model.Identifier
 import org.springframework.stereotype.Component
 
 @Component
@@ -36,5 +37,19 @@ class R4DocumentReferenceDAO(database: Schema, override var context: FhirContext
         // Run the query and return a List of resources that match
         val parser = context.newJsonParser()
         return collection.find(query).execute().map { parser.parseResource(resourceType, it.toString()) }
+    }
+
+    /**
+     * For use in DocumentReferenceResolver
+     * Assumes that the value in [identifier] corresponds to exactly one document
+     */
+
+    fun searchByIdentifier(identifier: Identifier): DocumentReference? {
+        val parser = context.newJsonParser()
+        val searchString = "'${identifier.value}' in $.identifier[*].value"
+        val documentDbDoc =
+            collection.find(searchString).execute().fetchAll().singleOrNull()
+        documentDbDoc?.let { return parser.parseResource(resourceType, documentDbDoc.toString()) }
+        return null
     }
 }

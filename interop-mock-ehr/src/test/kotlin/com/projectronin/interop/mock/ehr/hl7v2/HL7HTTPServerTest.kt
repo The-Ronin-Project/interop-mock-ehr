@@ -9,6 +9,6 @@ internal class HL7HTTPServerTest {
     @Test
     fun `init test`() {
         val config = mockk<ServletConfig>()
-        HL7HTTPServer().init(config) // not much to assert, just code coverage
+        HL7HTTPServer(mockk(), mockk(), mockk(), mockk()).init(config) // not much to assert, just code coverage
     }
 }
