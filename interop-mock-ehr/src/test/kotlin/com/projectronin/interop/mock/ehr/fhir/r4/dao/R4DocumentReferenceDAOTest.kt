@@ -83,7 +83,7 @@ internal class R4DocumentReferenceDAOTest {
     }
 
     @Test
-    fun `identifier search finds values `() {
+    fun `identifier search finds values`() {
         val document = DocumentReference()
         document.id = UUID.randomUUID().toString()
         val documentString = FhirContext.forR4().newJsonParser().encodeResourceToString(document)

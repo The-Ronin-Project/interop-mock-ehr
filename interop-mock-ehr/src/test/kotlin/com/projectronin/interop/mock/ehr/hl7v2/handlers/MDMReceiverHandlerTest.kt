@@ -31,6 +31,7 @@ internal class MDMReceiverHandlerTest {
     private lateinit var mdmHandler: MDMReceiverHandler
 
     private lateinit var message: MDM_T02
+
     @BeforeEach
     fun init() {
         binaryDao = mockk()
@@ -43,6 +44,7 @@ internal class MDMReceiverHandlerTest {
         message.msh.fieldSeparator.value = "|"
         message.msh.encodingCharacters.value = "^~\\&"
     }
+
     @Test
     fun `canProcess - works`() {
         assertTrue(mdmHandler.canProcess(mockk()))
@@ -136,6 +138,45 @@ internal class MDMReceiverHandlerTest {
         every { binaryDao.update(capture(binarySlot)) } just runs
 
         message.txa.uniqueDocumentNumber.entityIdentifier.value = "unique"
+        message.insertOBSERVATION(0)
+        val allObs = message.observationAll
+        allObs[0].obx.valueType.value = "TX"
+        val value = ST(message)
+        value.value = "Message"
+        allObs[0].obx.insertObservationValue(0)
+        allObs[0].obx.observationValue.first().data = value
+
+        mdmHandler.processMessage(message, mutableMapOf())
+        val resource = documentSlot.captured
+        val binaryResource = binarySlot.captured
+
+        assertEquals("existingDocId", resource.id)
+        assertEquals("existingBinaryId", binaryResource.id)
+    }
+
+    @Test
+    fun `processMessage - handles existing binary and document for document with single quote`() {
+        val mockExistingDoc = mockk<DocumentReference> {
+            every { hasContent() } returns true
+            every { content } returns listOf(
+                mockk {
+                    every { hasAttachment() } returns true
+                    every { attachment.hasUrl() } returns true
+                    every { attachment.url } returns "Binary/existingBinaryId"
+                }
+
+            )
+            every { id } returns "existingDocId"
+        }
+        every { documentResolver.findDocumentReference("""unique\'value""") } returns mockExistingDoc
+        every { patientResolver.findPatient(any()) } returns null
+        val documentSlot = slot<DocumentReference>()
+        every { documentDao.update(capture(documentSlot)) } just runs
+
+        val binarySlot = slot<Binary>()
+        every { binaryDao.update(capture(binarySlot)) } just runs
+
+        message.txa.uniqueDocumentNumber.entityIdentifier.value = "unique'value"
         message.insertOBSERVATION(0)
         val allObs = message.observationAll
         allObs[0].obx.valueType.value = "TX"

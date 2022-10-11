@@ -44,7 +44,10 @@ class MDMReceiverHandler(
         // if there's an existing document grab the existing binary to update it
         // this just overwrites w/ w/e was last sent in for a document
         val uniqueID = theMessage.txa.uniqueDocumentNumber.entityIdentifier.value
-        val existingDocumentReference = uniqueID?.let { documentReferenceResolver.findDocumentReference(it) }
+        val existingDocumentReference = uniqueID?.let {
+            val escaped = it.replace("'", "\\'")
+            documentReferenceResolver.findDocumentReference(escaped)
+        }
 
         if (existingDocumentReference != null) {
             logger.info { "Finding existing binary" }
