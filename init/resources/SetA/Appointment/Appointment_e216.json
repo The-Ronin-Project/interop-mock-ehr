@@ -66,6 +66,13 @@
       "status": "accepted"
     },
     {
+      "actor": {
+        "reference": "Location/3f1af7cb-a47e-4e1e-a8e3-d18e0d073e6c",
+        "display": "EMC Family Medicine"
+      },
+      "status": "accepted"
+    },
+    {
       "type": [
         {
           "coding": [

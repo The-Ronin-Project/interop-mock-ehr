@@ -7,7 +7,8 @@
   },
   "identifier": [
     {
-      "value": "B1-S.F2"
+      "value": "E12345",
+      "system": "mockEHRDepartmentInternalSystem"
     }
   ],
   "status": "active",

@@ -15,5 +15,5 @@ class EpicDAL(
     val r4PractitionerDAO: R4PractitionerDAO,
     val r4AppointmentTransformer: R4AppointmentTransformer,
     val r4CommunicationDAO: R4CommunicationDAO,
-    val r4CommunicationTransformer: R4CommunicationTransformer
+    val r4CommunicationTransformer: R4CommunicationTransformer,
 )
