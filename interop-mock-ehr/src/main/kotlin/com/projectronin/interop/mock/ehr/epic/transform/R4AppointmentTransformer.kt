@@ -36,7 +36,7 @@ class R4AppointmentTransformer(
                     }.getOrNull()
                 val depIdentifier =
                     location?.identifier?.find { it.system == "mockEHRDepartmentInternalSystem" }?.value
-                listOf(IDType(depIdentifier ?: "NO-INTERNAL-ID", "External"))
+                listOf(IDType(depIdentifier ?: "NO-INTERNAL-ID", "Internal"))
             } ?: emptyList()
 
         val providers =

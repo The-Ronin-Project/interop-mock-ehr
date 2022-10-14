@@ -65,7 +65,7 @@ internal class R4AppointmentTransformerTest {
                     departmentIDs = listOf(
                         IDType(
                             id = "NO-INTERNAL-ID",
-                            type = "External"
+                            type = "Internal"
                         )
                     ),
                     departmentName = "",
@@ -177,7 +177,7 @@ internal class R4AppointmentTransformerTest {
                     departmentIDs = listOf(
                         IDType(
                             id = "E12345",
-                            type = "External"
+                            type = "Internal"
                         )
                     ),
                     departmentName = "",
