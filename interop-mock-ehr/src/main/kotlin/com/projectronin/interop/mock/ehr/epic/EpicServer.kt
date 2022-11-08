@@ -163,12 +163,22 @@ class EpicServer(private var dal: EpicDAL) {
             dal.r4PractitionerDAO.searchByIdentifier(
                 Identifier().setValue(it.id).setType(CodeableConcept().setText(it.idType))
             )
+        } ?: emptyList()
+
+        // use practitioners if we have them
+        val r4ReferenceList = r4Practitioners.ifEmpty {
+            // otherwise use departments
+            val r4Departments = request.departments?.mapNotNull {
+                dal.r4LocationDAO.searchByIdentifier(
+                    Identifier().setValue(it.id).setSystem("mockEHRDepartmentInternalSystem")
+                )
+            } ?: emptyList()
+            r4Departments.ifEmpty { return errorResponse("NO-PROVIDER-FOUND") }
         }
-        if (r4Practitioners.isNullOrEmpty()) return errorResponse("NO-PROVIDER-FOUND")
 
         // find all appointments for all practitioners
         val epicAppointments = mutableListOf<EpicAppointment>()
-        r4Practitioners.forEach {
+        r4ReferenceList.forEach {
             val r4Appointments = dal.r4AppointmentDAO.searchByQuery(
                 references = listOf(Reference().setReference(it.id)),
                 fromDate = start,

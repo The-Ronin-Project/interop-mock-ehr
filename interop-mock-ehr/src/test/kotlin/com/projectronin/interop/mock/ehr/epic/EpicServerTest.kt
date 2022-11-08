@@ -4,6 +4,7 @@ import com.projectronin.interop.ehr.epic.apporchard.model.EpicAppointment
 import com.projectronin.interop.ehr.epic.apporchard.model.GetAppointmentsResponse
 import com.projectronin.interop.ehr.epic.apporchard.model.GetPatientAppointmentsRequest
 import com.projectronin.interop.ehr.epic.apporchard.model.GetProviderAppointmentRequest
+import com.projectronin.interop.ehr.epic.apporchard.model.IDType
 import com.projectronin.interop.ehr.epic.apporchard.model.ScheduleProvider
 import com.projectronin.interop.ehr.epic.apporchard.model.SendMessageRecipient
 import com.projectronin.interop.ehr.epic.apporchard.model.SendMessageRequest
@@ -15,9 +16,11 @@ import io.mockk.mockkConstructor
 import io.mockk.mockkStatic
 import io.mockk.unmockkAll
 import io.mockk.unmockkStatic
+import org.hl7.fhir.r4.model.Appointment.AppointmentParticipantComponent
 import org.hl7.fhir.r4.model.CodeableConcept
 import org.hl7.fhir.r4.model.Communication
 import org.hl7.fhir.r4.model.Identifier
+import org.hl7.fhir.r4.model.Location
 import org.hl7.fhir.r4.model.Patient
 import org.hl7.fhir.r4.model.Practitioner
 import org.hl7.fhir.r4.model.Reference
@@ -161,6 +164,87 @@ internal class EpicServerTest {
         mockkConstructor(Reference::class)
         val ref = mockk<Reference>()
         every { anyConstructed<Reference>().setReference("TESTINGPRACTID") } returns ref
+
+        every {
+            dal.r4AppointmentDAO.searchByQuery(
+                references = listOf(ref),
+                fromDate = Date(120, 0, 1),
+                toDate = Date(121, 0, 1, 23, 59)
+            )
+        } returns listOf(appointment1, appointment2)
+
+        val epicAppointment1 = mockk<EpicAppointment>()
+        val epicAppointment2 = mockk<EpicAppointment>()
+
+        every {
+            dal.r4AppointmentTransformer.transformToEpicAppointment(
+                appointment1,
+                patient
+            )
+        } returns epicAppointment1
+
+        every {
+            dal.r4AppointmentTransformer.transformToEpicAppointment(
+                appointment2,
+                null
+            )
+        } returns epicAppointment2
+
+        val output = server.getAppointmentsByPractitioner(request)
+        val expected = GetAppointmentsResponse(
+            appointments = listOf(epicAppointment1, epicAppointment2),
+            error = null
+        )
+        assertEquals(expected, output)
+        unmockkAll()
+    }
+
+    @Test
+    fun `working department appointment request test`() {
+        val patient = Patient()
+        patient.id = "TESTINGPATID"
+        every {
+            dal.r4PatientDAO.findById(
+                "TESTINGPATID"
+            )
+        } returns patient
+
+        val location = Location()
+        location.id = "TESTINGLOCID"
+
+        val request = GetProviderAppointmentRequest(
+            departments = listOf(
+                IDType("DEPT#1", "Internal")
+            ),
+            startDate = "01/01/2020",
+            endDate = "01/01/2021",
+            userID = "12345",
+            userIDType = "Internal"
+        )
+
+        mockkConstructor(Identifier::class)
+        mockkConstructor(CodeableConcept::class)
+        val ident = mockk<Identifier>()
+        val mockCodeableConcept = mockk<CodeableConcept>()
+        every { anyConstructed<CodeableConcept>().setText("External") } returns mockCodeableConcept
+        every { anyConstructed<Identifier>().setValue("DEPT#1").setSystem("mockEHRDepartmentInternalSystem") } returns ident
+        every {
+            dal.r4LocationDAO.searchByIdentifier(
+                ident
+            )
+        } returns location
+
+        val appointment1 = R4Appointment()
+        appointment1.id = "APPTID1"
+        val patientParticipant = AppointmentParticipantComponent()
+        patientParticipant.actor = Reference().setReference("Patient/TESTINGPATID").setType("Patient")
+        appointment1.participant.add(patientParticipant)
+        val appointment2 = R4Appointment()
+        appointment2.id = "APPTID2"
+
+        mockkConstructor(Reference::class)
+        val ref = mockk<Reference>()
+        every { anyConstructed<Reference>().setReference("TESTINGLOCID") } returns ref
 
         every {
             dal.r4AppointmentDAO.searchByQuery(
