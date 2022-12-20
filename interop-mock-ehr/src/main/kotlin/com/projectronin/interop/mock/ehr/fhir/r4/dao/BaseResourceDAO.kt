@@ -82,14 +82,14 @@ abstract class BaseResourceDAO<T : Resource> {
      * Returns a search string suitable as part of a where clause in a query to mock EHR.
      * Returns null if no search string can be formed from the input.
      */
-    fun getSearchStringForFHIRTokens(fhirTokens: TokenOrListParam? = null): String? {
+    fun getSearchStringForFHIRTokens(fhirTokens: TokenOrListParam? = null, fieldName: String? = "category"): String? {
         if (fhirTokens == null) {
             return null
         }
         val queryFragments = mutableListOf<String>()
         val categories = fhirTokens.valuesAsQueryTokens
         val phraseList = categories.mapNotNull { token ->
-            getSearchStringForFHIRToken(token)
+            getSearchStringForFHIRToken(token, fieldName)
         }
         if (phraseList.isNotEmpty()) {
             queryFragments.add(" ( ")
@@ -105,7 +105,7 @@ abstract class BaseResourceDAO<T : Resource> {
      * Returns a search string suitable as part of a where clause in a query to mock EHR.
      * Returns null if no search string can be formed from the input.
      */
-    fun getSearchStringForFHIRToken(fhirToken: TokenParam? = null): String? {
+    fun getSearchStringForFHIRToken(fhirToken: TokenParam? = null, fieldName: String? = "category"): String? {
         if (fhirToken == null) {
             return null
         }
@@ -113,13 +113,13 @@ abstract class BaseResourceDAO<T : Resource> {
         val code = fhirToken.value
         return if (!system.isNullOrEmpty()) {
             if (!code.isNullOrEmpty()) {
-                "('$system' in category[*].coding[*].system AND '$code' in category[*].coding[*].code)"
+                "('$system' in $fieldName[*].coding[*].system AND '$code' in $fieldName[*].coding[*].code)"
             } else {
-                "('$system' in category[*].coding[*].system)"
+                "('$system' in $fieldName[*].coding[*].system)"
             }
         } else {
             if (!code.isNullOrEmpty()) {
-                "('$code' in category[*].coding[*].code OR '$code' in category[*].text)"
+                "('$code' in $fieldName[*].coding[*].code OR '$code' in $fieldName[*].text)"
             } else {
                 null
             }

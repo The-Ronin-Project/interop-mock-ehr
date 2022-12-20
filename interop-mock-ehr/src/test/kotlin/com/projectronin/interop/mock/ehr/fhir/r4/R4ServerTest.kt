@@ -4,6 +4,7 @@ import ca.uhn.fhir.context.FhirContext
 import com.projectronin.interop.mock.ehr.fhir.r4.providers.R4AppointmentResourceProvider
 import com.projectronin.interop.mock.ehr.fhir.r4.providers.R4BinaryResourceProvider
 import com.projectronin.interop.mock.ehr.fhir.r4.providers.R4BundleResourceProvider
+import com.projectronin.interop.mock.ehr.fhir.r4.providers.R4CareTeamResourceProvider
 import com.projectronin.interop.mock.ehr.fhir.r4.providers.R4CommunicationResourceProvider
 import com.projectronin.interop.mock.ehr.fhir.r4.providers.R4ConditionResourceProvider
 import com.projectronin.interop.mock.ehr.fhir.r4.providers.R4DocumentReferenceResourceProvider
@@ -17,6 +18,7 @@ import io.mockk.mockk
 import org.hl7.fhir.r4.model.Appointment
 import org.hl7.fhir.r4.model.Binary
 import org.hl7.fhir.r4.model.Bundle
+import org.hl7.fhir.r4.model.CareTeam
 import org.hl7.fhir.r4.model.Communication
 import org.hl7.fhir.r4.model.Condition
 import org.hl7.fhir.r4.model.DocumentReference
@@ -55,6 +57,8 @@ internal class R4ServerTest {
         every { r4DocumentReference.resourceType } returns DocumentReference::class.java
         val r4Binary = mockk<R4BinaryResourceProvider>()
         every { r4Binary.resourceType } returns Binary::class.java
+        val r4CareTeam = mockk<R4CareTeamResourceProvider>()
+        every { r4CareTeam.resourceType } returns CareTeam::class.java
         val server = R4Server(
             ctx,
             r4Patient,
@@ -67,7 +71,8 @@ internal class R4ServerTest {
             r4Bundle,
             r4Observation,
             r4DocumentReference,
-            r4Binary
+            r4Binary,
+            r4CareTeam,
         )
         server.init()
         assertTrue(
@@ -83,7 +88,8 @@ internal class R4ServerTest {
                     r4Bundle,
                     r4Observation,
                     r4DocumentReference,
-                    r4Binary
+                    r4Binary,
+                    r4CareTeam,
                 )
             )
         )

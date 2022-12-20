@@ -13,12 +13,12 @@ class R4ObservationDAO(database: Schema, override var context: FhirContext) : Ba
     override var collection: Collection = database.createCollection(Observation::class.simpleName, true)
 
     /**
-     * Finds conditions based on input query parameters. Treats all inputs as a logical 'AND'.
-     * @param subject string for filtering Condition.subject.reference values.
+     * Finds Observations based on input query parameters. Treats all inputs as a logical 'AND'.
+     * @param subject string for filtering Observation.subject.reference values.
      * @param category is for filtering multiple coded values.
      *         Supports FHIR token syntax for inputting system|code.
-     *         For system|code and system| it matches on Condition.category[*].coding[*].code or .system as indicated.
-     *         For |code and code it matches on Condition.category[*].coding[*].code or .category[*].text values.
+     *         For system|code and system| it matches on Observation.category[*].coding[*].code or .system as indicated.
+     *         For |code and code it matches on Observation.category[*].coding[*].code or .category[*].text values.
      */
     fun searchByQuery(
         subject: String? = null,
@@ -27,9 +27,10 @@ class R4ObservationDAO(database: Schema, override var context: FhirContext) : Ba
         // Build queryFragments into query joined with 'AND'
         val queryFragments = mutableListOf<String>()
         subject?.let { queryFragments.add("('$it' = subject.reference)") }
-        category?.let { fhirtokens ->
-            getSearchStringForFHIRTokens(fhirtokens)?.let { searchString ->
-                queryFragments.add(searchString)
+        category?.let { catList ->
+            val phrase = getSearchStringForFHIRTokens(catList)
+            if (!phrase.isNullOrEmpty()) {
+                queryFragments.add(phrase)
             }
         }
         if (queryFragments.isEmpty()) return listOf()
