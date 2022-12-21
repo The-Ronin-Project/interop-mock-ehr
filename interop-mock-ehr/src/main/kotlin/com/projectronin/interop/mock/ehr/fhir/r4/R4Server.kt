@@ -13,6 +13,7 @@ import com.projectronin.interop.mock.ehr.fhir.r4.providers.R4ConditionResourcePr
 import com.projectronin.interop.mock.ehr.fhir.r4.providers.R4DocumentReferenceResourceProvider
 import com.projectronin.interop.mock.ehr.fhir.r4.providers.R4LocationResourceProvider
 import com.projectronin.interop.mock.ehr.fhir.r4.providers.R4ObservationResourceProvider
+import com.projectronin.interop.mock.ehr.fhir.r4.providers.R4OrganizationResourceProvider
 import com.projectronin.interop.mock.ehr.fhir.r4.providers.R4PatientResourceProvider
 import com.projectronin.interop.mock.ehr.fhir.r4.providers.R4PractitionerResourceProvider
 import com.projectronin.interop.mock.ehr.fhir.r4.providers.R4PractitionerRoleResourceProvider
@@ -34,6 +35,7 @@ class R4Server(
     private val r4ObservationResourceProvider: R4ObservationResourceProvider,
     private val r4DocumentReferenceResourceProvider: R4DocumentReferenceResourceProvider,
     private val r4BinaryResourceProvider: R4BinaryResourceProvider,
+    private val r4OrganizationResourceProvider: R4OrganizationResourceProvider,
     private val r4CareTeamResourceProvider: R4CareTeamResourceProvider,
 ) : RestfulServer(context) {
 
@@ -50,6 +52,7 @@ class R4Server(
             r4ObservationResourceProvider,
             r4DocumentReferenceResourceProvider,
             r4BinaryResourceProvider,
+            r4OrganizationResourceProvider,
             r4CareTeamResourceProvider,
         )
         pagingProvider = FifoMemoryPagingProvider(10)

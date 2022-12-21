@@ -10,6 +10,7 @@ import com.projectronin.interop.mock.ehr.fhir.r4.providers.R4ConditionResourcePr
 import com.projectronin.interop.mock.ehr.fhir.r4.providers.R4DocumentReferenceResourceProvider
 import com.projectronin.interop.mock.ehr.fhir.r4.providers.R4LocationResourceProvider
 import com.projectronin.interop.mock.ehr.fhir.r4.providers.R4ObservationResourceProvider
+import com.projectronin.interop.mock.ehr.fhir.r4.providers.R4OrganizationResourceProvider
 import com.projectronin.interop.mock.ehr.fhir.r4.providers.R4PatientResourceProvider
 import com.projectronin.interop.mock.ehr.fhir.r4.providers.R4PractitionerResourceProvider
 import com.projectronin.interop.mock.ehr.fhir.r4.providers.R4PractitionerRoleResourceProvider
@@ -24,6 +25,7 @@ import org.hl7.fhir.r4.model.Condition
 import org.hl7.fhir.r4.model.DocumentReference
 import org.hl7.fhir.r4.model.Location
 import org.hl7.fhir.r4.model.Observation
+import org.hl7.fhir.r4.model.Organization
 import org.hl7.fhir.r4.model.Patient
 import org.hl7.fhir.r4.model.Practitioner
 import org.hl7.fhir.r4.model.PractitionerRole
@@ -57,6 +59,8 @@ internal class R4ServerTest {
         every { r4DocumentReference.resourceType } returns DocumentReference::class.java
         val r4Binary = mockk<R4BinaryResourceProvider>()
         every { r4Binary.resourceType } returns Binary::class.java
+        val r4Organization = mockk<R4OrganizationResourceProvider>()
+        every { r4Organization.resourceType } returns Organization::class.java
         val r4CareTeam = mockk<R4CareTeamResourceProvider>()
         every { r4CareTeam.resourceType } returns CareTeam::class.java
         val server = R4Server(
@@ -72,6 +76,7 @@ internal class R4ServerTest {
             r4Observation,
             r4DocumentReference,
             r4Binary,
+            r4Organization,
             r4CareTeam,
         )
         server.init()
@@ -89,6 +94,7 @@ internal class R4ServerTest {
                     r4Observation,
                     r4DocumentReference,
                     r4Binary,
+                    r4Organization,
                     r4CareTeam,
                 )
             )

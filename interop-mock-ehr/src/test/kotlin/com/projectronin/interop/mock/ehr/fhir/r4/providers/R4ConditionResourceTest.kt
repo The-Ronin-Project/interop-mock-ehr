@@ -142,14 +142,14 @@ class R4ConditionResourceTest : BaseMySQLTest() {
         collection.add(FhirContext.forR4().newJsonParser().encodeResourceToString(testCondition3)).execute()
 
         val testCondition4 = Condition()
-        var codeableConcept4 = CodeableConcept()
+        val codeableConcept4 = CodeableConcept()
         codeableConcept4.text = "myCode"
         testCondition4.clinicalStatus = codeableConcept4
         testCondition4.id = "${prefix}TESTCOND4"
         collection.add(FhirContext.forR4().newJsonParser().encodeResourceToString(testCondition4)).execute()
 
         val testCondition5 = Condition()
-        var codeableConcept5 = CodeableConcept()
+        val codeableConcept5 = CodeableConcept()
         codeableConcept5.text = "otherCode"
         testCondition5.clinicalStatus = codeableConcept5
         testCondition5.id = "${prefix}TESTCOND5"
@@ -176,7 +176,7 @@ class R4ConditionResourceTest : BaseMySQLTest() {
         val codeableConcept4 = CodeableConcept()
         codeableConcept4.text = "otherCode"
 
-        var testConditionNoMatch = Condition()
+        val testConditionNoMatch = Condition()
         testConditionNoMatch.clinicalStatus = codeableConcept2
         testConditionNoMatch.category = listOf(codeableConcept4, codeableConcept2)
         testConditionNoMatch.id = "${prefix}TESTCONDNOMATCH1"
