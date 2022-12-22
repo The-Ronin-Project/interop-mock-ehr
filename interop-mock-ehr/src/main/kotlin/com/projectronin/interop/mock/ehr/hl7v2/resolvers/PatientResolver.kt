@@ -1,10 +1,9 @@
 package com.projectronin.interop.mock.ehr.hl7v2.resolvers
 
-import ca.uhn.hl7v2.model.v251.datatype.CX
 import ca.uhn.hl7v2.model.v251.segment.PID
 import com.projectronin.interop.mock.ehr.fhir.r4.dao.R4PatientDAO
+import com.projectronin.interop.mock.ehr.hl7v2.converters.toIdentifier
 import mu.KotlinLogging
-import org.hl7.fhir.r4.model.Identifier
 import org.hl7.fhir.r4.model.Patient
 import org.springframework.stereotype.Component
 
@@ -30,12 +29,5 @@ class PatientResolver(private val patientDAO: R4PatientDAO) {
                 patientDAO.searchByIdentifier(patientIdentifier)
             }
         return patient
-    }
-
-    private fun CX.toIdentifier(): Identifier {
-        val identifier = Identifier()
-        identifier.value = this.idNumber.value
-        identifier.system = this.assigningAuthority.namespaceID.value
-        return identifier
     }
 }
