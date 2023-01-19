@@ -10,6 +10,9 @@ import com.projectronin.interop.mock.ehr.fhir.r4.providers.R4CommunicationResour
 import com.projectronin.interop.mock.ehr.fhir.r4.providers.R4ConditionResourceProvider
 import com.projectronin.interop.mock.ehr.fhir.r4.providers.R4DocumentReferenceResourceProvider
 import com.projectronin.interop.mock.ehr.fhir.r4.providers.R4LocationResourceProvider
+import com.projectronin.interop.mock.ehr.fhir.r4.providers.R4MedicationRequestResourceProvider
+import com.projectronin.interop.mock.ehr.fhir.r4.providers.R4MedicationResourceProvider
+import com.projectronin.interop.mock.ehr.fhir.r4.providers.R4MedicationStatementResourceProvider
 import com.projectronin.interop.mock.ehr.fhir.r4.providers.R4ObservationResourceProvider
 import com.projectronin.interop.mock.ehr.fhir.r4.providers.R4OrganizationResourceProvider
 import com.projectronin.interop.mock.ehr.fhir.r4.providers.R4PatientResourceProvider
@@ -26,6 +29,9 @@ import org.hl7.fhir.r4.model.Communication
 import org.hl7.fhir.r4.model.Condition
 import org.hl7.fhir.r4.model.DocumentReference
 import org.hl7.fhir.r4.model.Location
+import org.hl7.fhir.r4.model.Medication
+import org.hl7.fhir.r4.model.MedicationRequest
+import org.hl7.fhir.r4.model.MedicationStatement
 import org.hl7.fhir.r4.model.Observation
 import org.hl7.fhir.r4.model.Organization
 import org.hl7.fhir.r4.model.Patient
@@ -67,6 +73,12 @@ internal class R4ServerTest {
         every { r4CareTeam.resourceType } returns CareTeam::class.java
         val r4CarePlan = mockk<R4CarePlanResourceProvider>()
         every { r4CarePlan.resourceType } returns CarePlan::class.java
+        val r4Medication = mockk<R4MedicationResourceProvider>()
+        every { r4Medication.resourceType } returns Medication::class.java
+        val r4MedicationStatement = mockk<R4MedicationStatementResourceProvider>()
+        every { r4MedicationStatement.resourceType } returns MedicationStatement::class.java
+        val r4MedicationRequest = mockk<R4MedicationRequestResourceProvider>()
+        every { r4MedicationRequest.resourceType } returns MedicationRequest::class.java
         val server = R4Server(
             ctx,
             r4Patient,
@@ -83,6 +95,9 @@ internal class R4ServerTest {
             r4Organization,
             r4CareTeam,
             r4CarePlan,
+            r4Medication,
+            r4MedicationStatement,
+            r4MedicationRequest,
         )
         server.init()
         assertTrue(
@@ -102,6 +117,9 @@ internal class R4ServerTest {
                     r4Organization,
                     r4CareTeam,
                     r4CarePlan,
+                    r4Medication,
+                    r4MedicationStatement,
+                    r4MedicationRequest,
                 )
             )
         )

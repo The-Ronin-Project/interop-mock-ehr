@@ -13,6 +13,9 @@ import com.projectronin.interop.mock.ehr.fhir.r4.providers.R4CommunicationResour
 import com.projectronin.interop.mock.ehr.fhir.r4.providers.R4ConditionResourceProvider
 import com.projectronin.interop.mock.ehr.fhir.r4.providers.R4DocumentReferenceResourceProvider
 import com.projectronin.interop.mock.ehr.fhir.r4.providers.R4LocationResourceProvider
+import com.projectronin.interop.mock.ehr.fhir.r4.providers.R4MedicationRequestResourceProvider
+import com.projectronin.interop.mock.ehr.fhir.r4.providers.R4MedicationResourceProvider
+import com.projectronin.interop.mock.ehr.fhir.r4.providers.R4MedicationStatementResourceProvider
 import com.projectronin.interop.mock.ehr.fhir.r4.providers.R4ObservationResourceProvider
 import com.projectronin.interop.mock.ehr.fhir.r4.providers.R4OrganizationResourceProvider
 import com.projectronin.interop.mock.ehr.fhir.r4.providers.R4PatientResourceProvider
@@ -39,6 +42,9 @@ class R4Server(
     private val r4OrganizationResourceProvider: R4OrganizationResourceProvider,
     private val r4CareTeamResourceProvider: R4CareTeamResourceProvider,
     private val r4CarePlanResourceProvider: R4CarePlanResourceProvider,
+    private val r4MedicationResourceProvider: R4MedicationResourceProvider,
+    private val r4MedicationStatementResourceProvider: R4MedicationStatementResourceProvider,
+    private val r4MedicationRequestResourceProvider: R4MedicationRequestResourceProvider,
 ) : RestfulServer(context) {
 
     override fun initialize() {
@@ -56,7 +62,10 @@ class R4Server(
             r4BinaryResourceProvider,
             r4OrganizationResourceProvider,
             r4CareTeamResourceProvider,
-            r4CarePlanResourceProvider
+            r4CarePlanResourceProvider,
+            r4MedicationResourceProvider,
+            r4MedicationStatementResourceProvider,
+            r4MedicationRequestResourceProvider,
         )
         pagingProvider = FifoMemoryPagingProvider(10)
         maximumPageSize = 10 // in reality this is much higher, but this is easier to test with.
