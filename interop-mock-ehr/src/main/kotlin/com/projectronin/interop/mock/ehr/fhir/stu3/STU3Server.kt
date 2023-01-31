@@ -4,12 +4,13 @@ import ca.uhn.fhir.context.FhirContext
 import ca.uhn.fhir.rest.openapi.OpenApiInterceptor
 import ca.uhn.fhir.rest.server.FifoMemoryPagingProvider
 import ca.uhn.fhir.rest.server.RestfulServer
+import com.projectronin.interop.mock.ehr.fhir.r4.RoninVendorFilter
 import com.projectronin.interop.mock.ehr.fhir.stu3.providers.STU3AppointmentResourceProvider
 import org.springframework.beans.factory.annotation.Qualifier
 import org.springframework.stereotype.Component
 import javax.servlet.annotation.WebServlet
 
-@WebServlet(urlPatterns = ["/fhir/stu3/*", "/epic/api/FHIR/STU3/*"])
+@WebServlet(urlPatterns = ["/fhir/stu3/*", "cerner/fhir/r4/*", "/epic/api/FHIR/STU3/*"])
 @Component
 class STU3Server(
     @Qualifier("DSTU3") context: FhirContext,
@@ -17,6 +18,7 @@ class STU3Server(
 ) : RestfulServer(context) {
 
     override fun initialize() {
+        registerInterceptor(RoninVendorFilter())
         setResourceProviders(
             stu3AppointmentProvider
         )

@@ -1,6 +1,7 @@
 package com.projectronin.interop.mock.ehr.fhir.r4
 
 import ca.uhn.fhir.context.FhirContext
+import ca.uhn.fhir.rest.api.server.RequestDetails
 import com.projectronin.interop.mock.ehr.fhir.r4.providers.R4AppointmentResourceProvider
 import com.projectronin.interop.mock.ehr.fhir.r4.providers.R4BinaryResourceProvider
 import com.projectronin.interop.mock.ehr.fhir.r4.providers.R4BundleResourceProvider
@@ -20,7 +21,9 @@ import com.projectronin.interop.mock.ehr.fhir.r4.providers.R4PatientResourceProv
 import com.projectronin.interop.mock.ehr.fhir.r4.providers.R4PractitionerResourceProvider
 import com.projectronin.interop.mock.ehr.fhir.r4.providers.R4PractitionerRoleResourceProvider
 import io.mockk.every
+import io.mockk.just
 import io.mockk.mockk
+import io.mockk.runs
 import org.hl7.fhir.r4.model.Appointment
 import org.hl7.fhir.r4.model.Binary
 import org.hl7.fhir.r4.model.Bundle
@@ -39,8 +42,10 @@ import org.hl7.fhir.r4.model.Organization
 import org.hl7.fhir.r4.model.Patient
 import org.hl7.fhir.r4.model.Practitioner
 import org.hl7.fhir.r4.model.PractitionerRole
+import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Assertions.assertTrue
 import org.junit.jupiter.api.Test
+import javax.servlet.http.HttpServletResponse
 
 internal class R4ServerTest {
 
@@ -129,5 +134,80 @@ internal class R4ServerTest {
                 )
             )
         )
+    }
+
+    @Test
+    fun `filterTest - short circuit null`() {
+        val filter = RoninVendorFilter()
+        val request = mockk<RequestDetails> {
+            every { resourceName } returns null
+        }
+        val response = mockk<HttpServletResponse>()
+        val ret = filter.filterVendor(request, response)
+        assertEquals(ret, true)
+    }
+
+    @Test
+    fun `filterTest - short circuit empty`() {
+        val filter = RoninVendorFilter()
+        val request = mockk<RequestDetails> {
+            every { resourceName } returns ""
+        }
+        val response = mockk<HttpServletResponse>()
+        val ret = filter.filterVendor(request, response)
+        assertEquals(ret, true)
+    }
+
+    @Test
+    fun `filterTest - default server`() {
+        val filter = RoninVendorFilter()
+        val request = mockk<RequestDetails> {
+            every { resourceName } returns "Patient"
+            every { completeUrl } returns "localhost/"
+        }
+        val response = mockk<HttpServletResponse>()
+        val ret = filter.filterVendor(request, response)
+        assertEquals(ret, true)
+    }
+
+    @Test
+    fun `filterTest - epic server`() {
+        val filter = RoninVendorFilter()
+        val request = mockk<RequestDetails> {
+            every { resourceName } returns "Patient"
+            every { completeUrl } returns "localhost/epic/"
+            every { tenantId = "epic" } just runs
+        }
+        val response = mockk<HttpServletResponse>()
+        val ret = filter.filterVendor(request, response)
+        assertEquals(ret, true)
+    }
+
+    @Test
+    fun `filterTest - cerner server`() {
+        val filter = RoninVendorFilter()
+        val request = mockk<RequestDetails> {
+            every { resourceName } returns "Patient"
+            every { completeUrl } returns "localhost/cerner/"
+            every { tenantId = "cerner" } just runs
+        }
+        val response = mockk<HttpServletResponse>()
+        val ret = filter.filterVendor(request, response)
+        assertEquals(ret, true)
+    }
+
+    @Test
+    fun `filterTest - unsupported failure`() {
+        val filter = RoninVendorFilter()
+        val request = mockk<RequestDetails> {
+            every { resourceName } returns "PractitionerRole"
+            every { completeUrl } returns "localhost/cerner/"
+            every { tenantId = "cerner" } just runs
+        }
+        val response = mockk<HttpServletResponse> {
+            every { sendError(any(), any()) } just runs
+        }
+        val ret = filter.filterVendor(request, response)
+        assertEquals(ret, false)
     }
 }

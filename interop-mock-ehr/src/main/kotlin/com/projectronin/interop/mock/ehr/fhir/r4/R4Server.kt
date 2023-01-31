@@ -1,6 +1,10 @@
 package com.projectronin.interop.mock.ehr.fhir.r4
 
 import ca.uhn.fhir.context.FhirContext
+import ca.uhn.fhir.interceptor.api.Hook
+import ca.uhn.fhir.interceptor.api.Interceptor
+import ca.uhn.fhir.interceptor.api.Pointcut
+import ca.uhn.fhir.rest.api.server.RequestDetails
 import ca.uhn.fhir.rest.openapi.OpenApiInterceptor
 import ca.uhn.fhir.rest.server.FifoMemoryPagingProvider
 import ca.uhn.fhir.rest.server.RestfulServer
@@ -22,10 +26,12 @@ import com.projectronin.interop.mock.ehr.fhir.r4.providers.R4OrganizationResourc
 import com.projectronin.interop.mock.ehr.fhir.r4.providers.R4PatientResourceProvider
 import com.projectronin.interop.mock.ehr.fhir.r4.providers.R4PractitionerResourceProvider
 import com.projectronin.interop.mock.ehr.fhir.r4.providers.R4PractitionerRoleResourceProvider
+import org.springframework.http.HttpStatus
 import org.springframework.stereotype.Component
 import javax.servlet.annotation.WebServlet
+import javax.servlet.http.HttpServletResponse
 
-@WebServlet(urlPatterns = ["/fhir/r4/*", "/epic/api/FHIR/R4/*"])
+@WebServlet(urlPatterns = ["/fhir/r4/*", "cerner/fhir/r4/*", "/epic/api/FHIR/R4/*"])
 @Component
 class R4Server(
     context: FhirContext, // autowired
@@ -50,6 +56,8 @@ class R4Server(
 ) : RestfulServer(context) {
 
     override fun initialize() {
+        registerInterceptor(RoninVendorFilter())
+
         setResourceProviders(
             r4PatientProvider,
             r4ConditionProvider,
@@ -77,5 +85,76 @@ class R4Server(
         val openApiInterceptor = OpenApiInterceptor()
         registerInterceptor(openApiInterceptor)
         super.initialize()
+    }
+}
+
+@Interceptor
+class RoninVendorFilter {
+
+    private val epicSupportedResources = listOf(
+        "Patient",
+        "Binary",
+        "Practitioner",
+        "Appointment",
+        "CarePlan",
+        "CareTeam",
+        "Communication",
+        "Condition",
+        "DocumentReference",
+        "Location",
+        "Medication",
+        "MedicationRequest",
+        "MedicationStatement",
+        "Observation",
+        "Organization",
+        "PractitionerRole"
+    )
+
+    private val cernerSupportedResources = listOf(
+        "Patient",
+        "Binary",
+        "Practitioner",
+        "Appointment",
+        "CarePlan",
+        "CareTeam",
+        "Communication",
+        "Condition",
+        "DocumentReference",
+        "Location",
+        "Medication",
+        "MedicationRequest",
+        "MedicationStatement",
+        "Observation",
+        "Organization",
+    )
+
+    private val supportedMap = mapOf("epic" to epicSupportedResources, "cerner" to cernerSupportedResources)
+
+    /**
+     * Filters requests to the HAPI FHIR server based on if the associated 'vendor' allows a specific resource type.
+     * Must return true if the request should continue or false if processing should stop. (Returns a 400 in this case).
+     */
+    @Hook(Pointcut.SERVER_INCOMING_REQUEST_PRE_HANDLER_SELECTED) // We could put this anywhere before processing, really
+    fun filterVendor(details: RequestDetails, response: HttpServletResponse): Boolean {
+        if (details.resourceName.isNullOrEmpty()) return true // short-circuit for edge cases
+        val url = details.completeUrl.lowercase()
+        val vendorName = if (url.contains("cerner/")) {
+            "cerner"
+        } else if (url.contains("epic/")) {
+            "epic"
+        } else {
+            return true // default server
+        }
+
+        return if (supportedMap[vendorName]!!.contains(details.resourceName)) {
+            details.tenantId = vendorName // maybe useful later
+            true // vendor supports this resource type
+        } else {
+            response.sendError(
+                HttpStatus.BAD_REQUEST.value(),
+                "Vendor type '$vendorName' does not support FHIR resource '${details.resourceName}'"
+            )
+            false // stop processing
+        }
     }
 }
