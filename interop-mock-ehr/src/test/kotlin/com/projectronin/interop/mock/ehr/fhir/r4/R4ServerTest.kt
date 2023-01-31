@@ -9,6 +9,7 @@ import com.projectronin.interop.mock.ehr.fhir.r4.providers.R4CareTeamResourcePro
 import com.projectronin.interop.mock.ehr.fhir.r4.providers.R4CommunicationResourceProvider
 import com.projectronin.interop.mock.ehr.fhir.r4.providers.R4ConditionResourceProvider
 import com.projectronin.interop.mock.ehr.fhir.r4.providers.R4DocumentReferenceResourceProvider
+import com.projectronin.interop.mock.ehr.fhir.r4.providers.R4EncounterResourceProvider
 import com.projectronin.interop.mock.ehr.fhir.r4.providers.R4LocationResourceProvider
 import com.projectronin.interop.mock.ehr.fhir.r4.providers.R4MedicationRequestResourceProvider
 import com.projectronin.interop.mock.ehr.fhir.r4.providers.R4MedicationResourceProvider
@@ -28,6 +29,7 @@ import org.hl7.fhir.r4.model.CareTeam
 import org.hl7.fhir.r4.model.Communication
 import org.hl7.fhir.r4.model.Condition
 import org.hl7.fhir.r4.model.DocumentReference
+import org.hl7.fhir.r4.model.Encounter
 import org.hl7.fhir.r4.model.Location
 import org.hl7.fhir.r4.model.Medication
 import org.hl7.fhir.r4.model.MedicationRequest
@@ -79,6 +81,8 @@ internal class R4ServerTest {
         every { r4MedicationStatement.resourceType } returns MedicationStatement::class.java
         val r4MedicationRequest = mockk<R4MedicationRequestResourceProvider>()
         every { r4MedicationRequest.resourceType } returns MedicationRequest::class.java
+        val r4Encounter = mockk<R4EncounterResourceProvider>()
+        every { r4Encounter.resourceType } returns Encounter::class.java
         val server = R4Server(
             ctx,
             r4Patient,
@@ -98,6 +102,7 @@ internal class R4ServerTest {
             r4Medication,
             r4MedicationStatement,
             r4MedicationRequest,
+            r4Encounter,
         )
         server.init()
         assertTrue(
@@ -120,6 +125,7 @@ internal class R4ServerTest {
                     r4Medication,
                     r4MedicationStatement,
                     r4MedicationRequest,
+                    r4Encounter,
                 )
             )
         )
