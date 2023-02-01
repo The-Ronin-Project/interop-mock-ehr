@@ -31,7 +31,7 @@ import org.springframework.stereotype.Component
 import javax.servlet.annotation.WebServlet
 import javax.servlet.http.HttpServletResponse
 
-@WebServlet(urlPatterns = ["/fhir/r4/*", "cerner/fhir/r4/*", "/epic/api/FHIR/R4/*"])
+@WebServlet(urlPatterns = ["/fhir/r4/*", "/cerner/fhir/r4/*", "/epic/api/FHIR/R4/*"])
 @Component
 class R4Server(
     context: FhirContext, // autowired
