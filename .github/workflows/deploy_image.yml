@@ -2,9 +2,9 @@ name: Build and Deploy Docker Image to Nexus
 
 on:
   workflow_run:
-    workflows: [Interop Mock EHR Tests]
-    types: [completed]
-    branches: [master]
+    workflows: [ Interop Mock EHR Tests ]
+    types: [ completed ]
+    branches: [ main ]
 
 jobs:
   main-image-push:
