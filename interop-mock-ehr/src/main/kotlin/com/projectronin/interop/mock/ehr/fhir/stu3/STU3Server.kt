@@ -10,7 +10,7 @@ import org.springframework.beans.factory.annotation.Qualifier
 import org.springframework.stereotype.Component
 import javax.servlet.annotation.WebServlet
 
-@WebServlet(urlPatterns = ["/fhir/stu3/*", "/cerner/fhir/r4/*", "/epic/api/FHIR/STU3/*"])
+@WebServlet(urlPatterns = ["/fhir/stu3/*", "/cerner/fhir/stu3/*", "/epic/api/FHIR/STU3/*"])
 @Component
 class STU3Server(
     @Qualifier("DSTU3") context: FhirContext,
