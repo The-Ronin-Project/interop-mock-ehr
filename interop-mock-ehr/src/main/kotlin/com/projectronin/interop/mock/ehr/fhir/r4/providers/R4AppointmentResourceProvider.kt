@@ -23,13 +23,15 @@ class R4AppointmentResourceProvider(override var resourceDAO: R4AppointmentDAO) 
         @OptionalParam(name = Appointment.SP_ACTOR) referenceParam: ReferenceParam? = null,
         @OptionalParam(name = Appointment.SP_PATIENT) patientReferenceParam: ReferenceParam? = null,
         @OptionalParam(name = Appointment.SP_PRACTITIONER) practitionerReferenceParam: ReferenceParam? = null,
-        @OptionalParam(name = Appointment.SP_DATE) dateRangeParam: DateRangeParam? = null
+        @OptionalParam(name = Appointment.SP_DATE) dateRangeParam: DateRangeParam? = null,
+        @OptionalParam(name = Appointment.SP_LOCATION) locationParam: ReferenceParam? = null,
     ): List<Appointment> {
         val referenceList = mutableListOf<Reference>()
 
         referenceParam?.resourceType?.let { referenceList.add(Reference(referenceParam.value)) }
         patientReferenceParam?.let { referenceList.add(Reference("Patient/${it.value}")) }
         practitionerReferenceParam?.let { referenceList.add(Reference("Practitioner/${it.value}")) }
+        locationParam?.let { referenceList.add(Reference("Location/${it.value}")) }
 
         return resourceDAO.searchByQuery(
             referenceList, dateRangeParam?.lowerBoundAsInstant, dateRangeParam?.upperBoundAsInstant

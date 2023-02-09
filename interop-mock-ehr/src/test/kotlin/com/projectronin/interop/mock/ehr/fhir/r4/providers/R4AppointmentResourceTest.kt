@@ -73,6 +73,28 @@ class R4AppointmentResourceTest : BaseMySQLTest() {
     }
 
     @Test
+    fun `search by location`() {
+        val testAppt = Appointment()
+        testAppt.addParticipant().actor = Reference("Practitioner/IPMD")
+        testAppt.addParticipant().actor = Reference("Location/LocationFHIRID1")
+        testAppt.id = "TESTAPPT9"
+        collection.add(FhirContext.forR4().newJsonParser().encodeResourceToString(testAppt)).execute()
+
+        val testAppt2 = Appointment()
+        testAppt2.addParticipant().actor = Reference("Practitioner/BADID")
+        testAppt2.addParticipant().actor = Reference("Location/BADID")
+        testAppt2.id = "TESTAPPT10"
+        collection.add(FhirContext.forR4().newJsonParser().encodeResourceToString(testAppt2)).execute()
+
+        val output = appointmentProvider.search(
+            practitionerReferenceParam = ReferenceParam("IPMD"),
+            locationParam = ReferenceParam("LocationFHIRID1")
+        )
+        assertEquals(1, output.size)
+        assertEquals("Appointment/${testAppt.id}", output[0].id)
+    }
+
+    @Test
     fun `search by date range`() {
         val testAppt = Appointment()
         testAppt.start = Date(110, 0, 10)
