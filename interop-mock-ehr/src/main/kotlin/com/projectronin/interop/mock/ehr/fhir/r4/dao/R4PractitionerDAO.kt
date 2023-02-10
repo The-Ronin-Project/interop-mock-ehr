@@ -1,16 +1,16 @@
 package com.projectronin.interop.mock.ehr.fhir.r4.dao
 
 import ca.uhn.fhir.context.FhirContext
-import com.mysql.cj.xdevapi.Collection
 import com.mysql.cj.xdevapi.Schema
 import org.hl7.fhir.r4.model.Identifier
 import org.hl7.fhir.r4.model.Practitioner
 import org.springframework.stereotype.Component
+import java.util.concurrent.atomic.AtomicReference
 
 @Component
 class R4PractitionerDAO(database: Schema, override var context: FhirContext) : BaseResourceDAO<Practitioner>() {
     override var resourceType = Practitioner::class.java
-    override var collection: Collection = database.createCollection(Practitioner::class.simpleName, true)
+    override var collection = AtomicReference(database.createCollection(Practitioner::class.simpleName, true))
 
     fun searchByIdentifier(identifier: Identifier): Practitioner? {
         val parser = context.newJsonParser()
@@ -23,7 +23,7 @@ class R4PractitionerDAO(database: Schema, override var context: FhirContext) : B
          */
         val searchString = "'${identifier.value}' in $.identifier[*].value"
         val practitionerDbDoc =
-            collection.find(searchString).execute().fetchAll()
+            collection.get().find(searchString).execute().fetchAll()
         val practitioners = practitionerDbDoc.mapNotNull { parser.parseResource(resourceType, it.toString()) }
         return practitioners.singleOrNull { practitioner ->
             practitioner.identifier.any {

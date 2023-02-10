@@ -11,31 +11,32 @@ import com.mysql.cj.xdevapi.DbDoc
 import com.mysql.cj.xdevapi.JsonString
 import org.hl7.fhir.r4.model.Resource
 import java.util.UUID
+import java.util.concurrent.atomic.AtomicReference
 
 abstract class BaseResourceDAO<T : Resource> {
 
     abstract var context: FhirContext
     abstract var resourceType: Class<T>
-    abstract var collection: Collection
+    abstract var collection: AtomicReference<Collection>
 
     fun insert(resource: Resource): String {
         if (!resource.hasId()) {
             resource.id = UUID.randomUUID().toString()
         } // generate new ID for new resources
-        collection.add(context.newJsonParser().encodeResourceToString(resource)).execute()
+        collection.get().add(context.newJsonParser().encodeResourceToString(resource)).execute()
         return resource.id
     }
 
     fun update(resource: T) {
         getDatabaseId(resource.id)?.let {
-            collection.replaceOne(
+            collection.get().replaceOne(
                 it, context.newJsonParser().encodeResourceToString(resource)
             )
         } ?: insert(resource) // add new resource if not found
     }
 
     fun delete(fhirId: String) {
-        getDatabaseId(fhirId)?.let { collection.removeOne(it) }
+        getDatabaseId(fhirId)?.let { collection.get().removeOne(it) }
     }
 
     fun findById(fhirId: String): T {
@@ -49,7 +50,7 @@ abstract class BaseResourceDAO<T : Resource> {
     fun getAll(): List<T> {
         val list = mutableListOf<T>()
         val parser = context.newJsonParser()
-        collection.find().execute().forEach {
+        collection.get().find().execute().forEach {
             list.add(parser.parseResource(resourceType, it.toString()))
         }
         return list
@@ -66,7 +67,7 @@ abstract class BaseResourceDAO<T : Resource> {
 
     private fun findByIdQuery(fhirId: String?): DbDoc? {
         if (fhirId == null) return null
-        return collection.find("id = :id")
+        return collection.get().find("id = :id")
             .bind("id", fhirId.removePrefix("${resourceType.simpleName}/"))
             .execute()
             .fetchOne()

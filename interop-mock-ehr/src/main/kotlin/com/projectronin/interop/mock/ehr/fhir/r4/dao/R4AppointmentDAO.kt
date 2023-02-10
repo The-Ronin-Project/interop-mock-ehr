@@ -1,17 +1,17 @@
 package com.projectronin.interop.mock.ehr.fhir.r4.dao
 
 import ca.uhn.fhir.context.FhirContext
-import com.mysql.cj.xdevapi.Collection
 import com.mysql.cj.xdevapi.Schema
 import org.hl7.fhir.r4.model.Appointment
 import org.hl7.fhir.r4.model.Reference
 import org.springframework.stereotype.Component
 import java.util.Date
+import java.util.concurrent.atomic.AtomicReference
 
 @Component
 class R4AppointmentDAO(database: Schema, override var context: FhirContext) : BaseResourceDAO<Appointment>() {
     override var resourceType = Appointment::class.java
-    override var collection: Collection = database.createCollection(Appointment::class.simpleName, true)
+    override var collection = AtomicReference(database.createCollection(Appointment::class.simpleName, true))
 
     /**
      * Finds appointments based on input query parameters. Treats all inputs as a logical 'AND'.
@@ -37,7 +37,7 @@ class R4AppointmentDAO(database: Schema, override var context: FhirContext) : Ba
         val apptList = mutableListOf<Appointment>()
         val parser = context.newJsonParser()
 
-        collection.find(query).execute().forEach {
+        collection.get().find(query).execute().forEach {
             apptList.add(parser.parseResource(resourceType, it.toString()))
         }
 

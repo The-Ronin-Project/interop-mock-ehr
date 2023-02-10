@@ -2,15 +2,15 @@ package com.projectronin.interop.mock.ehr.fhir.r4.dao
 
 import ca.uhn.fhir.context.FhirContext
 import ca.uhn.fhir.rest.param.TokenOrListParam
-import com.mysql.cj.xdevapi.Collection
 import com.mysql.cj.xdevapi.Schema
 import org.hl7.fhir.r4.model.Condition
 import org.springframework.stereotype.Component
+import java.util.concurrent.atomic.AtomicReference
 
 @Component
 class R4ConditionDAO(database: Schema, override var context: FhirContext) : BaseResourceDAO<Condition>() {
     override var resourceType = Condition::class.java
-    override var collection: Collection = database.createCollection(Condition::class.simpleName, true)
+    override var collection = AtomicReference(database.createCollection(Condition::class.simpleName, true))
 
     /**
      * Finds conditions based on input query parameters. Treats all inputs as a logical 'AND'.
@@ -40,6 +40,6 @@ class R4ConditionDAO(database: Schema, override var context: FhirContext) : Base
 
         // Run the query and return a List of Condition resources that match
         val parser = context.newJsonParser()
-        return collection.find(query).execute().map { parser.parseResource(resourceType, it.toString()) }
+        return collection.get().find(query).execute().map { parser.parseResource(resourceType, it.toString()) }
     }
 }
