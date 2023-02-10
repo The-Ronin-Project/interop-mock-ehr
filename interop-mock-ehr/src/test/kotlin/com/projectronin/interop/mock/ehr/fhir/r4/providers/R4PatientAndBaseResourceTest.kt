@@ -5,6 +5,7 @@ import ca.uhn.fhir.model.api.Include
 import ca.uhn.fhir.rest.api.PatchTypeEnum
 import ca.uhn.fhir.rest.param.DateParam
 import ca.uhn.fhir.rest.param.StringParam
+import ca.uhn.fhir.rest.param.TokenOrListParam
 import ca.uhn.fhir.rest.param.TokenParam
 import ca.uhn.fhir.rest.server.exceptions.ResourceNotFoundException
 import com.mysql.cj.xdevapi.Collection
@@ -293,11 +294,13 @@ class R4PatientAndBaseResourceTest : BaseMySQLTest() {
         testPat2.addIdentifier(identifier3)
         collection.add(FhirContext.forR4().newJsonParser().encodeResourceToString(testPat2)).execute()
 
+        val list = TokenOrListParam()
         val token = TokenParam()
         token.value = "E2731"
         token.system = "MRN"
-        val output = patientProvider.searchByIdentifier(token)
-        assertEquals(output?.birthDate, testPat.birthDate)
+        list.add(token)
+        val output = patientProvider.searchByIdentifier(list)
+        assertEquals(output.first().birthDate, testPat.birthDate)
     }
     @Test
     fun `identifier search without system returns null when duplicates`() {
@@ -321,20 +324,24 @@ class R4PatientAndBaseResourceTest : BaseMySQLTest() {
         testPat2.addIdentifier(identifier2)
         collection.add(FhirContext.forR4().newJsonParser().encodeResourceToString(testPat2)).execute()
 
+        val list = TokenOrListParam()
         val token = TokenParam()
         token.value = "E2731"
         token.system = null
-        val output = patientProvider.searchByIdentifier(token)
-        assertNull(output)
+        list.add(token)
+        val output = patientProvider.searchByIdentifier(list)
+        assertTrue(output.isEmpty())
     }
 
     @Test
     fun `identifier search not found test`() {
+        val list = TokenOrListParam()
         val token = TokenParam()
         token.value = "NotGoingToFindThisID"
         token.system = "BadSystem"
-        val output = patientProvider.searchByIdentifier(token)
-        assertNull(output)
+        list.add(token)
+        val output = patientProvider.searchByIdentifier(list)
+        assertTrue(output.isEmpty())
     }
 
     @Test
@@ -422,7 +429,7 @@ class R4PatientAndBaseResourceTest : BaseMySQLTest() {
         val identifier = Identifier()
         identifier.value = "E2731"
         identifier.type.text = "External"
-        val output = dao.searchByIdentifier(identifier)
-        assertEquals(output?.birthDate, testPat.birthDate)
+        val output = dao.searchByIdentifiers(listOf(identifier))
+        assertEquals(output.first().birthDate, testPat.birthDate)
     }
 }

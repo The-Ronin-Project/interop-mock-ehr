@@ -63,4 +63,12 @@ class R4PatientDAO(database: Schema, override var context: FhirContext) : BaseRe
             }
         }
     }
+
+    fun searchByIdentifiers(identifiers: List<Identifier>): List<Patient> {
+        return identifiers.mapNotNull {
+            // important to remember if you're debugging that this function returns null
+            // if it fails to find a patient with the identifier or if it finds MORE THAN 1 candidate
+            searchByIdentifier(it)
+        }
+    }
 }

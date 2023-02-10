@@ -5,6 +5,7 @@ import ca.uhn.fhir.rest.annotation.RequiredParam
 import ca.uhn.fhir.rest.annotation.Search
 import ca.uhn.fhir.rest.param.DateParam
 import ca.uhn.fhir.rest.param.StringParam
+import ca.uhn.fhir.rest.param.TokenOrListParam
 import ca.uhn.fhir.rest.param.TokenParam
 import com.projectronin.interop.mock.ehr.fhir.r4.dao.R4PatientDAO
 import org.hl7.fhir.instance.model.api.IBaseResource
@@ -42,10 +43,14 @@ class R4PatientResourceProvider(override var resourceDAO: R4PatientDAO) :
     }
 
     @Search
-    fun searchByIdentifier(@RequiredParam(name = Patient.SP_IDENTIFIER) idToken: TokenParam): Patient? {
-        val identifier = Identifier()
-        identifier.value = idToken.value
-        identifier.system = idToken.system
-        return resourceDAO.searchByIdentifier(identifier)
+    fun searchByIdentifier(@RequiredParam(name = Patient.SP_IDENTIFIER) idToken: TokenOrListParam): List<Patient> {
+        val identifiers = idToken.valuesAsQueryTokens.map {
+            val identifier = Identifier()
+            identifier.value = it.value
+            identifier.system = it.system
+            identifier
+        }
+
+        return resourceDAO.searchByIdentifiers(identifiers)
     }
 }
