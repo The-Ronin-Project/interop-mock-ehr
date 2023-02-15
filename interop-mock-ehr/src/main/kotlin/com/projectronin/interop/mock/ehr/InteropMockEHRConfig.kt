@@ -2,8 +2,8 @@ package com.projectronin.interop.mock.ehr
 
 import ca.uhn.fhir.context.FhirContext
 import ca.uhn.fhir.parser.LenientErrorHandler
-import com.mysql.cj.xdevapi.Schema
 import com.mysql.cj.xdevapi.SessionFactory
+import com.projectronin.interop.mock.ehr.xdevapi.SafeXDev
 import org.springframework.beans.factory.annotation.Qualifier
 import org.springframework.beans.factory.annotation.Value
 import org.springframework.context.annotation.Bean
@@ -20,10 +20,12 @@ class InteropMockEHRConfig {
         @Value("#{environment.MOCK_EHR_DB_NAME}") name: String,
         @Value("#{environment.MOCK_EHR_DB_USER}") user: String,
         @Value("#{environment.MOCK_EHR_DB_PASS}") pass: String
-    ): Schema {
-        return SessionFactory()
-            .getSession("mysqlx://$host:$port/$name?user=$user&password=$pass")
-            .defaultSchema
+    ): SafeXDev {
+        return SafeXDev(
+            SessionFactory()
+                .getSession("mysqlx://$host:$port/$name?user=$user&password=$pass")
+                .defaultSchema
+        )
     }
 
     @Bean

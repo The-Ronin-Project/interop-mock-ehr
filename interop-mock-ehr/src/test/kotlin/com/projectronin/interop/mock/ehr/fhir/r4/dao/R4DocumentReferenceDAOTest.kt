@@ -3,7 +3,7 @@ package com.projectronin.interop.mock.ehr.fhir.r4.dao
 import ca.uhn.fhir.context.FhirContext
 import com.mysql.cj.xdevapi.Collection
 import com.mysql.cj.xdevapi.DbDoc
-import com.mysql.cj.xdevapi.Schema
+import com.projectronin.interop.mock.ehr.xdevapi.SafeXDev
 import io.mockk.every
 import io.mockk.mockk
 import org.hl7.fhir.r4.model.DocumentReference
@@ -27,8 +27,8 @@ internal class R4DocumentReferenceDAOTest {
     @BeforeAll
     fun initTest() {
         collection = mockk()
-        val database = mockk<Schema>()
-        every { database.createCollection(DocumentReference::class.simpleName, true) } returns collection
+        val database = mockk<SafeXDev>()
+        every { database.createCollection(DocumentReference::class.java) } returns SafeXDev.SafeCollection(collection)
         dao = R4DocumentReferenceDAO(database, FhirContext.forR4())
     }
 

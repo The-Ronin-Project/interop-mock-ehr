@@ -2,18 +2,14 @@ package com.projectronin.interop.mock.ehr.fhir.r4.dao
 
 import ca.uhn.fhir.context.FhirContext
 import ca.uhn.fhir.rest.param.TokenOrListParam
-import com.mysql.cj.xdevapi.Schema
+import com.projectronin.interop.mock.ehr.xdevapi.SafeXDev
 import org.hl7.fhir.r4.model.DocumentReference
 import org.hl7.fhir.r4.model.Identifier
 import org.springframework.stereotype.Component
-import java.util.concurrent.atomic.AtomicReference
 
 @Component
-class R4DocumentReferenceDAO(database: Schema, override var context: FhirContext) :
-    BaseResourceDAO<DocumentReference>() {
-    override var resourceType = DocumentReference::class.java
-    override var collection = AtomicReference(database.createCollection(DocumentReference::class.simpleName, true))
-
+class R4DocumentReferenceDAO(schema: SafeXDev, context: FhirContext) :
+    BaseResourceDAO<DocumentReference>(context, schema, DocumentReference::class.java) {
     fun searchByQuery(
         subject: String? = null,
         category: TokenOrListParam? = null,
@@ -36,7 +32,7 @@ class R4DocumentReferenceDAO(database: Schema, override var context: FhirContext
 
         // Run the query and return a List of resources that match
         val parser = context.newJsonParser()
-        return collection.get().find(query).execute().map { parser.parseResource(resourceType, it.toString()) }
+        return collection.run { find(query).execute().map { parser.parseResource(resourceType, it.toString()) } }
     }
 
     /**
@@ -47,7 +43,7 @@ class R4DocumentReferenceDAO(database: Schema, override var context: FhirContext
         val parser = context.newJsonParser()
         val searchString = "'${identifier.value}' in $.identifier[*].value"
         val documentDbDoc =
-            collection.get().find(searchString).execute().fetchAll().singleOrNull()
+            collection.run { find(searchString).execute().fetchAll().singleOrNull() }
         documentDbDoc?.let { return parser.parseResource(resourceType, documentDbDoc.toString()) }
         return null
     }

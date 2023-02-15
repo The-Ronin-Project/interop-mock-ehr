@@ -6,37 +6,41 @@ import ca.uhn.fhir.rest.param.TokenParam
 import ca.uhn.fhir.rest.server.exceptions.ResourceNotFoundException
 import com.fasterxml.jackson.databind.ObjectMapper
 import com.github.fge.jsonpatch.JsonPatch
-import com.mysql.cj.xdevapi.Collection
 import com.mysql.cj.xdevapi.DbDoc
 import com.mysql.cj.xdevapi.JsonString
+import com.projectronin.interop.mock.ehr.xdevapi.SafeXDev
 import org.hl7.fhir.r4.model.Resource
 import java.util.UUID
-import java.util.concurrent.atomic.AtomicReference
 
-abstract class BaseResourceDAO<T : Resource> {
-
-    abstract var context: FhirContext
-    abstract var resourceType: Class<T>
-    abstract var collection: AtomicReference<Collection>
+abstract class BaseResourceDAO<T : Resource>(
+    protected val context: FhirContext,
+    schema: SafeXDev,
+    val resourceType: Class<T>
+) {
+    protected val collection: SafeXDev.SafeCollection = schema.createCollection(resourceType)
 
     fun insert(resource: Resource): String {
         if (!resource.hasId()) {
             resource.id = UUID.randomUUID().toString()
         } // generate new ID for new resources
-        collection.get().add(context.newJsonParser().encodeResourceToString(resource)).execute()
+        collection.run {
+            add(context.newJsonParser().encodeResourceToString(resource)).execute()
+        }
         return resource.id
     }
 
     fun update(resource: T) {
         getDatabaseId(resource.id)?.let {
-            collection.get().replaceOne(
-                it, context.newJsonParser().encodeResourceToString(resource)
-            )
+            collection.run {
+                replaceOne(
+                    it, context.newJsonParser().encodeResourceToString(resource)
+                )
+            }
         } ?: insert(resource) // add new resource if not found
     }
 
     fun delete(fhirId: String) {
-        getDatabaseId(fhirId)?.let { collection.get().removeOne(it) }
+        getDatabaseId(fhirId)?.let { collection.run { removeOne(it) } }
     }
 
     fun findById(fhirId: String): T {
@@ -50,8 +54,10 @@ abstract class BaseResourceDAO<T : Resource> {
     fun getAll(): List<T> {
         val list = mutableListOf<T>()
         val parser = context.newJsonParser()
-        collection.get().find().execute().forEach {
-            list.add(parser.parseResource(resourceType, it.toString()))
+        collection.run {
+            find().execute().forEach {
+                list.add(parser.parseResource(resourceType, it.toString()))
+            }
         }
         return list
     }
@@ -67,10 +73,12 @@ abstract class BaseResourceDAO<T : Resource> {
 
     private fun findByIdQuery(fhirId: String?): DbDoc? {
         if (fhirId == null) return null
-        return collection.get().find("id = :id")
-            .bind("id", fhirId.removePrefix("${resourceType.simpleName}/"))
-            .execute()
-            .fetchOne()
+        return collection.run {
+            find("id = :id")
+                .bind("id", fhirId.removePrefix("${resourceType.simpleName}/"))
+                .execute()
+                .fetchOne()
+        }
     }
 
     private fun getDatabaseId(fhirId: String): String? {

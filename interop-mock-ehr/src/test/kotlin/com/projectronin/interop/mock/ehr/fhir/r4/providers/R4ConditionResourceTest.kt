@@ -5,9 +5,9 @@ import ca.uhn.fhir.rest.param.ReferenceParam
 import ca.uhn.fhir.rest.param.TokenOrListParam
 import ca.uhn.fhir.rest.param.TokenParam
 import com.mysql.cj.xdevapi.Collection
-import com.mysql.cj.xdevapi.Schema
 import com.projectronin.interop.mock.ehr.BaseMySQLTest
 import com.projectronin.interop.mock.ehr.fhir.r4.dao.R4ConditionDAO
+import com.projectronin.interop.mock.ehr.xdevapi.SafeXDev
 import io.mockk.every
 import io.mockk.mockk
 import org.hl7.fhir.r4.model.CodeableConcept
@@ -30,8 +30,8 @@ class R4ConditionResourceTest : BaseMySQLTest() {
     @BeforeAll
     fun initTest() {
         collection = createCollection(Condition::class.simpleName!!)
-        val database = mockk<Schema>()
-        every { database.createCollection(Condition::class.simpleName, true) } returns collection
+        val database = mockk<SafeXDev>()
+        every { database.createCollection(Condition::class.java) } returns SafeXDev.SafeCollection(collection)
         dao = R4ConditionDAO(database, FhirContext.forR4())
         conditionProvider = R4ConditionResourceProvider(dao)
     }

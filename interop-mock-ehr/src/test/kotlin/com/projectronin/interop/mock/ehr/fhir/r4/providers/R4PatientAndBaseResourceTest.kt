@@ -9,9 +9,9 @@ import ca.uhn.fhir.rest.param.TokenOrListParam
 import ca.uhn.fhir.rest.param.TokenParam
 import ca.uhn.fhir.rest.server.exceptions.ResourceNotFoundException
 import com.mysql.cj.xdevapi.Collection
-import com.mysql.cj.xdevapi.Schema
 import com.projectronin.interop.mock.ehr.BaseMySQLTest
 import com.projectronin.interop.mock.ehr.fhir.r4.dao.R4PatientDAO
+import com.projectronin.interop.mock.ehr.xdevapi.SafeXDev
 import io.mockk.every
 import io.mockk.mockk
 import io.mockk.mockkStatic
@@ -43,8 +43,8 @@ class R4PatientAndBaseResourceTest : BaseMySQLTest() {
     @BeforeAll
     fun initTest() {
         collection = createCollection(Patient::class.simpleName!!)
-        val database = mockk<Schema>()
-        every { database.createCollection(Patient::class.simpleName, true) } returns collection
+        val database = mockk<SafeXDev>()
+        every { database.createCollection(Patient::class.java) } returns SafeXDev.SafeCollection(collection)
         dao = R4PatientDAO(database, FhirContext.forR4())
         patientProvider = R4PatientResourceProvider(dao)
     }
@@ -302,6 +302,7 @@ class R4PatientAndBaseResourceTest : BaseMySQLTest() {
         val output = patientProvider.searchByIdentifier(list)
         assertEquals(output.first().birthDate, testPat.birthDate)
     }
+
     @Test
     fun `identifier search without system returns null when duplicates`() {
         val testPat = Patient()

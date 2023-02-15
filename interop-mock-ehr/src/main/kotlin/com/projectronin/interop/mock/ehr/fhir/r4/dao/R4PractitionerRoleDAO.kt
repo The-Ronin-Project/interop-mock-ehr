@@ -1,26 +1,25 @@
 package com.projectronin.interop.mock.ehr.fhir.r4.dao
 
 import ca.uhn.fhir.context.FhirContext
-import com.mysql.cj.xdevapi.Schema
+import com.projectronin.interop.mock.ehr.xdevapi.SafeXDev
 import org.hl7.fhir.r4.model.Identifier
 import org.hl7.fhir.r4.model.PractitionerRole
 import org.hl7.fhir.r4.model.Reference
 import org.springframework.stereotype.Component
-import java.util.concurrent.atomic.AtomicReference
 
 @Component
-class R4PractitionerRoleDAO(database: Schema, override var context: FhirContext) : BaseResourceDAO<PractitionerRole>() {
-    override var resourceType = PractitionerRole::class.java
-    override var collection = AtomicReference(database.createCollection(PractitionerRole::class.simpleName, true))
-
+class R4PractitionerRoleDAO(schema: SafeXDev, context: FhirContext) :
+    BaseResourceDAO<PractitionerRole>(context, schema, PractitionerRole::class.java) {
     fun searchByIdentifier(identifier: Identifier): PractitionerRole? {
         val parser = context.newJsonParser()
         // note that this query is a bit rigid and expects identifiers in database to only ever have just value and system
         val practitionerDbDoc =
-            collection.get()
-                .find("{'value':'${identifier.value}','system':'${identifier.system}'} in identifier[*]")
-                .execute()
-                .fetchOne()
+            collection
+                .run {
+                    find("{'value':'${identifier.value}','system':'${identifier.system}'} in identifier[*]")
+                        .execute()
+                        .fetchOne()
+                }
         return practitionerDbDoc?.let { parser.parseResource(resourceType, it.toString()) }
     }
 
@@ -38,8 +37,10 @@ class R4PractitionerRoleDAO(database: Schema, override var context: FhirContext)
         practitionerReference?.reference?.let { queryFragments.add("'$it' in practitioner.reference") }
 
         val query = queryFragments.joinToString(" AND ")
-        collection.get().find(query).execute().forEach {
-            roleList.add(parser.parseResource(resourceType, it.toString()))
+        collection.run {
+            find(query).execute().forEach {
+                roleList.add(parser.parseResource(resourceType, it.toString()))
+            }
         }
 
         return roleList

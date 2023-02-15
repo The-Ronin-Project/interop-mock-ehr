@@ -5,9 +5,9 @@ import ca.uhn.fhir.rest.param.ReferenceParam
 import ca.uhn.fhir.rest.param.TokenOrListParam
 import ca.uhn.fhir.rest.param.TokenParam
 import com.mysql.cj.xdevapi.Collection
-import com.mysql.cj.xdevapi.Schema
 import com.projectronin.interop.mock.ehr.BaseMySQLTest
 import com.projectronin.interop.mock.ehr.fhir.r4.dao.R4ObservationDAO
+import com.projectronin.interop.mock.ehr.xdevapi.SafeXDev
 import io.mockk.every
 import io.mockk.mockk
 import org.hl7.fhir.r4.model.CodeableConcept
@@ -29,8 +29,8 @@ class R4ObservationResourceTest : BaseMySQLTest() {
     @BeforeAll
     fun initTest() {
         collection = createCollection(Observation::class.simpleName!!)
-        val database = mockk<Schema>()
-        every { database.createCollection(Observation::class.simpleName, true) } returns collection
+        val database = mockk<SafeXDev>()
+        every { database.createCollection(Observation::class.java) } returns SafeXDev.SafeCollection(collection)
         val dao = R4ObservationDAO(database, FhirContext.forR4())
         observationProvider = R4ObservationResourceProvider(dao)
     }

@@ -4,7 +4,7 @@ import ca.uhn.fhir.context.FhirContext
 import ca.uhn.fhir.rest.param.TokenOrListParam
 import ca.uhn.fhir.rest.param.TokenParam
 import com.mysql.cj.xdevapi.Collection
-import com.mysql.cj.xdevapi.Schema
+import com.projectronin.interop.mock.ehr.xdevapi.SafeXDev
 import io.mockk.every
 import io.mockk.mockk
 import org.hl7.fhir.r4.model.Observation
@@ -24,8 +24,8 @@ internal class BaseResourceDAOTest {
     @BeforeAll
     fun initTest() {
         val collection = mockk<Collection>()
-        val database = mockk<Schema>()
-        every { database.createCollection(Observation::class.simpleName, true) } returns collection
+        val database = mockk<SafeXDev>()
+        every { database.createCollection(Observation::class.java) } returns SafeXDev.SafeCollection(collection)
         dao = R4ObservationDAO(database, FhirContext.forR4())
     }
 

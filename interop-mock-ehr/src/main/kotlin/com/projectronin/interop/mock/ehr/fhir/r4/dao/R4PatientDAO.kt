@@ -1,18 +1,15 @@
 package com.projectronin.interop.mock.ehr.fhir.r4.dao
 
 import ca.uhn.fhir.context.FhirContext
-import com.mysql.cj.xdevapi.Schema
+import com.projectronin.interop.mock.ehr.xdevapi.SafeXDev
 import org.hl7.fhir.r4.model.ContactPoint
 import org.hl7.fhir.r4.model.Identifier
 import org.hl7.fhir.r4.model.Patient
 import org.springframework.stereotype.Component
-import java.util.concurrent.atomic.AtomicReference
 
 @Component
-class R4PatientDAO(database: Schema, override var context: FhirContext) : BaseResourceDAO<Patient>() {
-    override var resourceType = Patient::class.java
-    override var collection = AtomicReference(database.createCollection(Patient::class.simpleName, true))
-
+class R4PatientDAO(schema: SafeXDev, context: FhirContext) :
+    BaseResourceDAO<Patient>(context, schema, Patient::class.java) {
     fun searchByQuery(
         birthdate: String? = null,
         givenName: String? = null,
@@ -36,8 +33,10 @@ class R4PatientDAO(database: Schema, override var context: FhirContext) : BaseRe
 
         val query = queryFragments.joinToString(" AND ")
         val parser = context.newJsonParser()
-        return collection.get().find(query).execute().map {
-            parser.parseResource(resourceType, it.toString())
+        return collection.run {
+            find(query).execute().map {
+                parser.parseResource(resourceType, it.toString())
+            }
         }
     }
 
@@ -52,7 +51,7 @@ class R4PatientDAO(database: Schema, override var context: FhirContext) : BaseRe
          */
         val searchString = "'${identifier.value}' in $.identifier[*].value"
         val patientDbDoc =
-            collection.get().find(searchString).execute().fetchAll()
+            collection.run { find(searchString).execute().fetchAll() }
         val patients = patientDbDoc.mapNotNull { parser.parseResource(resourceType, it.toString()) }
         return patients.singleOrNull { patient ->
             patient.identifier.any {

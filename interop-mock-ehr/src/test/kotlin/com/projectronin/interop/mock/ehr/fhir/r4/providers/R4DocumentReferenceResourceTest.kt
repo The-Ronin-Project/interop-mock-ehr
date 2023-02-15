@@ -6,9 +6,9 @@ import ca.uhn.fhir.rest.param.StringParam
 import ca.uhn.fhir.rest.param.TokenOrListParam
 import ca.uhn.fhir.rest.param.TokenParam
 import com.mysql.cj.xdevapi.Collection
-import com.mysql.cj.xdevapi.Schema
 import com.projectronin.interop.mock.ehr.BaseMySQLTest
 import com.projectronin.interop.mock.ehr.fhir.r4.dao.R4DocumentReferenceDAO
+import com.projectronin.interop.mock.ehr.xdevapi.SafeXDev
 import io.mockk.every
 import io.mockk.mockk
 import org.hl7.fhir.r4.model.CodeableConcept
@@ -30,8 +30,8 @@ class R4DocumentReferenceResourceTest : BaseMySQLTest() {
     @BeforeAll
     fun initTest() {
         collection = createCollection(DocumentReference::class.simpleName!!)
-        val database = mockk<Schema>()
-        every { database.createCollection(DocumentReference::class.simpleName, true) } returns collection
+        val database = mockk<SafeXDev>()
+        every { database.createCollection(DocumentReference::class.java) } returns SafeXDev.SafeCollection(collection)
         val dao = R4DocumentReferenceDAO(database, FhirContext.forR4())
         documentReferenceProvider = R4DocumentReferenceResourceProvider(dao)
     }
@@ -83,7 +83,8 @@ class R4DocumentReferenceResourceTest : BaseMySQLTest() {
 
         collection.add(FhirContext.forR4().newJsonParser().encodeResourceToString(testDocumentReference2)).execute()
 
-        val output = documentReferenceProvider.search(subjectReferenceParam = ReferenceParam("Practitioner/pract1")).first()
+        val output =
+            documentReferenceProvider.search(subjectReferenceParam = ReferenceParam("Practitioner/pract1")).first()
         assertEquals(output.id, "DocumentReference/${testDocumentReference.id}")
     }
 
@@ -288,7 +289,8 @@ class R4DocumentReferenceResourceTest : BaseMySQLTest() {
         testDocumentReference.docStatus = DocumentReference.ReferredDocumentStatus.FINAL
         collection.add(FhirContext.forR4().newJsonParser().encodeResourceToString(testDocumentReference)).execute()
 
-        val output = documentReferenceProvider.search(docStatusParam = StringParam(DocumentReference.ReferredDocumentStatus.FINAL.toCode()))
+        val output =
+            documentReferenceProvider.search(docStatusParam = StringParam(DocumentReference.ReferredDocumentStatus.FINAL.toCode()))
         assertEquals("DocumentReference/${testDocumentReference.id}", output[0].id)
     }
 

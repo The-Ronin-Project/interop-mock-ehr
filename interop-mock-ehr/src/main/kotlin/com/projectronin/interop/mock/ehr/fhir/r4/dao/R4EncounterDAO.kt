@@ -1,21 +1,15 @@
 package com.projectronin.interop.mock.ehr.fhir.r4.dao
 
 import ca.uhn.fhir.context.FhirContext
-import com.mysql.cj.xdevapi.Schema
+import com.projectronin.interop.mock.ehr.xdevapi.SafeXDev
 import org.hl7.fhir.r4.model.Encounter
 import org.hl7.fhir.r4.model.Reference
 import org.springframework.stereotype.Component
 import java.util.Date
-import java.util.concurrent.atomic.AtomicReference
 
 @Component
-class R4EncounterDAO(
-    database: Schema,
-    override var context: FhirContext
-) : BaseResourceDAO<Encounter>() {
-    override var resourceType = Encounter::class.java
-    override var collection = AtomicReference(database.createCollection(Encounter::class.simpleName, true))
-
+class R4EncounterDAO(schema: SafeXDev, context: FhirContext) :
+    BaseResourceDAO<Encounter>(context, schema, Encounter::class.java) {
     /**
      * Finds Encounter based on input query parameters.
      * @param reference the patientFhirId for the ENCOUNTERS, i.e. 'Patient/eJcZl4T3ut30rE-k0LLiYyw3'
@@ -38,8 +32,10 @@ class R4EncounterDAO(
         val parser = context.newJsonParser()
 
         // run query, return list
-        collection.get().find(query).execute().forEach {
-            encounterList.add(parser.parseResource(resourceType, it.toString()))
+        collection.run {
+            find(query).execute().forEach {
+                encounterList.add(parser.parseResource(resourceType, it.toString()))
+            }
         }
 
         return encounterList.filter { encounter ->

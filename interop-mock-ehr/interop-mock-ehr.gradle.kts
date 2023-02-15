@@ -13,6 +13,7 @@ dependencies {
     implementation(libs.interop.ehr.epic)
     implementation(libs.interop.fhir)
     implementation(libs.json.patch)
+    implementation(libs.kotlinx.coroutines.core)
 
     implementation(libs.bundles.hapi.fhir)
     implementation(libs.bundles.hapi.hl7v2)

@@ -4,9 +4,9 @@ import ca.uhn.fhir.context.FhirContext
 import ca.uhn.fhir.rest.param.TokenParam
 import ca.uhn.fhir.rest.server.exceptions.ResourceNotFoundException
 import com.mysql.cj.xdevapi.Collection
-import com.mysql.cj.xdevapi.Schema
 import com.projectronin.interop.mock.ehr.BaseMySQLTest
 import com.projectronin.interop.mock.ehr.fhir.r4.dao.R4PractitionerDAO
+import com.projectronin.interop.mock.ehr.xdevapi.SafeXDev
 import io.mockk.every
 import io.mockk.mockk
 import org.hl7.fhir.r4.model.Identifier
@@ -28,8 +28,8 @@ class R4PractitionerResourceTest : BaseMySQLTest() {
     @BeforeAll
     fun initTest() {
         collection = createCollection(Practitioner::class.simpleName!!)
-        val database = mockk<Schema>()
-        every { database.createCollection(Practitioner::class.simpleName, true) } returns collection
+        val database = mockk<SafeXDev>()
+        every { database.createCollection(Practitioner::class.java) } returns SafeXDev.SafeCollection(collection)
         dao = R4PractitionerDAO(database, FhirContext.forR4())
         practitionerProvider = R4PractitionerResourceProvider(dao)
     }

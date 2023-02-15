@@ -4,9 +4,9 @@ import ca.uhn.fhir.context.FhirContext
 import ca.uhn.fhir.rest.param.ReferenceParam
 import ca.uhn.fhir.rest.param.StringParam
 import com.mysql.cj.xdevapi.Collection
-import com.mysql.cj.xdevapi.Schema
 import com.projectronin.interop.mock.ehr.BaseMySQLTest
 import com.projectronin.interop.mock.ehr.fhir.r4.dao.R4CareTeamDAO
+import com.projectronin.interop.mock.ehr.xdevapi.SafeXDev
 import io.mockk.every
 import io.mockk.mockk
 import org.hl7.fhir.r4.model.CareTeam
@@ -27,8 +27,8 @@ class R4CareTeamResourceTest : BaseMySQLTest() {
     @BeforeAll
     fun initTest() {
         collection = createCollection(CareTeam::class.simpleName!!)
-        val database = mockk<Schema>()
-        every { database.createCollection(CareTeam::class.simpleName, true) } returns collection
+        val database = mockk<SafeXDev>()
+        every { database.createCollection(CareTeam::class.java) } returns SafeXDev.SafeCollection(collection)
         dao = R4CareTeamDAO(database, FhirContext.forR4())
         careTeamProvider = R4CareTeamResourceProvider(dao)
     }

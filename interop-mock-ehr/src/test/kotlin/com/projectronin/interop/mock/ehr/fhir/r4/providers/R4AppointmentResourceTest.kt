@@ -5,9 +5,9 @@ import ca.uhn.fhir.rest.param.DateParam
 import ca.uhn.fhir.rest.param.DateRangeParam
 import ca.uhn.fhir.rest.param.ReferenceParam
 import com.mysql.cj.xdevapi.Collection
-import com.mysql.cj.xdevapi.Schema
 import com.projectronin.interop.mock.ehr.BaseMySQLTest
 import com.projectronin.interop.mock.ehr.fhir.r4.dao.R4AppointmentDAO
+import com.projectronin.interop.mock.ehr.xdevapi.SafeXDev
 import io.mockk.every
 import io.mockk.mockk
 import org.hl7.fhir.r4.model.Appointment
@@ -27,8 +27,8 @@ class R4AppointmentResourceTest : BaseMySQLTest() {
     @BeforeAll
     fun initTest() {
         collection = createCollection(Appointment::class.simpleName!!)
-        val database = mockk<Schema>()
-        every { database.createCollection(Appointment::class.simpleName, true) } returns collection
+        val database = mockk<SafeXDev>()
+        every { database.createCollection(Appointment::class.java) } returns SafeXDev.SafeCollection(collection)
         dao = R4AppointmentDAO(database, FhirContext.forR4())
         appointmentProvider = R4AppointmentResourceProvider(dao)
     }

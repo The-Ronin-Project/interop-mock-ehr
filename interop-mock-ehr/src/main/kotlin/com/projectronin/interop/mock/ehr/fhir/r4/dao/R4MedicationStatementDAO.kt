@@ -1,17 +1,13 @@
 package com.projectronin.interop.mock.ehr.fhir.r4.dao
 
 import ca.uhn.fhir.context.FhirContext
-import com.mysql.cj.xdevapi.Schema
+import com.projectronin.interop.mock.ehr.xdevapi.SafeXDev
 import org.hl7.fhir.r4.model.MedicationStatement
 import org.springframework.stereotype.Component
-import java.util.concurrent.atomic.AtomicReference
 
 @Component
-class R4MedicationStatementDAO(database: Schema, override var context: FhirContext) :
-    BaseResourceDAO<MedicationStatement>() {
-    override var resourceType = MedicationStatement::class.java
-    override var collection = AtomicReference(database.createCollection(MedicationStatement::class.simpleName, true))
-
+class R4MedicationStatementDAO(schema: SafeXDev, context: FhirContext) :
+    BaseResourceDAO<MedicationStatement>(context, schema, MedicationStatement::class.java) {
     /**
      * Finds medicationStatements based on input query parameters. Treats all inputs as a logical 'AND'.
      * @param subject string for filtering MedicationStatement.subject.reference values.
@@ -28,6 +24,6 @@ class R4MedicationStatementDAO(database: Schema, override var context: FhirConte
 
         // Run the query and return a List of resources that match
         val parser = context.newJsonParser()
-        return collection.get().find(query).execute().mapNotNull { parser.parseResource(resourceType, it.toString()) }
+        return collection.run { find(query).execute().mapNotNull { parser.parseResource(resourceType, it.toString()) } }
     }
 }

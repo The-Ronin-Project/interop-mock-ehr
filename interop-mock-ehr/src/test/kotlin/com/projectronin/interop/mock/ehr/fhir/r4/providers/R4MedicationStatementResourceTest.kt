@@ -3,9 +3,9 @@ package com.projectronin.interop.mock.ehr.fhir.r4.providers
 import ca.uhn.fhir.context.FhirContext
 import ca.uhn.fhir.rest.param.ReferenceParam
 import com.mysql.cj.xdevapi.Collection
-import com.mysql.cj.xdevapi.Schema
 import com.projectronin.interop.mock.ehr.BaseMySQLTest
 import com.projectronin.interop.mock.ehr.fhir.r4.dao.R4MedicationStatementDAO
+import com.projectronin.interop.mock.ehr.xdevapi.SafeXDev
 import io.mockk.every
 import io.mockk.mockk
 import org.hl7.fhir.r4.model.MedicationStatement
@@ -25,8 +25,8 @@ class R4MedicationStatementResourceTest : BaseMySQLTest() {
     @BeforeAll
     fun initTest() {
         collection = createCollection(MedicationStatement::class.simpleName!!)
-        val database = mockk<Schema>()
-        every { database.createCollection(MedicationStatement::class.simpleName, true) } returns collection
+        val database = mockk<SafeXDev>()
+        every { database.createCollection(MedicationStatement::class.java) } returns SafeXDev.SafeCollection(collection)
         val dao = R4MedicationStatementDAO(database, FhirContext.forR4())
         medicationStatementProvider = R4MedicationStatementResourceProvider(dao)
     }

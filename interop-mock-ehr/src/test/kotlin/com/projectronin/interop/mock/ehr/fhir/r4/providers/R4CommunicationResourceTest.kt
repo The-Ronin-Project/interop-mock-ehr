@@ -2,9 +2,9 @@ package com.projectronin.interop.mock.ehr.fhir.r4.providers
 
 import ca.uhn.fhir.context.FhirContext
 import com.mysql.cj.xdevapi.Collection
-import com.mysql.cj.xdevapi.Schema
 import com.projectronin.interop.mock.ehr.BaseMySQLTest
 import com.projectronin.interop.mock.ehr.fhir.r4.dao.R4CommunicationDAO
+import com.projectronin.interop.mock.ehr.xdevapi.SafeXDev
 import io.mockk.every
 import io.mockk.mockk
 import org.hl7.fhir.r4.model.Communication
@@ -22,8 +22,8 @@ class R4CommunicationResourceTest : BaseMySQLTest() {
     @BeforeAll
     fun initTest() {
         collection = createCollection(Communication::class.simpleName!!)
-        val database = mockk<Schema>()
-        every { database.createCollection(Communication::class.simpleName, true) } returns collection
+        val database = mockk<SafeXDev>()
+        every { database.createCollection(Communication::class.java) } returns SafeXDev.SafeCollection(collection)
         dao = R4CommunicationDAO(database, FhirContext.forR4())
         communicationProvider = R4CommunicationResourceProvider(dao)
     }

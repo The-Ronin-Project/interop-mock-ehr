@@ -2,16 +2,13 @@ package com.projectronin.interop.mock.ehr.fhir.r4.dao
 
 import ca.uhn.fhir.context.FhirContext
 import ca.uhn.fhir.rest.param.TokenOrListParam
-import com.mysql.cj.xdevapi.Schema
+import com.projectronin.interop.mock.ehr.xdevapi.SafeXDev
 import org.hl7.fhir.r4.model.Observation
 import org.springframework.stereotype.Component
-import java.util.concurrent.atomic.AtomicReference
 
 @Component
-class R4ObservationDAO(database: Schema, override var context: FhirContext) : BaseResourceDAO<Observation>() {
-    override var resourceType = Observation::class.java
-    override var collection = AtomicReference(database.createCollection(Observation::class.simpleName, true))
-
+class R4ObservationDAO(schema: SafeXDev, context: FhirContext) :
+    BaseResourceDAO<Observation>(context, schema, Observation::class.java) {
     /**
      * Finds Observations based on input query parameters. Treats all inputs as a logical 'AND'.
      * @param subject string for filtering Observation.subject.reference values.
@@ -38,6 +35,6 @@ class R4ObservationDAO(database: Schema, override var context: FhirContext) : Ba
 
         // Run the query and return a List of resources that match
         val parser = context.newJsonParser()
-        return collection.get().find(query).execute().mapNotNull { parser.parseResource(resourceType, it.toString()) }
+        return collection.run { find(query).execute().mapNotNull { parser.parseResource(resourceType, it.toString()) } }
     }
 }

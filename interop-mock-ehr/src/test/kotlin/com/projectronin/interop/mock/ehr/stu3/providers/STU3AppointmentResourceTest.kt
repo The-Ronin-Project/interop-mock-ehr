@@ -7,11 +7,12 @@ import ca.uhn.fhir.rest.param.ReferenceParam
 import ca.uhn.fhir.rest.param.StringParam
 import ca.uhn.fhir.rest.param.TokenOrListParam
 import com.mysql.cj.xdevapi.Collection
-import com.mysql.cj.xdevapi.Schema
 import com.projectronin.interop.mock.ehr.BaseMySQLTest
 import com.projectronin.interop.mock.ehr.fhir.r4.dao.R4AppointmentDAO
 import com.projectronin.interop.mock.ehr.fhir.stu3.providers.STU3AppointmentResourceProvider
 import com.projectronin.interop.mock.ehr.fhir.stu3.toR4
+import com.projectronin.interop.mock.ehr.xdevapi.SafeXDev
+import com.projectronin.interop.mock.ehr.xdevapi.SafeXDev.SafeCollection
 import io.mockk.every
 import io.mockk.mockk
 import io.mockk.mockkStatic
@@ -40,8 +41,8 @@ class STU3AppointmentResourceTest : BaseMySQLTest() {
     @BeforeAll
     fun initTest() {
         collection = createCollection(Appointment::class.simpleName!!)
-        val database = mockk<Schema>()
-        every { database.createCollection(Appointment::class.simpleName, true) } returns collection
+        val database = mockk<SafeXDev>()
+        every { database.createCollection(R4Appointment::class.java) } returns SafeCollection(collection)
         dao = R4AppointmentDAO(database, FhirContext.forR4())
         appointmentProvider = STU3AppointmentResourceProvider(dao)
     }
