@@ -1,6 +1,7 @@
 package com.projectronin.interop.mock.ehr.fhir.r4.dao
 
 import ca.uhn.fhir.context.FhirContext
+import com.projectronin.interop.mock.ehr.util.escapeSQL
 import com.projectronin.interop.mock.ehr.xdevapi.SafeXDev
 import org.hl7.fhir.r4.model.Appointment
 import org.hl7.fhir.r4.model.Reference
@@ -27,7 +28,7 @@ class R4AppointmentDAO(schema: SafeXDev, context: FhirContext) :
         references.forEach { ref ->
             ref.reference?.let { queryFragments.add("'$it' in participant[*].actor.reference") }
         }
-        status?.let { queryFragments.add("'$it' in status") }
+        status?.let { queryFragments.add("'${it.escapeSQL()}' in status") }
 
         val query = queryFragments.joinToString(" AND ")
 

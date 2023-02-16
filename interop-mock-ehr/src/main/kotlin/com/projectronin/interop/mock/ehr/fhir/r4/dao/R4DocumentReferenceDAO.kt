@@ -2,6 +2,7 @@ package com.projectronin.interop.mock.ehr.fhir.r4.dao
 
 import ca.uhn.fhir.context.FhirContext
 import ca.uhn.fhir.rest.param.TokenOrListParam
+import com.projectronin.interop.mock.ehr.util.escapeSQL
 import com.projectronin.interop.mock.ehr.xdevapi.SafeXDev
 import org.hl7.fhir.r4.model.DocumentReference
 import org.hl7.fhir.r4.model.Identifier
@@ -18,9 +19,9 @@ class R4DocumentReferenceDAO(schema: SafeXDev, context: FhirContext) :
     ): List<DocumentReference> {
         // Build queryFragments into query joined with 'AND'
         val queryFragments = mutableListOf<String>()
-        subject?.let { queryFragments.add("('$it' = subject.reference)") }
-        docStatus?.let { queryFragments.add("('$it' = docStatus)") }
-        encounter?.let { queryFragments.add("('$it' in context.encounter[*].reference)") }
+        subject?.let { queryFragments.add("('${it.escapeSQL()}' = subject.reference)") }
+        docStatus?.let { queryFragments.add("('${it.escapeSQL()}' = docStatus)") }
+        encounter?.let { queryFragments.add("('${it.escapeSQL()}' in context.encounter[*].reference)") }
         category?.let { catList ->
             val phrase = getSearchStringForFHIRTokens(catList)
             if (!phrase.isNullOrEmpty()) {

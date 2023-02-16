@@ -231,6 +231,22 @@ class R4PatientAndBaseResourceTest : BaseMySQLTest() {
     }
 
     @Test
+    fun `name with escapable charaters test`() {
+        val testPat1 = Patient()
+        testPat1.addName().setFamily("testFamily'").addGiven("test'Given")
+        collection.add(FhirContext.forR4().newJsonParser().encodeResourceToString(testPat1)).execute()
+
+        val output =
+            patientProvider.search(
+                givenName = StringParam("test'Given"),
+                familyName = StringParam("testFamily'")
+            ).first()
+
+        assertEquals(output.nameFirstRep.family, testPat1.nameFirstRep.family)
+        assertEquals(output.gender, testPat1.gender)
+    }
+
+    @Test
     fun `email search test`() {
         val testPat1 = Patient()
         testPat1.telecom.add(

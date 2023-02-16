@@ -2,6 +2,7 @@ package com.projectronin.interop.mock.ehr.fhir.r4.dao
 
 import ca.uhn.fhir.context.FhirContext
 import ca.uhn.fhir.rest.param.TokenOrListParam
+import com.projectronin.interop.mock.ehr.util.escapeSQL
 import com.projectronin.interop.mock.ehr.xdevapi.SafeXDev
 import org.hl7.fhir.r4.model.Observation
 import org.springframework.stereotype.Component
@@ -19,11 +20,11 @@ class R4ObservationDAO(schema: SafeXDev, context: FhirContext) :
      */
     fun searchByQuery(
         subject: String? = null,
-        category: TokenOrListParam? = null,
+        category: TokenOrListParam? = null
     ): List<Observation> {
         // Build queryFragments into query joined with 'AND'
         val queryFragments = mutableListOf<String>()
-        subject?.let { queryFragments.add("('$it' = subject.reference)") }
+        subject?.let { queryFragments.add("('${it.escapeSQL()}' = subject.reference)") }
         category?.let { catList ->
             val phrase = getSearchStringForFHIRTokens(catList)
             if (!phrase.isNullOrEmpty()) {

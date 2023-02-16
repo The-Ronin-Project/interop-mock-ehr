@@ -96,4 +96,16 @@ internal class BaseResourceDAOTest {
         assertNull(dao.getSearchStringForFHIRToken(null))
         assertNull(dao.getSearchStringForFHIRToken())
     }
+
+    @Test
+    fun `handles escaping characters in system and value`() {
+        val token = TokenParam()
+        token.system = "system'"
+        token.value = "value'"
+        val tokenList = TokenOrListParam()
+        tokenList.add(token)
+        val expectedString = " ( ('system''' in category[*].coding[*].system AND 'value''' in category[*].coding[*].code) ) "
+        val searchString = dao.getSearchStringForFHIRTokens(tokenList)
+        assertEquals(expectedString, searchString)
+    }
 }

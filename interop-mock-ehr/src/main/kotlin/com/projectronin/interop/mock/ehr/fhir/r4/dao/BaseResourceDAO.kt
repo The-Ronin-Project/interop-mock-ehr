@@ -8,6 +8,7 @@ import com.fasterxml.jackson.databind.ObjectMapper
 import com.github.fge.jsonpatch.JsonPatch
 import com.mysql.cj.xdevapi.DbDoc
 import com.mysql.cj.xdevapi.JsonString
+import com.projectronin.interop.mock.ehr.util.escapeSQL
 import com.projectronin.interop.mock.ehr.xdevapi.SafeXDev
 import org.hl7.fhir.r4.model.Resource
 import java.util.UUID
@@ -47,7 +48,8 @@ abstract class BaseResourceDAO<T : Resource>(
         val resourceJSON = findByIdQuery(fhirId)?.toString()
             ?: throw ResourceNotFoundException("No resource found with id: $fhirId")
         return context.newJsonParser().parseResource(
-            resourceType, resourceJSON
+            resourceType,
+            resourceJSON
         )
     }
 
@@ -122,13 +124,13 @@ abstract class BaseResourceDAO<T : Resource>(
         val code = fhirToken.value
         return if (!system.isNullOrEmpty()) {
             if (!code.isNullOrEmpty()) {
-                "('$system' in $fieldName[*].coding[*].system AND '$code' in $fieldName[*].coding[*].code)"
+                "('${system.escapeSQL()}' in $fieldName[*].coding[*].system AND '${code.escapeSQL()}' in $fieldName[*].coding[*].code)"
             } else {
-                "('$system' in $fieldName[*].coding[*].system)"
+                "('${system.escapeSQL()}' in $fieldName[*].coding[*].system)"
             }
         } else {
             if (!code.isNullOrEmpty()) {
-                "('$code' in $fieldName[*].coding[*].code OR '$code' in $fieldName[*].text)"
+                "('${code.escapeSQL()}' in $fieldName[*].coding[*].code OR '${code.escapeSQL()}' in $fieldName[*].text)"
             } else {
                 null
             }

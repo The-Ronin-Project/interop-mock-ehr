@@ -2,6 +2,7 @@ package com.projectronin.interop.mock.ehr.fhir.r4.dao
 
 import ca.uhn.fhir.context.FhirContext
 import ca.uhn.fhir.rest.param.TokenOrListParam
+import com.projectronin.interop.mock.ehr.util.escapeSQL
 import com.projectronin.interop.mock.ehr.xdevapi.SafeXDev
 import org.hl7.fhir.r4.model.Condition
 import org.springframework.stereotype.Component
@@ -19,19 +20,18 @@ class R4ConditionDAO(schema: SafeXDev, context: FhirContext) :
     fun searchByQuery(
         subject: String? = null,
         category: TokenOrListParam? = null,
-        clinicalStatus: String? = null,
+        clinicalStatus: String? = null
     ): List<Condition> {
-
         // Build queryFragments into query conditions joined with 'AND'
         val queryFragments = mutableListOf<String>()
-        subject?.let { queryFragments.add("('$it' = subject.reference)") }
+        subject?.let { queryFragments.add("('${it.escapeSQL()}' = subject.reference)") }
         category?.let { catList ->
             val phrase = getSearchStringForFHIRTokens(catList)
             if (!phrase.isNullOrEmpty()) {
                 queryFragments.add(phrase)
             }
         }
-        clinicalStatus?.let { queryFragments.add("('$it' in clinicalStatus.coding[*].code OR '$it' in clinicalStatus.text)") }
+        clinicalStatus?.let { queryFragments.add("('${it.escapeSQL()}' in clinicalStatus.coding[*].code OR '${it.escapeSQL()}' in clinicalStatus.text)") }
 
         // Join query conditions with 'AND'
         val query = queryFragments.joinToString(" AND ")

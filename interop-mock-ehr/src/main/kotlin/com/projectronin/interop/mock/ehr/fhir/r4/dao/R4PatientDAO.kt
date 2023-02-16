@@ -1,6 +1,7 @@
 package com.projectronin.interop.mock.ehr.fhir.r4.dao
 
 import ca.uhn.fhir.context.FhirContext
+import com.projectronin.interop.mock.ehr.util.escapeSQL
 import com.projectronin.interop.mock.ehr.xdevapi.SafeXDev
 import org.hl7.fhir.r4.model.ContactPoint
 import org.hl7.fhir.r4.model.Identifier
@@ -20,19 +21,20 @@ class R4PatientDAO(schema: SafeXDev, context: FhirContext) :
     ): List<Patient> {
         val queryFragments = mutableListOf<String>()
 
-        birthdate?.let { queryFragments.add("birthDate = '$it'") }
-        gender?.let { queryFragments.add("gender = '$it'") }
+        birthdate?.let { queryFragments.add("birthDate = '${it.escapeSQL()}'") }
+        gender?.let { queryFragments.add("gender = '${it.escapeSQL()}'") }
 
         // name is surprisingly difficult to query, this isn't perfect
-        givenName?.let { queryFragments.add("'$it' in name[*].given[*]") }
-        familyName?.let { queryFragments.add("'$it' in name[*].family") }
+        givenName?.let { queryFragments.add("'${it.escapeSQL()}' in name[*].given[*]") }
+        familyName?.let { queryFragments.add("'${it.escapeSQL()}' in name[*].family") }
 
         // it may be worth checking 'system' in the future for these, but this is fine for now
-        email?.let { queryFragments.add("'$it' in telecom[*].value") }
+        email?.let { queryFragments.add("'${it.escapeSQL()}' in telecom[*].value") }
         telecom?.let { queryFragments.add("'${it.value}' in telecom[*].value") }
 
         val query = queryFragments.joinToString(" AND ")
         val parser = context.newJsonParser()
+
         return collection.run {
             find(query).execute().map {
                 parser.parseResource(resourceType, it.toString())

@@ -1,6 +1,7 @@
 package com.projectronin.interop.mock.ehr.fhir.r4.dao
 
 import ca.uhn.fhir.context.FhirContext
+import com.projectronin.interop.mock.ehr.util.escapeSQL
 import com.projectronin.interop.mock.ehr.xdevapi.SafeXDev
 import org.hl7.fhir.r4.model.CareTeam
 import org.springframework.stereotype.Component
@@ -15,12 +16,12 @@ class R4CareTeamDAO(schema: SafeXDev, context: FhirContext) :
      */
     fun searchByQuery(
         subject: String? = null,
-        status: String? = null,
+        status: String? = null
     ): List<CareTeam> {
         // Build queryFragments into query joined with 'AND'
         val queryFragments = mutableListOf<String>()
-        subject?.let { queryFragments.add("('$it' = subject.reference)") }
-        status?.let { queryFragments.add("('$it' = status)") }
+        subject?.let { queryFragments.add("('${it.escapeSQL()}' = subject.reference)") }
+        status?.let { queryFragments.add("('${it.escapeSQL()}' = status)") }
         if (queryFragments.isEmpty()) return listOf()
         val query = queryFragments.joinToString(" AND ")
 

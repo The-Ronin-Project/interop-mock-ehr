@@ -1,6 +1,7 @@
 package com.projectronin.interop.mock.ehr.fhir.r4.dao
 
 import ca.uhn.fhir.context.FhirContext
+import com.projectronin.interop.mock.ehr.util.escapeSQL
 import com.projectronin.interop.mock.ehr.xdevapi.SafeXDev
 import org.hl7.fhir.r4.model.Identifier
 import org.hl7.fhir.r4.model.PractitionerRole
@@ -32,9 +33,9 @@ class R4PractitionerRoleDAO(schema: SafeXDev, context: FhirContext) :
         val queryFragments = mutableListOf<String>()
 
         locationReferences.forEach { ref ->
-            ref.reference?.let { queryFragments.add("'$it' in location[*].reference") }
+            ref.reference?.let { queryFragments.add("'${it.escapeSQL()}' in location[*].reference") }
         }
-        practitionerReference?.reference?.let { queryFragments.add("'$it' in practitioner.reference") }
+        practitionerReference?.reference?.let { queryFragments.add("'${it.escapeSQL()}' in practitioner.reference") }
 
         val query = queryFragments.joinToString(" AND ")
         collection.run {

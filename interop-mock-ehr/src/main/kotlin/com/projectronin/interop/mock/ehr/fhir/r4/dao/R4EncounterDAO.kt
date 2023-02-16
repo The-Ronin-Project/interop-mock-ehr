@@ -1,6 +1,7 @@
 package com.projectronin.interop.mock.ehr.fhir.r4.dao
 
 import ca.uhn.fhir.context.FhirContext
+import com.projectronin.interop.mock.ehr.util.escapeSQL
 import com.projectronin.interop.mock.ehr.xdevapi.SafeXDev
 import org.hl7.fhir.r4.model.Encounter
 import org.hl7.fhir.r4.model.Reference
@@ -19,12 +20,12 @@ class R4EncounterDAO(schema: SafeXDev, context: FhirContext) :
     fun searchByQuery(
         reference: List<Reference> = listOf(),
         fromDate: Date? = null,
-        toDate: Date? = null,
+        toDate: Date? = null
     ): List<Encounter> {
         val queryFragments = mutableListOf<String>()
 
         reference.forEach { ref ->
-            ref.reference?.let { queryFragments.add("'$it' = subject.reference") }
+            ref.reference?.let { queryFragments.add("'${it.escapeSQL()}' = subject.reference") }
         }
 
         val query = queryFragments.joinToString(" AND ")
