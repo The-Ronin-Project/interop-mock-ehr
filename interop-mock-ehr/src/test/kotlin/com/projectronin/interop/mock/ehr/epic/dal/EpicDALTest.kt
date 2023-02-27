@@ -7,6 +7,6 @@ internal class EpicDALTest {
 
     @Test
     fun `code coverage test`() {
-        EpicDAL(mockk(), mockk(), mockk(), mockk(), mockk(), mockk(), mockk())
+        EpicDAL(mockk(), mockk(), mockk(), mockk(), mockk(), mockk(), mockk(), mockk())
     }
 }

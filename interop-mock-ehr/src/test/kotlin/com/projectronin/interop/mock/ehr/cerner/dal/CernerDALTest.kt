@@ -6,6 +6,6 @@ import org.junit.jupiter.api.Test
 internal class CernerDALTest {
     @Test
     fun `extensive in-depth test`() {
-        CernerDAL(mockk(), mockk(), mockk(), mockk(), mockk())
+        CernerDAL(mockk(), mockk(), mockk(), mockk(), mockk(), mockk())
     }
 }
