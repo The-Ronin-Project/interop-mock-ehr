@@ -107,7 +107,8 @@ class RoninVendorFilter {
         "MedicationStatement",
         "Observation",
         "Organization",
-        "PractitionerRole"
+        "PractitionerRole",
+        "Encounter"
     )
 
     private val cernerSupportedResources = listOf(
@@ -126,6 +127,7 @@ class RoninVendorFilter {
         "MedicationStatement",
         "Observation",
         "Organization",
+        "Encounter"
     )
 
     private val supportedMap = mapOf("epic" to epicSupportedResources, "cerner" to cernerSupportedResources)
