@@ -23,6 +23,7 @@ springdoc-openapi-kotlin = "org.springdoc:springdoc-openapi-kotlin:1.6.14"
 springdoc-openapi-ui = "org.springdoc:springdoc-openapi-ui:1.6.14"
 testcontainers-bom = "org.testcontainers:testcontainers-bom:1.17.6"
 json-patch = "com.github.java-json-tools:json-patch:1.13"
+logstash-logback-encoder = "net.logstash.logback:logstash-logback-encoder:7.3"
 
 [bundles]
 hapi-fhir = ["hapi-fhir-base", "hapi-fhir-server", "hapi-fhir-structures-r4", "hapi-fhir-server-openapi", "hapi-fhir-structures-stu3"]
