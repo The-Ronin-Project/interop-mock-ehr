@@ -25,4 +25,7 @@ dependencies {
     testImplementation("org.testcontainers:junit-jupiter")
     testImplementation("org.springframework.boot:spring-boot-starter-test")
     testImplementation("org.testcontainers:mysql")
+
+    // Needed to format logs for DataDog
+    runtimeOnly(libs.logstash.logback.encoder)
 }
