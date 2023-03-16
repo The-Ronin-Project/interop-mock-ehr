@@ -20,12 +20,12 @@ class R4CareTeamResourceProvider(override var resourceDAO: R4CareTeamDAO) :
     @Search
     fun search(
         @OptionalParam(name = CareTeam.SP_PATIENT) patientReferenceParam: ReferenceParam? = null,
-        @OptionalParam(name = CareTeam.SP_STATUS) statusParam: StringParam? = null,
+        @OptionalParam(name = CareTeam.SP_STATUS) statusParam: StringParam? = null
     ): List<CareTeam> {
         val patientReference = patientReferenceParam?.let { "Patient/${it.value}" }
         return resourceDAO.searchByQuery(
             patientReference,
-            statusParam?.value,
+            statusParam?.value
         )
     }
 }

@@ -25,7 +25,7 @@ class R4DocumentReferenceResourceProvider(override var resourceDAO: R4DocumentRe
         @OptionalParam(name = Condition.SP_SUBJECT) subjectReferenceParam: ReferenceParam? = null,
         @OptionalParam(name = Condition.SP_ENCOUNTER) encounterReferenceParam: ReferenceParam? = null,
         @OptionalParam(name = Condition.SP_CATEGORY) categoryParam: TokenOrListParam? = null,
-        @OptionalParam(name = "docStatus") docStatusParam: StringParam? = null,
+        @OptionalParam(name = "docStatus") docStatusParam: StringParam? = null
     ): List<DocumentReference> {
         val subject = patientReferenceParam?.let { "Patient/${it.value}" } ?: subjectReferenceParam?.value
         val encounter = encounterReferenceParam?.let { "Encounter/${it.value}" }

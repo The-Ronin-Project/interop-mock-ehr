@@ -107,7 +107,7 @@ internal class R4ServerTest {
             r4Medication,
             r4MedicationStatement,
             r4MedicationRequest,
-            r4Encounter,
+            r4Encounter
         )
         server.init()
         assertTrue(
@@ -130,7 +130,7 @@ internal class R4ServerTest {
                     r4Medication,
                     r4MedicationStatement,
                     r4MedicationRequest,
-                    r4Encounter,
+                    r4Encounter
                 )
             )
         )

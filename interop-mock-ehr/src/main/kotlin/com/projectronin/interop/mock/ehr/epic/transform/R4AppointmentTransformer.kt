@@ -17,7 +17,6 @@ class R4AppointmentTransformer(
 ) {
 
     fun transformToEpicAppointment(r4Appointment: R4Appointment, r4Patient: Patient?): EpicAppointment {
-
         val patientIDs = r4Patient?.identifier?.map {
             // mimic Epic for MRNs and Internal IDs
             val system = when (it.system) {

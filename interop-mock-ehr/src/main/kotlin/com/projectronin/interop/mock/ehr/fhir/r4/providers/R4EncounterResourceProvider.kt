@@ -29,7 +29,9 @@ class R4EncounterResourceProvider(override var resourceDAO: R4EncounterDAO) :
         subject?.let { referenceList.add(Reference(subject.value)) }
 
         return resourceDAO.searchByQuery(
-            referenceList, dateRange?.lowerBoundAsInstant, dateRange?.upperBoundAsInstant
+            referenceList,
+            dateRange?.lowerBoundAsInstant,
+            dateRange?.upperBoundAsInstant
         )
     }
 }

@@ -30,11 +30,11 @@ class STU3AppointmentResourceProvider(override var resourceDAO: R4AppointmentDAO
         @OptionalParam(name = Appointment.SP_STATUS) statusParam: StringParam? = null,
         @OptionalParam(name = Appointment.SP_IDENTIFIER) identifiersParam: TokenOrListParam? = null
     ): List<Appointment> {
-
         identifiersParam?.let {
             return it.valuesAsQueryTokens!!.map { identifier ->
-                if (identifier.system != "mockEncounterCSNSystem")
+                if (identifier.system != "mockEncounterCSNSystem") {
                     throw UnsupportedOperationException("Identifier system '${identifier.system}' not supported.")
+                }
                 resourceDAO.findById(identifier.value).toDSTU3()
             }
         }

@@ -34,7 +34,8 @@ abstract class BaseResourceDAO<T : Resource>(
         getDatabaseId(resource.id)?.let {
             collection.run {
                 replaceOne(
-                    it, context.newJsonParser().encodeResourceToString(resource)
+                    it,
+                    context.newJsonParser().encodeResourceToString(resource)
                 )
             }
         } ?: insert(resource) // add new resource if not found

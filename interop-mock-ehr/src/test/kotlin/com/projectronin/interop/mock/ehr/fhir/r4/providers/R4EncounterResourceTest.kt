@@ -53,7 +53,7 @@ class R4EncounterResourceTest : BaseMySQLTest() {
         collection.add(FhirContext.forR4().newJsonParser().encodeResourceToString(fakeEncounter2)).execute()
 
         val output = encounterProvider.search(
-            patient = ReferenceParam("fakeFakeFakeId"),
+            patient = ReferenceParam("fakeFakeFakeId")
         )
 
         assertEquals(1, output.size)
@@ -73,7 +73,7 @@ class R4EncounterResourceTest : BaseMySQLTest() {
         collection.add(FhirContext.forR4().newJsonParser().encodeResourceToString(fakeEncounter2)).execute()
 
         val output = encounterProvider.search(
-            subject = ReferenceParam("Patient/fakeFakeFakeId"),
+            subject = ReferenceParam("Patient/fakeFakeFakeId")
         )
 
         assertEquals(1, output.size)
@@ -94,7 +94,7 @@ class R4EncounterResourceTest : BaseMySQLTest() {
 
         val output = encounterProvider.search(
             patient = ReferenceParam("fakeFakeFakeId"),
-            subject = ReferenceParam("Patient/fakeFakeFakeId"),
+            subject = ReferenceParam("Patient/fakeFakeFakeId")
         )
 
         assertEquals(1, output.size)

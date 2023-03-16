@@ -217,7 +217,8 @@ class STU3AppointmentResourceTest : BaseMySQLTest() {
         collection.add(FhirContext.forDstu3().newJsonParser().encodeResourceToString(testAppt2)).execute()
 
         val output = appointmentProvider.search(
-            patientReferenceParam = ReferenceParam("TESTINGID4"), statusParam = StringParam("booked")
+            patientReferenceParam = ReferenceParam("TESTINGID4"),
+            statusParam = StringParam("booked")
         )
         assertEquals(1, output.size)
         assertEquals("Appointment/${testAppt.id}", output[0].id)
@@ -240,7 +241,8 @@ class STU3AppointmentResourceTest : BaseMySQLTest() {
         val dateParam = DateRangeParam()
         dateParam.lowerBound = DateParam("2011-02-22T13:12:00-06:00")
         val output = appointmentProvider.search(
-            dateRangeParam = dateParam, patientReferenceParam = ReferenceParam("TESTINGID2")
+            dateRangeParam = dateParam,
+            patientReferenceParam = ReferenceParam("TESTINGID2")
         )
         assertEquals(1, output.size)
         assertEquals("Appointment/${testAppt2.id}", output[0].id)
@@ -264,7 +266,8 @@ class STU3AppointmentResourceTest : BaseMySQLTest() {
         dateParam.lowerBound = DateParam("2011-02-22T13:12:00-06:00")
         dateParam.upperBound = DateParam("2020-02-22T13:12:00-06:00")
         val output = appointmentProvider.search(
-            dateRangeParam = dateParam, patientReferenceParam = ReferenceParam("TESTINGID3")
+            dateRangeParam = dateParam,
+            patientReferenceParam = ReferenceParam("TESTINGID3")
         )
         assertEquals(0, output.size)
     }

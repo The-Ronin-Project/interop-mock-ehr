@@ -56,7 +56,9 @@ class MDMReceiverHandler(
                 val attachment =
                     existingDocumentReference.content.firstOrNull { it.hasAttachment() && it.attachment.hasUrl() }?.attachment
                 attachment?.url?.substringAfterLast("/")
-            } else null
+            } else {
+                null
+            }
             // update existing binary
             binary?.id = binaryId
             binary?.let {
@@ -99,7 +101,9 @@ class MDMReceiverHandler(
             // only grab those OBX lines where the value is TX
             if (obx.valueType.value == "TX") {
                 "${obx.getObservationValue(0).data}"
-            } else null
+            } else {
+                null
+            }
         }
 
         val binary = Binary()

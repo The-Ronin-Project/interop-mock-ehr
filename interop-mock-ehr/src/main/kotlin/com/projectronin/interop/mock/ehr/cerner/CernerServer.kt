@@ -28,7 +28,7 @@ class CernerServer(private var dal: CernerDAL) {
                         schema = Schema(implementation = CernerAuthentication::class)
                     )
                 ]
-            ),
+            )
         ]
     )
     @PostMapping("/oauth2/token")

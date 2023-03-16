@@ -21,7 +21,7 @@ class R4ObservationResourceProvider(override var resourceDAO: R4ObservationDAO) 
     fun search(
         @OptionalParam(name = Observation.SP_PATIENT) patientReferenceParam: ReferenceParam? = null,
         @OptionalParam(name = Observation.SP_SUBJECT) subjectReferenceParam: ReferenceParam? = null,
-        @OptionalParam(name = Observation.SP_CATEGORY) categoryParam: TokenOrListParam? = null,
+        @OptionalParam(name = Observation.SP_CATEGORY) categoryParam: TokenOrListParam? = null
     ): List<Observation> {
         val subject = patientReferenceParam?.let { "Patient/${it.value}" } ?: subjectReferenceParam?.value
         return resourceDAO.searchByQuery(

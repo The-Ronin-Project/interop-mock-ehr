@@ -22,13 +22,13 @@ class R4ConditionResourceProvider(override var resourceDAO: R4ConditionDAO) :
     fun search(
         @OptionalParam(name = Condition.SP_PATIENT) patientReferenceParam: ReferenceParam? = null,
         @OptionalParam(name = Condition.SP_CATEGORY) categoryParam: TokenOrListParam? = null,
-        @OptionalParam(name = Condition.SP_CLINICAL_STATUS) clinicalStatusParam: TokenParam? = null,
+        @OptionalParam(name = Condition.SP_CLINICAL_STATUS) clinicalStatusParam: TokenParam? = null
     ): List<Condition> {
         val reference = patientReferenceParam?.let { "Patient/${it.value}" }
         return resourceDAO.searchByQuery(
             reference,
             categoryParam,
-            clinicalStatusParam?.value,
+            clinicalStatusParam?.value
         )
     }
 }

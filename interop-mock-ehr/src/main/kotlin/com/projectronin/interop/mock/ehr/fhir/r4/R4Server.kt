@@ -52,7 +52,7 @@ class R4Server(
     private val r4MedicationResourceProvider: R4MedicationResourceProvider,
     private val r4MedicationStatementResourceProvider: R4MedicationStatementResourceProvider,
     private val r4MedicationRequestResourceProvider: R4MedicationRequestResourceProvider,
-    private val r4EncounterResourceProvider: R4EncounterResourceProvider,
+    private val r4EncounterResourceProvider: R4EncounterResourceProvider
 ) : RestfulServer(context) {
 
     override fun initialize() {
@@ -76,7 +76,7 @@ class R4Server(
             r4MedicationResourceProvider,
             r4MedicationStatementResourceProvider,
             r4MedicationRequestResourceProvider,
-            r4EncounterResourceProvider,
+            r4EncounterResourceProvider
         )
         pagingProvider = FifoMemoryPagingProvider(10)
         maximumPageSize = 10 // in reality this is much higher, but this is easier to test with.

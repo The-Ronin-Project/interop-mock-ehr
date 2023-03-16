@@ -254,7 +254,7 @@ internal class MDMReceiverHandlerTest {
                 mockk {
                     every { hasAttachment() } returns true
                     every { attachment.hasUrl() } returns false
-                },
+                }
             )
             every { id } returns "existingDocId"
         }

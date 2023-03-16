@@ -10,7 +10,7 @@ import org.springframework.stereotype.Component
  * Class for resolving HL7v2 components into FHIR DocumentReference objects
  */
 @Component
-class DocumentReferenceResolver(private val documentReferenceDAO: R4DocumentReferenceDAO,) {
+class DocumentReferenceResolver(private val documentReferenceDAO: R4DocumentReferenceDAO) {
     private val logger = KotlinLogging.logger { }
 
     /**

@@ -14,7 +14,7 @@ import javax.servlet.annotation.WebServlet
 @Component
 class STU3Server(
     @Qualifier("DSTU3") context: FhirContext,
-    private val stu3AppointmentProvider: STU3AppointmentResourceProvider,
+    private val stu3AppointmentProvider: STU3AppointmentResourceProvider
 ) : RestfulServer(context) {
 
     override fun initialize() {

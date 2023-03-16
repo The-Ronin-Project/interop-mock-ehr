@@ -29,9 +29,8 @@ class R4PatientResourceProvider(override var resourceDAO: R4PatientDAO) :
         @OptionalParam(name = Patient.SP_FAMILY) familyName: StringParam? = null,
         @OptionalParam(name = Patient.SP_GENDER) gender: StringParam? = null,
         @OptionalParam(name = Patient.SP_EMAIL) email: StringParam? = null,
-        @OptionalParam(name = Patient.SP_TELECOM) telecomParam: TokenParam? = null,
+        @OptionalParam(name = Patient.SP_TELECOM) telecomParam: TokenParam? = null
     ): List<Patient> {
-
         return resourceDAO.searchByQuery(
             bd?.valueAsString,
             givenName?.value,

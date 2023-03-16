@@ -68,8 +68,9 @@ abstract class BaseResourceProvider<T : Resource, DAO : BaseResourceDAO<T>> : IR
 
     @Patch
     fun patch(@IdParam theID: IdType, patchType: PatchTypeEnum, @ResourceParam rawPatch: String): MethodOutcome {
-        if (patchType != PatchTypeEnum.JSON_PATCH)
+        if (patchType != PatchTypeEnum.JSON_PATCH) {
             throw java.lang.UnsupportedOperationException("Only JSON patch types allowed.")
+        }
         resourceDAO.patch(theID.idPart, rawPatch)
         return MethodOutcome()
     }

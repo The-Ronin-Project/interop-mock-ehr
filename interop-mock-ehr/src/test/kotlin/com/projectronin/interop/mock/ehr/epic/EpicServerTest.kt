@@ -485,7 +485,7 @@ internal class EpicServerTest {
             patientID = "TESTINGMRN",
             recipients = listOf(
                 SendMessageRecipient("first", false, "External"),
-                SendMessageRecipient("second", true, "External"),
+                SendMessageRecipient("second", true, "External")
             ),
             senderID = "Sender#1",
             messageType = "messageType",

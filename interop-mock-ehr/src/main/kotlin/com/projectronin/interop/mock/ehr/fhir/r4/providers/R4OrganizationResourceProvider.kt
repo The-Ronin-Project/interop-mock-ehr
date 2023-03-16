@@ -18,7 +18,7 @@ class R4OrganizationResourceProvider(override var resourceDAO: R4OrganizationDAO
 
     @Search
     fun searchByQuery(
-        @OptionalParam(name = Organization.SP_RES_ID) idListParam: StringOrListParam? = null,
+        @OptionalParam(name = Organization.SP_RES_ID) idListParam: StringOrListParam? = null
     ): List<Organization> {
         return resourceDAO.searchByQuery(
             idListParam

@@ -16,7 +16,7 @@ class R4CommunicationTransformerTest {
             patientID = "MRN#1",
             recipients = listOf(
                 SendMessageRecipient("first", false, "External"),
-                SendMessageRecipient("second", true, "External"),
+                SendMessageRecipient("second", true, "External")
             ),
             senderID = "Sender#1",
             messageType = "messageType",
@@ -67,7 +67,7 @@ class R4CommunicationTransformerTest {
             patientID = "MRN#1",
             recipients = listOf(
                 SendMessageRecipient("first", false, "External"),
-                SendMessageRecipient("second", true, "External"),
+                SendMessageRecipient("second", true, "External")
             ),
             senderID = "Sender#1",
             messageType = "messageType",
@@ -91,7 +91,7 @@ class R4CommunicationTransformerTest {
             patientID = "MRN#1",
             recipients = listOf(
                 SendMessageRecipient("first", false, "External"),
-                SendMessageRecipient("second", true, "External"),
+                SendMessageRecipient("second", true, "External")
             ),
             senderID = "Sender#1",
             messageType = "messageType",

@@ -42,7 +42,7 @@ class EpicServer(private var dal: EpicDAL) {
                         schema = Schema(implementation = EpicAuthentication::class)
                     )
                 ]
-            ),
+            )
         ]
     )
     @PostMapping("/oauth2/token")
@@ -138,7 +138,6 @@ class EpicServer(private var dal: EpicDAL) {
     )
     @PostMapping("/api/epic/2013/Scheduling/Provider/GetProviderAppointments/Scheduling/Provider/Appointments")
     fun getAppointmentsByPractitioner(@RequestBody request: GetProviderAppointmentRequest): GetAppointmentsResponse {
-
         // start date required
         val start = kotlin.runCatching { SimpleDateFormat("MM/dd/yyyy").parse(request.startDate) }
             .getOrElse { return errorResponse("INVALID-START-DATE") }
@@ -221,7 +220,6 @@ class EpicServer(private var dal: EpicDAL) {
     )
     @PostMapping("/api/epic/2014/Common/Utility/SENDMESSAGE/Message")
     fun createCommunication(@RequestBody sendMessageRequest: SendMessageRequest): SendMessageResponse {
-
         // validate patient if it exists
         sendMessageRequest.patientID?.let {
             // expecting "MRN" or something similar, so hardcode MockEHR MRN system.

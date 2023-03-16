@@ -24,8 +24,9 @@ class R4BundleResourceProvider(resourceDAOs: List<BaseResourceDAO<*>>) : IResour
     fun bundleTransaction(@TransactionParam bundleParam: Bundle): Bundle {
         val response = Bundle()
         bundleParam.entry.forEach { entry ->
-            if (entry.request.method != Bundle.HTTPVerb.POST)
+            if (entry.request.method != Bundle.HTTPVerb.POST) {
                 throw UnsupportedOperationException("This server only allows POST operations in transaction Bundles.")
+            }
             val resourceDAO = daoMap[entry.resource.resourceType]
             val id = resourceDAO?.insert(entry.resource)
                 ?: throw UnsupportedOperationException("Resource type ${entry.resource.resourceType} not supported.")
