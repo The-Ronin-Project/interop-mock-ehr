@@ -35,5 +35,3 @@ class R4EncounterResourceProvider(override var resourceDAO: R4EncounterDAO) :
         )
     }
 }
-
-//        val subject = patientReferenceParam?.let { "Patient/${it.value}" } ?: subjectReferenceParam?.value

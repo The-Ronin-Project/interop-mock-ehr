@@ -3,7 +3,6 @@ package com.projectronin.interop.mock.ehr.fhir.r4.providers
 import ca.uhn.fhir.context.FhirContext
 import ca.uhn.fhir.rest.param.ReferenceParam
 import ca.uhn.fhir.rest.param.TokenOrListParam
-import ca.uhn.fhir.rest.param.TokenParam
 import com.mysql.cj.xdevapi.Collection
 import com.projectronin.interop.mock.ehr.BaseMySQLTest
 import com.projectronin.interop.mock.ehr.fhir.r4.dao.R4ConditionDAO
@@ -155,7 +154,7 @@ class R4ConditionResourceTest : BaseMySQLTest() {
         testCondition5.id = "${prefix}TESTCOND5"
         collection.add(FhirContext.forR4().newJsonParser().encodeResourceToString(testCondition5)).execute()
 
-        val output = conditionProvider.search(clinicalStatusParam = TokenParam("system", "myCode"))
+        val output = conditionProvider.search(clinicalStatusParam = TokenOrListParam("system", "myCode"))
         assertEquals(3, output.size)
         assertEquals("Condition/${testCondition1.id}", output[0].id)
         assertEquals("Condition/${testCondition3.id}", output[1].id)
@@ -217,7 +216,7 @@ class R4ConditionResourceTest : BaseMySQLTest() {
 
         // AND match on "myCode" for 3 mixed properties matches only conditions 1 and 4
         var output = conditionProvider.search(
-            clinicalStatusParam = TokenParam("system", "myCode"),
+            clinicalStatusParam = TokenOrListParam("system", "myCode"),
             categoryParam = TokenOrListParam("", "myCode")
         )
         assertEquals(2, output.size)
@@ -235,7 +234,7 @@ class R4ConditionResourceTest : BaseMySQLTest() {
 
         // no match for mixed AND condition
         output = conditionProvider.search(
-            clinicalStatusParam = TokenParam("system", "myCode"),
+            clinicalStatusParam = TokenOrListParam("system", "myCode"),
             categoryParam = TokenOrListParam("", "myCode")
         )
         assertEquals(0, output.size)
