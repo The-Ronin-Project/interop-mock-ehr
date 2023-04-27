@@ -1,6 +1,8 @@
 package com.projectronin.interop.mock.ehr.fhir.r4.providers
 
 import ca.uhn.fhir.context.FhirContext
+import ca.uhn.fhir.rest.param.DateParam
+import ca.uhn.fhir.rest.param.DateRangeParam
 import ca.uhn.fhir.rest.param.ReferenceParam
 import ca.uhn.fhir.rest.param.TokenOrListParam
 import ca.uhn.fhir.rest.param.TokenParam
@@ -12,6 +14,7 @@ import io.mockk.every
 import io.mockk.mockk
 import org.hl7.fhir.r4.model.CodeableConcept
 import org.hl7.fhir.r4.model.Coding
+import org.hl7.fhir.r4.model.DateTimeType
 import org.hl7.fhir.r4.model.Observation
 import org.hl7.fhir.r4.model.Reference
 import org.junit.jupiter.api.Assertions.assertEquals
@@ -19,12 +22,26 @@ import org.junit.jupiter.api.Assertions.assertTrue
 import org.junit.jupiter.api.BeforeAll
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.TestInstance
+import java.time.LocalDate
+import java.time.Period
+import java.time.format.DateTimeFormatter
+import java.util.Date
+import org.hl7.fhir.r4.model.Period as R4Period
 
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
 class R4ObservationResourceTest : BaseMySQLTest() {
 
     private lateinit var collection: Collection
     private lateinit var observationProvider: R4ObservationResourceProvider
+
+    private val dateFormat = DateTimeFormatter.ofPattern("yyyy-MM-dd")
+    private val now: LocalDate = LocalDate.now()
+    private val dateString3 = dateFormat.format(now.minus(Period.ofDays(3))) // 3 days ago
+    private val dateString4 = dateFormat.format(now.minus(Period.ofDays(4)))
+    private val dateString5 = dateFormat.format(now.minus(Period.ofDays(5)))
+    private val dateString6 = dateFormat.format(now.minus(Period.ofDays(6)))
+    private val dateString7 = dateFormat.format(now.minus(Period.ofDays(7)))
+    private val dateString8 = dateFormat.format(now.minus(Period.ofDays(8)))
 
     @BeforeAll
     fun initTest() {
@@ -814,6 +831,437 @@ class R4ObservationResourceTest : BaseMySQLTest() {
         )
         assertEquals(1, output4b.size)
         assertEquals("Observation/${testObservation3.id}", output4b[0].id)
+    }
+
+    @Test
+    fun `search by date range - date time`() {
+        val prefix = "date-"
+        collection.remove("true").execute() // Clear the collection in case other tests run first
+
+        // 5 days ago
+        val observation5 = Observation()
+        observation5.id = "${prefix}TESTCOND5"
+        observation5.subject = Reference("Patient/patient1")
+        observation5.category = listOf(
+            CodeableConcept(Coding("mySystem", "myCode", "myDisplay"))
+        )
+        observation5.setEffective(DateTimeType("${dateString5}T00:00:00.000Z"))
+        collection.add(FhirContext.forR4().newJsonParser().encodeResourceToString(observation5)).execute()
+
+        // 7 days ago
+        val observation7 = Observation()
+        observation7.id = "${prefix}TESTCOND7"
+        observation7.subject = Reference("Patient/patient1")
+        observation7.category = listOf(
+            CodeableConcept(Coding("mySystem", "myCode", "myDisplay"))
+        )
+        observation7.setEffective(DateTimeType("${dateString7}T00:00:00.000Z"))
+        collection.add(FhirContext.forR4().newJsonParser().encodeResourceToString(observation7)).execute()
+        assertEquals(2, collection.count())
+
+        val tokenMine = TokenParam()
+        tokenMine.system = "mySystem"
+        tokenMine.value = "myCode"
+        val tokenListMine = TokenOrListParam() // "mySystem|myCode"
+        tokenListMine.add(tokenMine)
+
+        // at limit: start
+        val dateParam7to4 = DateRangeParam()
+        dateParam7to4.lowerBound = DateParam("ge$dateString7")
+        dateParam7to4.upperBound = DateParam("lt$dateString4")
+        val output7to4 = observationProvider.search(
+            patientReferenceParam = ReferenceParam("patient1"),
+            categoryParam = tokenListMine,
+            dateRangeParam = dateParam7to4
+        )
+        assertEquals(2, output7to4.size)
+        assertEquals("Observation/${observation5.id}", output7to4[0].id)
+        assertEquals("Observation/${observation7.id}", output7to4[1].id)
+
+        // include one, exclude one: start
+        val dateParam6to4 = DateRangeParam()
+        dateParam6to4.lowerBound = DateParam("ge$dateString6")
+        dateParam6to4.upperBound = DateParam("lt$dateString4")
+        val output6to4 = observationProvider.search(
+            patientReferenceParam = ReferenceParam("patient1"),
+            categoryParam = tokenListMine,
+            dateRangeParam = dateParam6to4
+        )
+        assertEquals(1, output6to4.size)
+        assertEquals("Observation/${observation5.id}", output6to4[0].id)
+
+        // exclude both: start
+        val dateParam4toNow = DateRangeParam()
+        dateParam4toNow.lowerBound = DateParam("ge$dateString4")
+        val output4toNow = observationProvider.search(
+            patientReferenceParam = ReferenceParam("patient1"),
+            categoryParam = tokenListMine,
+            dateRangeParam = dateParam4toNow
+        )
+        assertEquals(0, output4toNow.size)
+
+        // at limit: end
+        val dateParam8to5 = DateRangeParam()
+        dateParam8to5.lowerBound = DateParam("ge$dateString8")
+        dateParam8to5.upperBound = DateParam("lt$dateString5")
+        val output8to5 = observationProvider.search(
+            patientReferenceParam = ReferenceParam("patient1"),
+            categoryParam = tokenListMine,
+            dateRangeParam = dateParam8to5
+        )
+        assertEquals(2, output8to5.size)
+        assertEquals("Observation/${observation5.id}", output8to5[0].id)
+        assertEquals("Observation/${observation7.id}", output8to5[1].id)
+
+        // include one, exclude one: end
+        val dateParam8to6 = DateRangeParam()
+        dateParam8to6.lowerBound = DateParam("ge$dateString8")
+        dateParam8to6.upperBound = DateParam("lt$dateString6")
+        val output8to6 = observationProvider.search(
+            patientReferenceParam = ReferenceParam("patient1"),
+            categoryParam = tokenListMine,
+            dateRangeParam = dateParam8to6
+        )
+        assertEquals(1, output8to6.size)
+        assertEquals("Observation/${observation7.id}", output8to6[0].id)
+
+        // exclude both: end
+        val dateParam8toNow = DateRangeParam()
+        dateParam8toNow.upperBound = DateParam("lt$dateString8")
+        val output8toNow = observationProvider.search(
+            patientReferenceParam = ReferenceParam("patient1"),
+            categoryParam = tokenListMine,
+            dateRangeParam = dateParam8toNow
+        )
+        assertEquals(0, output8toNow.size)
+    }
+
+    @Test
+    fun `search by date range - period`() {
+        val prefix = "per-"
+        collection.remove("true").execute() // Clear the collection in case other tests run first
+
+        // 5 days ago
+        val observation5to4 = Observation()
+        observation5to4.id = "${prefix}TESTCOND5TO4"
+        observation5to4.subject = Reference("Patient/patient1")
+        observation5to4.category = listOf(
+            CodeableConcept(Coding("mySystem", "myCode", "myDisplay"))
+        )
+        val period5to4 = R4Period()
+        period5to4.setStartElement(DateTimeType("${dateString5}T00:00:00.000Z"))
+        period5to4.setEndElement(DateTimeType("${dateString4}T00:00:00.000Z"))
+        observation5to4.effective = period5to4
+        collection.add(FhirContext.forR4().newJsonParser().encodeResourceToString(observation5to4)).execute()
+
+        // 7 days ago
+        val observation7to4 = Observation()
+        observation7to4.id = "${prefix}TESTCOND7TO4"
+        observation7to4.subject = Reference("Patient/patient1")
+        observation7to4.category = listOf(
+            CodeableConcept(Coding("mySystem", "myCode", "myDisplay"))
+        )
+        val period7to4 = R4Period()
+        period7to4.setStartElement(DateTimeType("${dateString7}T00:00:00.000Z"))
+        period7to4.setEndElement(DateTimeType("${dateString4}T00:00:00.000Z"))
+        observation7to4.effective = period7to4
+        collection.add(FhirContext.forR4().newJsonParser().encodeResourceToString(observation7to4)).execute()
+        assertEquals(2, collection.count())
+
+        val tokenMine = TokenParam()
+        tokenMine.system = "mySystem"
+        tokenMine.value = "myCode"
+        val tokenListMine = TokenOrListParam() // "mySystem|myCode"
+        tokenListMine.add(tokenMine)
+
+        // at limit: start
+        val dateParam7to3 = DateRangeParam()
+        dateParam7to3.lowerBound = DateParam("ge$dateString7")
+        dateParam7to3.upperBound = DateParam("lt$dateString3")
+        val output7to3 = observationProvider.search(
+            patientReferenceParam = ReferenceParam("patient1"),
+            categoryParam = tokenListMine,
+            dateRangeParam = dateParam7to3
+        )
+        assertEquals(2, output7to3.size)
+        assertEquals("Observation/${observation5to4.id}", output7to3[0].id)
+        assertEquals("Observation/${observation7to4.id}", output7to3[1].id)
+
+        // include one, exclude one: start
+        val dateParam5to3 = DateRangeParam()
+        dateParam5to3.lowerBound = DateParam("ge$dateString5")
+        dateParam5to3.upperBound = DateParam("lt$dateString3")
+        val output5to3 = observationProvider.search(
+            patientReferenceParam = ReferenceParam("patient1"),
+            categoryParam = tokenListMine,
+            dateRangeParam = dateParam5to3
+        )
+        assertEquals(1, output5to3.size)
+        assertEquals("Observation/${observation5to4.id}", output5to3[0].id)
+
+        // exclude both: start
+        val dateParam3toNow = DateRangeParam()
+        dateParam3toNow.lowerBound = DateParam("ge$dateString3")
+        val output3toNow = observationProvider.search(
+            patientReferenceParam = ReferenceParam("patient1"),
+            categoryParam = tokenListMine,
+            dateRangeParam = dateParam3toNow
+        )
+        assertEquals(0, output3toNow.size)
+
+        // at limit: end
+        val dateParam8to4 = DateRangeParam()
+        dateParam8to4.lowerBound = DateParam("ge$dateString8")
+        dateParam8to4.upperBound = DateParam("lt$dateString4")
+        val output8to4 = observationProvider.search(
+            patientReferenceParam = ReferenceParam("patient1"),
+            categoryParam = tokenListMine,
+            dateRangeParam = dateParam8to4
+        )
+        assertEquals(2, output8to4.size)
+        assertEquals("Observation/${observation5to4.id}", output8to4[0].id)
+        assertEquals("Observation/${observation7to4.id}", output8to4[1].id)
+
+        // include one, exclude one: end
+        val dateParam6to3 = DateRangeParam()
+        dateParam6to3.lowerBound = DateParam("ge$dateString6")
+        dateParam6to3.upperBound = DateParam("lt$dateString3")
+        val output6to3 = observationProvider.search(
+            patientReferenceParam = ReferenceParam("patient1"),
+            categoryParam = tokenListMine,
+            dateRangeParam = dateParam6to3
+        )
+        assertEquals(1, output6to3.size)
+        assertEquals("Observation/${observation5to4.id}", output6to3[0].id)
+
+        // exclude both: end
+        val dateParam5toNow = DateRangeParam()
+        dateParam5toNow.upperBound = DateParam("lt$dateString5")
+        val output5toNow = observationProvider.search(
+            patientReferenceParam = ReferenceParam("patient1"),
+            categoryParam = tokenListMine,
+            dateRangeParam = dateParam5toNow
+        )
+        assertEquals(0, output5toNow.size)
+    }
+
+    @Test
+    fun `search by date range - date time - nulls`() {
+        val prefix = "date-null-"
+        collection.remove("true").execute() // Clear the collection in case other tests run first
+
+        // null effective
+        val observationNull = Observation()
+        observationNull.id = "${prefix}TESTCONDNULL"
+        observationNull.subject = Reference("Patient/patient1")
+        observationNull.category = listOf(
+            CodeableConcept(Coding("mySystem", "myCode", "myDisplay"))
+        )
+        observationNull.setEffective(null)
+        collection.add(FhirContext.forR4().newJsonParser().encodeResourceToString(observationNull)).execute()
+
+        // null effective.value
+        val observationNullValue = Observation()
+        observationNullValue.id = "${prefix}TESTCONDNULLVALUE"
+        observationNullValue.subject = Reference("Patient/patient1")
+        observationNullValue.category = listOf(
+            CodeableConcept(Coding("mySystem", "myCode", "myDisplay"))
+        )
+        observationNullValue.setEffective(DateTimeType(Date())) // null effective.value defaults to "now" in hapi
+        collection.add(FhirContext.forR4().newJsonParser().encodeResourceToString(observationNullValue)).execute()
+
+        // 7 days ago
+        val observation7 = Observation()
+        observation7.id = "${prefix}TESTCOND7"
+        observation7.subject = Reference("Patient/patient1")
+        observation7.category = listOf(
+            CodeableConcept(Coding("mySystem", "myCode", "myDisplay"))
+        )
+        observation7.setEffective(DateTimeType("${dateString7}T00:00:00.000Z"))
+        collection.add(FhirContext.forR4().newJsonParser().encodeResourceToString(observation7)).execute()
+        assertEquals(3, collection.count())
+
+        val tokenMine = TokenParam()
+        tokenMine.system = "mySystem"
+        tokenMine.value = "myCode"
+        val tokenListMine = TokenOrListParam() // "mySystem|myCode"
+        tokenListMine.add(tokenMine)
+
+        // non-null range matches DateTime in range & null effective; fails hapi default value "now" when out-of-range
+        val dateParam8to4 = DateRangeParam()
+        dateParam8to4.lowerBound = DateParam("ge$dateString8")
+        dateParam8to4.upperBound = DateParam("lt$dateString4")
+        val output8to4 = observationProvider.search(
+            patientReferenceParam = ReferenceParam("patient1"),
+            categoryParam = tokenListMine,
+            dateRangeParam = dateParam8to4
+        )
+        assertEquals(2, output8to4.size)
+        assertEquals("Observation/${observationNull.id}", output8to4[0].id)
+        assertEquals("Observation/${observation7.id}", output8to4[1].id)
+
+        // null lower, non-null upper matches null effective; non-null upper fails on default "now" & upper bound
+        val dateParamNullto5 = DateRangeParam()
+        dateParamNullto5.lowerBound = DateParam(null)
+        dateParamNullto5.upperBound = DateParam("lt$dateString8")
+        val outputNullto5 = observationProvider.search(
+            patientReferenceParam = ReferenceParam("patient1"),
+            categoryParam = tokenListMine,
+            dateRangeParam = dateParamNullto5
+        )
+        assertEquals(1, outputNullto5.size)
+        assertEquals("Observation/${observationNull.id}", outputNullto5[0].id)
+
+        // null upper, non-null lower matches null effective; non-null lower fails on default "now" & lower bound
+        val dateParam5toNull = DateRangeParam()
+        dateParam5toNull.lowerBound = DateParam("ge$dateString5")
+        dateParam5toNull.upperBound = DateParam(null)
+        val output5toNull = observationProvider.search(
+            patientReferenceParam = ReferenceParam("patient1"),
+            categoryParam = tokenListMine,
+            dateRangeParam = dateParam5toNull
+        )
+        assertEquals(2, output5toNull.size)
+        assertEquals("Observation/${observationNull.id}", output5toNull[0].id)
+
+        // null upper, non-null lower matches null effective, default "now" in range; fails on lower bound outside range
+        val dateParam3toNull = DateRangeParam()
+        dateParam3toNull.lowerBound = DateParam("ge$dateString3")
+        dateParam3toNull.upperBound = DateParam(null)
+        val output3toNull = observationProvider.search(
+            patientReferenceParam = ReferenceParam("patient1"),
+            categoryParam = tokenListMine,
+            dateRangeParam = dateParam3toNull
+        )
+        assertEquals(2, output3toNull.size)
+        assertEquals("Observation/${observationNull.id}", output3toNull[0].id)
+        assertEquals("Observation/${observationNullValue.id}", output3toNull[1].id)
+
+        // null lower, non-null upper matches null effective; fails on default "now" out-of-range & upper outside range
+        val dateParamNullto8 = DateRangeParam()
+        dateParamNullto8.lowerBound = DateParam(null)
+        dateParamNullto8.upperBound = DateParam("lt$dateString8")
+        val outputNullto8 = observationProvider.search(
+            patientReferenceParam = ReferenceParam("patient1"),
+            categoryParam = tokenListMine,
+            dateRangeParam = dateParamNullto8
+        )
+        assertEquals(1, outputNullto8.size)
+        assertEquals("Observation/${observationNull.id}", outputNullto8[0].id)
+    }
+
+    @Test
+    fun `search by date range - period - nulls`() {
+        val prefix = "per-null-"
+        collection.remove("true").execute() // Clear the collection in case other tests run first
+
+        // null effective
+        val observationNull = Observation()
+        observationNull.id = "${prefix}TESTCONDNULL"
+        observationNull.subject = Reference("Patient/patient1")
+        observationNull.category = listOf(
+            CodeableConcept(Coding("mySystem", "myCode", "myDisplay"))
+        )
+        val periodNull = R4Period()
+        periodNull.setStart(null)
+        periodNull.setEnd(null)
+        observationNull.effective = periodNull
+        collection.add(FhirContext.forR4().newJsonParser().encodeResourceToString(observationNull)).execute()
+
+        // 7 days ago
+        val observation7to4 = Observation()
+        observation7to4.id = "${prefix}TESTCOND7TO4"
+        observation7to4.subject = Reference("Patient/patient1")
+        observation7to4.category = listOf(
+            CodeableConcept(Coding("mySystem", "myCode", "myDisplay"))
+        )
+        val period7to4 = R4Period()
+        period7to4.setStartElement(DateTimeType("${dateString7}T00:00:00.000Z"))
+        period7to4.setEndElement(DateTimeType("${dateString4}T00:00:00.000Z"))
+        observation7to4.effective = period7to4
+        collection.add(FhirContext.forR4().newJsonParser().encodeResourceToString(observation7to4)).execute()
+        assertEquals(2, collection.count())
+
+        val tokenMine = TokenParam()
+        tokenMine.system = "mySystem"
+        tokenMine.value = "myCode"
+        val tokenListMine = TokenOrListParam() // "mySystem|myCode"
+        tokenListMine.add(tokenMine)
+
+        // populated range matches null effective, date range
+        val dateParam8to3 = DateRangeParam()
+        dateParam8to3.lowerBound = DateParam("ge$dateString8")
+        dateParam8to3.upperBound = DateParam("lt$dateString3")
+        val output8to3 = observationProvider.search(
+            patientReferenceParam = ReferenceParam("patient1"),
+            categoryParam = tokenListMine,
+            dateRangeParam = dateParam8to3
+        )
+        assertEquals(2, output8to3.size)
+        assertEquals("Observation/${observationNull.id}", output8to3[0].id)
+        assertEquals("Observation/${observation7to4.id}", output8to3[1].id)
+
+        // populated range matches null effective, fails on date range too small
+        val dateParam6to5 = DateRangeParam()
+        dateParam6to5.lowerBound = DateParam("ge$dateString6")
+        dateParam6to5.upperBound = DateParam("lt$dateString5")
+        val output6to5 = observationProvider.search(
+            patientReferenceParam = ReferenceParam("patient1"),
+            categoryParam = tokenListMine,
+            dateRangeParam = dateParam6to5
+        )
+        assertEquals(1, output6to5.size)
+        assertEquals("Observation/${observationNull.id}", output6to5[0].id)
+
+        // null lower, non-null upper matches null effective, matching upper
+        val dateParamNullto3 = DateRangeParam()
+        dateParamNullto3.lowerBound = DateParam(null)
+        dateParamNullto3.upperBound = DateParam("lt$dateString3")
+        val outputNullto3 = observationProvider.search(
+            patientReferenceParam = ReferenceParam("patient1"),
+            categoryParam = tokenListMine,
+            dateRangeParam = dateParamNullto3
+        )
+        assertEquals(2, outputNullto3.size)
+        assertEquals("Observation/${observationNull.id}", outputNullto3[0].id)
+        assertEquals("Observation/${observation7to4.id}", outputNullto3[1].id)
+
+        // null lower, non-null upper matches null effective, fails on out-of-range upper
+        val dateParamNullto8 = DateRangeParam()
+        dateParamNullto8.lowerBound = DateParam(null)
+        dateParamNullto8.upperBound = DateParam("lt$dateString8")
+        val outputNullto8 = observationProvider.search(
+            patientReferenceParam = ReferenceParam("patient1"),
+            categoryParam = tokenListMine,
+            dateRangeParam = dateParamNullto8
+        )
+        assertEquals(1, outputNullto8.size)
+        assertEquals("Observation/${observationNull.id}", outputNullto8[0].id)
+
+        // non-null lower, null upper matches null effective, matching lower
+        val dateParam8toNull = DateRangeParam()
+        dateParam8toNull.lowerBound = DateParam("ge$dateString8")
+        dateParam8toNull.upperBound = DateParam(null)
+        val output8toNull = observationProvider.search(
+            patientReferenceParam = ReferenceParam("patient1"),
+            categoryParam = tokenListMine,
+            dateRangeParam = dateParam8toNull
+        )
+        assertEquals(2, output8toNull.size)
+        assertEquals("Observation/${observationNull.id}", output8toNull[0].id)
+        assertEquals("Observation/${observation7to4.id}", output8toNull[1].id)
+
+        // non-null lower, null upper matches null effective, fails on out-of-range lower
+        val dateParam3toNull = DateRangeParam()
+        dateParam3toNull.lowerBound = DateParam("ge$dateString3")
+        dateParam3toNull.upperBound = DateParam(null)
+        val output3toNull = observationProvider.search(
+            patientReferenceParam = ReferenceParam("patient1"),
+            categoryParam = tokenListMine,
+            dateRangeParam = dateParam3toNull
+        )
+        assertEquals(1, output3toNull.size)
+        assertEquals("Observation/${observationNull.id}", output3toNull[0].id)
     }
 
     @Test

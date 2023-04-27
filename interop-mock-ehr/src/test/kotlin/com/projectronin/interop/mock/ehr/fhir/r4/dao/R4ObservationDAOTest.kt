@@ -34,7 +34,7 @@ internal class R4ObservationDAOTest {
 
     @Test
     fun `all inputs null`() {
-        val output = dao.searchByQuery(null, null)
+        val output = dao.searchByQuery(null, null, null, null)
         assertTrue(output.isEmpty())
     }
 
@@ -47,6 +47,18 @@ internal class R4ObservationDAOTest {
     @Test
     fun `category null`() {
         val output = dao.searchByQuery(category = null)
+        assertTrue(output.isEmpty())
+    }
+
+    @Test
+    fun `fromDate null`() {
+        val output = dao.searchByQuery(fromDate = null)
+        assertTrue(output.isEmpty())
+    }
+
+    @Test
+    fun `toDate null`() {
+        val output = dao.searchByQuery(toDate = null)
         assertTrue(output.isEmpty())
     }
 }
