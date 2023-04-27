@@ -23,14 +23,16 @@ class R4ObservationResourceProvider(override var resourceDAO: R4ObservationDAO) 
         @OptionalParam(name = Observation.SP_PATIENT) patientReferenceParam: ReferenceParam? = null,
         @OptionalParam(name = Observation.SP_SUBJECT) subjectReferenceParam: ReferenceParam? = null,
         @OptionalParam(name = Observation.SP_CATEGORY) categoryParam: TokenOrListParam? = null,
-        @OptionalParam(name = Observation.SP_DATE) dateRangeParam: DateRangeParam? = null
+        @OptionalParam(name = Observation.SP_DATE) dateRangeParam: DateRangeParam? = null,
+        @OptionalParam(name = Observation.SP_CODE) codeParam: TokenOrListParam? = null
     ): List<Observation> {
         val subject = patientReferenceParam?.let { "Patient/${it.value}" } ?: subjectReferenceParam?.value
         return resourceDAO.searchByQuery(
             subject,
             categoryParam,
             dateRangeParam?.lowerBoundAsInstant,
-            dateRangeParam?.upperBoundAsInstant
+            dateRangeParam?.upperBoundAsInstant,
+            codeParam
         )
     }
 }

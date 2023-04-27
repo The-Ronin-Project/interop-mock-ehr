@@ -143,6 +143,11 @@ class R4ObservationResourceTest : BaseMySQLTest() {
             patientReferenceParam = null
         )
         assertTrue(outputNullPatient.isEmpty())
+
+        val outputNullCode = observationProvider.search(
+            codeParam = null
+        )
+        assertTrue(outputNullCode.isEmpty())
     }
 
     /**
@@ -1275,5 +1280,240 @@ class R4ObservationResourceTest : BaseMySQLTest() {
     @Test
     fun `correct resource returned`() {
         assertEquals(observationProvider.resourceType, Observation::class.java)
+    }
+
+    @Test
+    fun `code search test`() {
+        collection.remove("true").execute() // Clear the collection in case other tests run first
+        val testObservation1 = Observation()
+        testObservation1.id = "TESTINGIDENTIFIER"
+        testObservation1.subject = Reference("Patient/patient1")
+        testObservation1.category = listOf(
+            CodeableConcept(Coding("mySystem", "vital-signs", "myDisplay"))
+        )
+        testObservation1.code = CodeableConcept(Coding("mySystem", "bmiCode", "bmi"))
+        collection.add(FhirContext.forR4().newJsonParser().encodeResourceToString(testObservation1)).execute()
+
+        val testObservation2 = Observation()
+        testObservation2.id = "TESTINGIDENTIFIER2"
+        testObservation2.subject = Reference("Patient/patient1")
+        testObservation2.code = CodeableConcept(Coding("mySystem", "bsiCode", "bsi"))
+        collection.add(FhirContext.forR4().newJsonParser().encodeResourceToString(testObservation2)).execute()
+
+        val tokenBmi = TokenParam()
+        tokenBmi.system = ""
+        tokenBmi.value = "bmiCode"
+        val tokenBsi = TokenParam()
+        tokenBsi.system = "mySystem"
+        tokenBsi.value = "bsiCode"
+        val tokenCodeList = TokenOrListParam()
+        tokenCodeList.add(tokenBmi)
+        val output = observationProvider.search(
+            codeParam = tokenCodeList
+        )
+        assertEquals(1, output.size)
+
+        tokenCodeList.add(tokenBsi)
+        val output2 = observationProvider.search(
+            codeParam = tokenCodeList
+        )
+        assertEquals(2, output2.size)
+    }
+
+    @Test
+    fun `category and code search test`() {
+        collection.remove("true").execute() // Clear the collection in case other tests run first
+        val testObservation1 = Observation()
+        testObservation1.id = "TESTINGIDENTIFIER"
+        testObservation1.category = listOf(
+            CodeableConcept(Coding("mySystem", "vital-signs", "myDisplay"))
+        )
+        testObservation1.code = CodeableConcept(Coding("mySystem", "bmiCode", "bmi"))
+        collection.add(FhirContext.forR4().newJsonParser().encodeResourceToString(testObservation1)).execute()
+
+        val testObservation2 = Observation()
+        testObservation2.id = "TESTINGIDENTIFIER2"
+        testObservation2.category = listOf(
+            CodeableConcept(Coding("mySystem", "vital-signs", "myDisplay"))
+        )
+        testObservation2.code = CodeableConcept(Coding("mySystem", "bsiCode", "bsi"))
+        collection.add(FhirContext.forR4().newJsonParser().encodeResourceToString(testObservation2)).execute()
+
+        val testObservation3 = Observation()
+        testObservation3.id = "TESTINGIDENTIFIER3"
+        testObservation3.category = listOf(
+            CodeableConcept(Coding("mySystem", "laboratory", "myDisplay"))
+        )
+        testObservation3.code = CodeableConcept(Coding("mySystem", "bsiCode", "bsi"))
+        collection.add(FhirContext.forR4().newJsonParser().encodeResourceToString(testObservation3)).execute()
+
+        val tokenCategory = TokenParam()
+        tokenCategory.system = "mySystem"
+        tokenCategory.value = "vital-signs"
+        val tokenCategoryList = TokenOrListParam()
+        tokenCategoryList.add(tokenCategory)
+
+        val tokenBmi = TokenParam()
+        tokenBmi.system = ""
+        tokenBmi.value = "bmiCode"
+        val tokenBsi = TokenParam()
+        tokenBsi.system = "mySystem"
+        tokenBsi.value = "bsiCode"
+        val tokenCodeList = TokenOrListParam()
+        tokenCodeList.add(tokenBmi)
+        tokenCodeList.add(tokenBsi)
+
+        val output = observationProvider.search(
+            categoryParam = tokenCategoryList,
+            codeParam = tokenCodeList
+        )
+        assertEquals(2, output.size)
+
+        val tokenLab = TokenParam()
+        tokenLab.system = "mySystem"
+        tokenLab.value = "laboratory"
+        tokenCategoryList.add(tokenLab)
+
+        val output2 = observationProvider.search(
+            categoryParam = tokenCategoryList,
+            codeParam = tokenCodeList
+        )
+        assertEquals(3, output2.size)
+    }
+
+    @Test
+    fun `subject and code search test`() {
+        collection.remove("true").execute() // Clear the collection in case other tests run first
+        val testObservation1 = Observation()
+        testObservation1.id = "TESTINGIDENTIFIER"
+        testObservation1.subject = Reference("Patient/patient1")
+        testObservation1.code = CodeableConcept(Coding("mySystem", "bmiCode", "bmi"))
+        collection.add(FhirContext.forR4().newJsonParser().encodeResourceToString(testObservation1)).execute()
+
+        val testObservation2 = Observation()
+        testObservation2.id = "TESTINGIDENTIFIER2"
+        testObservation2.subject = Reference("Patient/patient1")
+        testObservation2.code = CodeableConcept(Coding("mySystem", "bsiCode", "bsi"))
+        collection.add(FhirContext.forR4().newJsonParser().encodeResourceToString(testObservation2)).execute()
+
+        val testObservation3 = Observation()
+        testObservation3.id = "TESTINGIDENTIFIER3"
+        testObservation3.subject = Reference("Patient/patient2")
+        testObservation3.category = listOf(
+            CodeableConcept(Coding("mySystem", "vital-signs", "myDisplay"))
+        )
+        testObservation3.code = CodeableConcept(Coding("mySystem", "bsiCode", "bsi"))
+        collection.add(FhirContext.forR4().newJsonParser().encodeResourceToString(testObservation3)).execute()
+
+        val tokenBmi = TokenParam()
+        tokenBmi.system = ""
+        tokenBmi.value = "bmiCode"
+        val tokenBsi = TokenParam()
+        tokenBsi.system = "mySystem"
+        tokenBsi.value = "bsiCode"
+        val tokenCodeList = TokenOrListParam()
+        tokenCodeList.add(tokenBmi)
+        tokenCodeList.add(tokenBsi)
+
+        val output = observationProvider.search(
+            subjectReferenceParam = ReferenceParam("Patient/patient1"),
+            codeParam = tokenCodeList
+        )
+        assertEquals(2, output.size)
+    }
+
+    @Test
+    fun `patient and code search test`() {
+        collection.remove("true").execute() // Clear the collection in case other tests run first
+        val testObservation1 = Observation()
+        testObservation1.id = "TESTINGIDENTIFIER"
+        testObservation1.subject = Reference("Patient/patient1")
+        testObservation1.code = CodeableConcept(Coding("mySystem", "bmiCode", "bmi"))
+        collection.add(FhirContext.forR4().newJsonParser().encodeResourceToString(testObservation1)).execute()
+
+        val testObservation2 = Observation()
+        testObservation2.id = "TESTINGIDENTIFIER2"
+        testObservation2.subject = Reference("Patient/patient1")
+        testObservation2.code = CodeableConcept(Coding("mySystem", "bsiCode", "bsi"))
+        collection.add(FhirContext.forR4().newJsonParser().encodeResourceToString(testObservation2)).execute()
+
+        val testObservation3 = Observation()
+        testObservation3.id = "TESTINGIDENTIFIER3"
+        testObservation3.subject = Reference("Patient/patient2")
+        testObservation3.category = listOf(
+            CodeableConcept(Coding("mySystem", "vital-signs", "myDisplay"))
+        )
+        testObservation3.code = CodeableConcept(Coding("mySystem", "bsiCode", "bsi"))
+        collection.add(FhirContext.forR4().newJsonParser().encodeResourceToString(testObservation3)).execute()
+
+        val tokenBmi = TokenParam()
+        tokenBmi.system = ""
+        tokenBmi.value = "bmiCode"
+        val tokenBsi = TokenParam()
+        tokenBsi.system = "mySystem"
+        tokenBsi.value = "bsiCode"
+        val tokenCodeList = TokenOrListParam()
+        tokenCodeList.add(tokenBmi)
+        tokenCodeList.add(tokenBsi)
+
+        val output = observationProvider.search(
+            patientReferenceParam = ReferenceParam("patient1"),
+            codeParam = tokenCodeList
+        )
+        assertEquals(2, output.size)
+    }
+
+    @Test
+    fun `patient and category and code search test`() {
+        collection.remove("true").execute() // Clear the collection in case other tests run first
+        val testObservation1 = Observation()
+        testObservation1.id = "TESTINGIDENTIFIER"
+        testObservation1.subject = Reference("Patient/patient1")
+        testObservation1.category = listOf(
+            CodeableConcept(Coding("mySystem", "vital-signs", "myDisplay"))
+        )
+        testObservation1.code = CodeableConcept(Coding("mySystem", "bmiCode", "bmi"))
+        collection.add(FhirContext.forR4().newJsonParser().encodeResourceToString(testObservation1)).execute()
+
+        val testObservation2 = Observation()
+        testObservation2.id = "TESTINGIDENTIFIER2"
+        testObservation2.subject = Reference("Patient/patient1")
+        testObservation2.category = listOf(
+            CodeableConcept(Coding("mySystem", "vital-signs", "myDisplay"))
+        )
+        testObservation2.code = CodeableConcept(Coding("mySystem", "bsiCode", "bsi"))
+        collection.add(FhirContext.forR4().newJsonParser().encodeResourceToString(testObservation2)).execute()
+
+        val testObservation3 = Observation()
+        testObservation3.id = "TESTINGIDENTIFIER3"
+        testObservation3.subject = Reference("Patient/patient2")
+        testObservation3.category = listOf(
+            CodeableConcept(Coding("mySystem", "vital-signs", "myDisplay"))
+        )
+        testObservation3.code = CodeableConcept(Coding("mySystem", "bsiCode", "bsi"))
+        collection.add(FhirContext.forR4().newJsonParser().encodeResourceToString(testObservation3)).execute()
+
+        val tokenVitals = TokenParam()
+        tokenVitals.system = "mySystem"
+        tokenVitals.value = "vital-signs"
+        val tokenCategoryList = TokenOrListParam()
+        tokenCategoryList.add(tokenVitals)
+
+        val tokenBmi = TokenParam()
+        tokenBmi.system = ""
+        tokenBmi.value = "bmiCode"
+        val tokenBsi = TokenParam()
+        tokenBsi.system = "mySystem"
+        tokenBsi.value = "bsiCode"
+        val tokenCodeList = TokenOrListParam()
+        tokenCodeList.add(tokenBmi)
+        tokenCodeList.add(tokenBsi)
+
+        val output = observationProvider.search(
+            patientReferenceParam = ReferenceParam("patient1"),
+            categoryParam = tokenCategoryList,
+            codeParam = tokenCodeList
+        )
+        assertEquals(2, output.size)
     }
 }

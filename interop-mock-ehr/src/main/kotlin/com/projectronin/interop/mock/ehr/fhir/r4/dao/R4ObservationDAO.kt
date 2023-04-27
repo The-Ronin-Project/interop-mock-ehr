@@ -23,13 +23,20 @@ class R4ObservationDAO(private val schema: SafeXDev, context: FhirContext) :
         subject: String? = null,
         category: TokenOrListParam? = null,
         fromDate: Date? = null,
-        toDate: Date? = null
+        toDate: Date? = null,
+        code: TokenOrListParam? = null
     ): List<Observation> {
         // Build queryFragments into query joined with 'AND'
         val queryFragments = mutableListOf<String>()
         subject?.let { queryFragments.add("('${it.escapeSQL()}' = subject.reference)") }
         category?.let { catList ->
             val phrase = getSearchStringForFHIRTokens(catList)
+            if (!phrase.isNullOrEmpty()) {
+                queryFragments.add(phrase)
+            }
+        }
+        code?.let { codeList ->
+            val phrase = getSearchStringForFHIRTokens(codeList, "code", false)
             if (!phrase.isNullOrEmpty()) {
                 queryFragments.add(phrase)
             }

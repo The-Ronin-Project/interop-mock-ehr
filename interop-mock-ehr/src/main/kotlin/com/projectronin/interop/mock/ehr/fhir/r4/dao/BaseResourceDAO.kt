@@ -94,14 +94,14 @@ abstract class BaseResourceDAO<T : Resource>(
      * Returns a search string suitable as part of a where clause in a query to mock EHR.
      * Returns null if no search string can be formed from the input.
      */
-    fun getSearchStringForFHIRTokens(fhirTokens: TokenOrListParam? = null, fieldName: String? = "category"): String? {
+    fun getSearchStringForFHIRTokens(fhirTokens: TokenOrListParam? = null, fieldName: String? = "category", repeatingField: Boolean? = true): String? {
         if (fhirTokens == null) {
             return null
         }
         val queryFragments = mutableListOf<String>()
         val categories = fhirTokens.valuesAsQueryTokens
         val phraseList = categories.mapNotNull { token ->
-            getSearchStringForFHIRToken(token, fieldName)
+            getSearchStringForFHIRToken(token, fieldName, repeatingField)
         }
         if (phraseList.isNotEmpty()) {
             queryFragments.add(" ( ")
@@ -117,21 +117,23 @@ abstract class BaseResourceDAO<T : Resource>(
      * Returns a search string suitable as part of a where clause in a query to mock EHR.
      * Returns null if no search string can be formed from the input.
      */
-    fun getSearchStringForFHIRToken(fhirToken: TokenParam? = null, fieldName: String? = "category"): String? {
+    fun getSearchStringForFHIRToken(fhirToken: TokenParam? = null, fieldName: String? = "category", repeatingField: Boolean? = true): String? {
         if (fhirToken == null) {
             return null
         }
         val system = fhirToken.system
         val code = fhirToken.value
+        val field = if (repeatingField == true) "$fieldName[*]" else "$fieldName"
+
         return if (!system.isNullOrEmpty()) {
             if (!code.isNullOrEmpty()) {
-                "('${system.escapeSQL()}' in $fieldName[*].coding[*].system AND '${code.escapeSQL()}' in $fieldName[*].coding[*].code)"
+                "('${system.escapeSQL()}' in ${field.escapeSQL()}.coding[*].system AND '${code.escapeSQL()}' in ${field.escapeSQL()}.coding[*].code)"
             } else {
-                "('${system.escapeSQL()}' in $fieldName[*].coding[*].system)"
+                "('${system.escapeSQL()}' in ${field.escapeSQL()}.coding[*].system)"
             }
         } else {
             if (!code.isNullOrEmpty()) {
-                "('${code.escapeSQL()}' in $fieldName[*].coding[*].code OR '${code.escapeSQL()}' in $fieldName[*].text)"
+                "('${code.escapeSQL()}' in ${field.escapeSQL()}.coding[*].code OR '${code.escapeSQL()}' in ${field.escapeSQL()}.text)"
             } else {
                 null
             }
