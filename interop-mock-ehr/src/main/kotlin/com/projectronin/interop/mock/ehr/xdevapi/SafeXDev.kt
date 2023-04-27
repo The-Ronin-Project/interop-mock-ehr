@@ -9,11 +9,13 @@ import kotlinx.coroutines.sync.Mutex
 import kotlinx.coroutines.sync.withLock
 import mu.KotlinLogging
 import org.hl7.fhir.r4.model.Resource
+import org.springframework.stereotype.Component
 import java.util.concurrent.ConcurrentHashMap
 
 /**
  * Thread-safe wrapper around the XDevApi [schema]
  */
+@Component
 class SafeXDev(private val config: XDevConfig) {
     companion object {
         private val mutex = Mutex()
