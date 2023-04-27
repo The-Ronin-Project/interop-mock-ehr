@@ -9,7 +9,7 @@ import org.springframework.stereotype.Component
 import java.util.Date
 
 @Component
-class R4EncounterDAO(schema: SafeXDev, context: FhirContext) :
+class R4EncounterDAO(private val schema: SafeXDev, context: FhirContext) :
     BaseResourceDAO<Encounter>(context, schema, Encounter::class.java) {
     /**
      * Finds Encounter based on input query parameters.
@@ -33,7 +33,7 @@ class R4EncounterDAO(schema: SafeXDev, context: FhirContext) :
         val parser = context.newJsonParser()
 
         // run query, return list
-        collection.run {
+        schema.run(collection) {
             find(query).execute().forEach {
                 encounterList.add(parser.parseResource(resourceType, it.toString()))
             }

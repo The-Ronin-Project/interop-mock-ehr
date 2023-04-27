@@ -23,7 +23,10 @@ class R4MedicationResourceTest : BaseMySQLTest() {
     fun initTest() {
         collection = createCollection(Medication::class.simpleName!!)
         val database = mockk<SafeXDev>()
-        every { database.createCollection(Medication::class.java) } returns SafeXDev.SafeCollection(collection)
+        every { database.createCollection(Medication::class.java) } returns SafeXDev.SafeCollection(
+            "resource",
+            collection
+        )
         dao = R4MedicationDAO(database, FhirContext.forR4())
         medicationProvider = R4MedicationResourceProvider(dao)
     }

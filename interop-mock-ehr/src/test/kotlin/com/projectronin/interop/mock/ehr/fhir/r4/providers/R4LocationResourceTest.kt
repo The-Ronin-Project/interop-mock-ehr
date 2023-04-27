@@ -26,7 +26,15 @@ class R4LocationResourceTest : BaseMySQLTest() {
     fun initTest() {
         collection = createCollection(Location::class.simpleName!!)
         val database = mockk<SafeXDev>()
-        every { database.createCollection(Location::class.java) } returns SafeXDev.SafeCollection(collection)
+        every { database.createCollection(Location::class.java) } returns SafeXDev.SafeCollection(
+            "resource",
+            collection
+        )
+        every { database.run(any(), captureLambda<Collection.() -> Any>()) } answers {
+            val collection = firstArg<SafeXDev.SafeCollection>()
+            val lamdba = secondArg<Collection.() -> Any>()
+            lamdba.invoke(collection.collection)
+        }
         val dao = R4LocationDAO(database, FhirContext.forR4())
         locationProvider = R4LocationResourceProvider(dao)
     }

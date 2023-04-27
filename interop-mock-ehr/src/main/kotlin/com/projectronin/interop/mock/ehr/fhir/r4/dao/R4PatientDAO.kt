@@ -9,7 +9,7 @@ import org.hl7.fhir.r4.model.Patient
 import org.springframework.stereotype.Component
 
 @Component
-class R4PatientDAO(schema: SafeXDev, context: FhirContext) :
+class R4PatientDAO(private val schema: SafeXDev, context: FhirContext) :
     BaseResourceDAO<Patient>(context, schema, Patient::class.java) {
     fun searchByQuery(
         birthdate: String? = null,
@@ -35,7 +35,7 @@ class R4PatientDAO(schema: SafeXDev, context: FhirContext) :
         val query = queryFragments.joinToString(" AND ")
         val parser = context.newJsonParser()
 
-        return collection.run {
+        return schema.run(collection) {
             find(query).execute().map {
                 parser.parseResource(resourceType, it.toString())
             }
@@ -53,7 +53,7 @@ class R4PatientDAO(schema: SafeXDev, context: FhirContext) :
          */
         val searchString = "'${identifier.value}' in $.identifier[*].value"
         val patientDbDoc =
-            collection.run { find(searchString).execute().fetchAll() }
+            schema.run(collection) { find(searchString).execute().fetchAll() }
         val patients = patientDbDoc.mapNotNull { parser.parseResource(resourceType, it.toString()) }
         return patients.singleOrNull { patient ->
             patient.identifier.any {

@@ -9,7 +9,7 @@ import org.hl7.fhir.r4.model.Identifier
 import org.springframework.stereotype.Component
 
 @Component
-class R4DocumentReferenceDAO(schema: SafeXDev, context: FhirContext) :
+class R4DocumentReferenceDAO(private val schema: SafeXDev, context: FhirContext) :
     BaseResourceDAO<DocumentReference>(context, schema, DocumentReference::class.java) {
     fun searchByQuery(
         subject: String? = null,
@@ -33,7 +33,9 @@ class R4DocumentReferenceDAO(schema: SafeXDev, context: FhirContext) :
 
         // Run the query and return a List of resources that match
         val parser = context.newJsonParser()
-        return collection.run { find(query).execute().map { parser.parseResource(resourceType, it.toString()) } }
+        return schema.run(collection) {
+            find(query).execute().map { parser.parseResource(resourceType, it.toString()) }
+        }
     }
 
     /**
@@ -44,7 +46,7 @@ class R4DocumentReferenceDAO(schema: SafeXDev, context: FhirContext) :
         val parser = context.newJsonParser()
         val searchString = "'${identifier.value}' in $.identifier[*].value"
         val documentDbDoc =
-            collection.run { find(searchString).execute().fetchAll().singleOrNull() }
+            schema.run(collection) { find(searchString).execute().fetchAll().singleOrNull() }
         documentDbDoc?.let { return parser.parseResource(resourceType, documentDbDoc.toString()) }
         return null
     }

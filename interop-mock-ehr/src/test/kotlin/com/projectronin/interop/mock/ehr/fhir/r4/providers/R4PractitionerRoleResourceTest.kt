@@ -37,9 +37,23 @@ class R4PractitionerRoleResourceTest : BaseMySQLTest() {
     fun initTest() {
         collection = createCollection("test")
         val database = mockk<SafeXDev>()
-        every { database.createCollection(PractitionerRole::class.java) } returns SafeXDev.SafeCollection(collection)
-        every { database.createCollection(Location::class.java) } returns SafeXDev.SafeCollection(collection)
-        every { database.createCollection(Practitioner::class.java) } returns SafeXDev.SafeCollection(collection)
+        every { database.createCollection(PractitionerRole::class.java) } returns SafeXDev.SafeCollection(
+            "resource",
+            collection
+        )
+        every { database.createCollection(Location::class.java) } returns SafeXDev.SafeCollection(
+            "resource",
+            collection
+        )
+        every { database.createCollection(Practitioner::class.java) } returns SafeXDev.SafeCollection(
+            "resource",
+            collection
+        )
+        every { database.run(any(), captureLambda<Collection.() -> Any>()) } answers {
+            val collection = firstArg<SafeXDev.SafeCollection>()
+            val lamdba = secondArg<Collection.() -> Any>()
+            lamdba.invoke(collection.collection)
+        }
         practitionerRoleProvider = R4PractitionerRoleResourceProvider(
             R4PractitionerRoleDAO(database, FhirContext.forR4()),
             R4LocationDAO(database, FhirContext.forR4()),

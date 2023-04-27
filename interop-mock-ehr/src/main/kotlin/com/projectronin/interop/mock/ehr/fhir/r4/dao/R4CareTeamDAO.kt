@@ -7,7 +7,7 @@ import org.hl7.fhir.r4.model.CareTeam
 import org.springframework.stereotype.Component
 
 @Component
-class R4CareTeamDAO(schema: SafeXDev, context: FhirContext) :
+class R4CareTeamDAO(private val schema: SafeXDev, context: FhirContext) :
     BaseResourceDAO<CareTeam>(context, schema, CareTeam::class.java) {
     /**
      * Finds CareTeams based on input query parameters. Treats all inputs as a logical 'AND'.
@@ -27,7 +27,7 @@ class R4CareTeamDAO(schema: SafeXDev, context: FhirContext) :
 
         // Run the query and return a List of resources that match
         val parser = context.newJsonParser()
-        return collection.run {
+        return schema.run(collection) {
             find(query).execute().mapNotNull { parser.parseResource(resourceType, it.toString()) }
         }
     }

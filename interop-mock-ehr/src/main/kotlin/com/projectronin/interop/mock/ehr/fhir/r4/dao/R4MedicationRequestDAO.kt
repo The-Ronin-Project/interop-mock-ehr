@@ -7,7 +7,7 @@ import org.hl7.fhir.r4.model.MedicationRequest
 import org.springframework.stereotype.Component
 
 @Component
-class R4MedicationRequestDAO(schema: SafeXDev, context: FhirContext) :
+class R4MedicationRequestDAO(private val schema: SafeXDev, context: FhirContext) :
     BaseResourceDAO<MedicationRequest>(context, schema, MedicationRequest::class.java) {
     /**
      * Finds medicationRequests based on input query parameters. Treats all inputs as a logical 'AND'.
@@ -25,6 +25,8 @@ class R4MedicationRequestDAO(schema: SafeXDev, context: FhirContext) :
 
         // Run the query and return a List of resources that match
         val parser = context.newJsonParser()
-        return collection.run { find(query).execute().mapNotNull { parser.parseResource(resourceType, it.toString()) } }
+        return schema.run(collection) {
+            find(query).execute().mapNotNull { parser.parseResource(resourceType, it.toString()) }
+        }
     }
 }

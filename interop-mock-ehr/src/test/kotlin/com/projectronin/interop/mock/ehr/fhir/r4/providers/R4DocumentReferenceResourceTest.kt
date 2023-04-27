@@ -31,7 +31,15 @@ class R4DocumentReferenceResourceTest : BaseMySQLTest() {
     fun initTest() {
         collection = createCollection(DocumentReference::class.simpleName!!)
         val database = mockk<SafeXDev>()
-        every { database.createCollection(DocumentReference::class.java) } returns SafeXDev.SafeCollection(collection)
+        every { database.createCollection(DocumentReference::class.java) } returns SafeXDev.SafeCollection(
+            "resource",
+            collection
+        )
+        every { database.run(any(), captureLambda<Collection.() -> Any>()) } answers {
+            val collection = firstArg<SafeXDev.SafeCollection>()
+            val lamdba = secondArg<Collection.() -> Any>()
+            lamdba.invoke(collection.collection)
+        }
         val dao = R4DocumentReferenceDAO(database, FhirContext.forR4())
         documentReferenceProvider = R4DocumentReferenceResourceProvider(dao)
     }

@@ -22,7 +22,7 @@ class R4BinaryResourceTest : BaseMySQLTest() {
     fun initTest() {
         collection = createCollection(Binary::class.simpleName!!)
         val database = mockk<SafeXDev>()
-        every { database.createCollection(Binary::class.java) } returns SafeXDev.SafeCollection(collection)
+        every { database.createCollection(Binary::class.java) } returns SafeXDev.SafeCollection("resource", collection)
         val dao = R4BinaryDAO(database, FhirContext.forR4())
         binaryProvider = R4BinaryResourceProvider(dao)
     }

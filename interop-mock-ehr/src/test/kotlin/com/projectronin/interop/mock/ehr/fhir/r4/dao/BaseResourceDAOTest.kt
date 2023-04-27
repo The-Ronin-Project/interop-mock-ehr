@@ -25,7 +25,10 @@ internal class BaseResourceDAOTest {
     fun initTest() {
         val collection = mockk<Collection>()
         val database = mockk<SafeXDev>()
-        every { database.createCollection(Observation::class.java) } returns SafeXDev.SafeCollection(collection)
+        every { database.createCollection(Observation::class.java) } returns SafeXDev.SafeCollection(
+            "resource",
+            collection
+        )
         dao = R4ObservationDAO(database, FhirContext.forR4())
     }
 
@@ -104,7 +107,8 @@ internal class BaseResourceDAOTest {
         token.value = "value'"
         val tokenList = TokenOrListParam()
         tokenList.add(token)
-        val expectedString = " ( ('system''' in category[*].coding[*].system AND 'value''' in category[*].coding[*].code) ) "
+        val expectedString =
+            " ( ('system''' in category[*].coding[*].system AND 'value''' in category[*].coding[*].code) ) "
         val searchString = dao.getSearchStringForFHIRTokens(tokenList)
         assertEquals(expectedString, searchString)
     }

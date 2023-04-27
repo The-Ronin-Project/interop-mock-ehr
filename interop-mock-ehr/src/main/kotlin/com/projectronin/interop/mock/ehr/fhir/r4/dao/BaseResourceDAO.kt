@@ -15,7 +15,7 @@ import java.util.UUID
 
 abstract class BaseResourceDAO<T : Resource>(
     protected val context: FhirContext,
-    schema: SafeXDev,
+    private val schema: SafeXDev,
     val resourceType: Class<T>
 ) {
     protected val collection: SafeXDev.SafeCollection = schema.createCollection(resourceType)
@@ -24,7 +24,7 @@ abstract class BaseResourceDAO<T : Resource>(
         if (!resource.hasId()) {
             resource.id = UUID.randomUUID().toString()
         } // generate new ID for new resources
-        collection.run {
+        schema.run(collection) {
             add(context.newJsonParser().encodeResourceToString(resource)).execute()
         }
         return resource.id
@@ -32,7 +32,7 @@ abstract class BaseResourceDAO<T : Resource>(
 
     fun update(resource: T) {
         getDatabaseId(resource.id)?.let {
-            collection.run {
+            schema.run(collection) {
                 replaceOne(
                     it,
                     context.newJsonParser().encodeResourceToString(resource)
@@ -42,7 +42,7 @@ abstract class BaseResourceDAO<T : Resource>(
     }
 
     fun delete(fhirId: String) {
-        getDatabaseId(fhirId)?.let { collection.run { removeOne(it) } }
+        getDatabaseId(fhirId)?.let { schema.run(collection) { removeOne(it) } }
     }
 
     fun findById(fhirId: String): T {
@@ -57,7 +57,7 @@ abstract class BaseResourceDAO<T : Resource>(
     fun getAll(): List<T> {
         val list = mutableListOf<T>()
         val parser = context.newJsonParser()
-        collection.run {
+        schema.run(collection) {
             find().execute().forEach {
                 list.add(parser.parseResource(resourceType, it.toString()))
             }
@@ -76,7 +76,7 @@ abstract class BaseResourceDAO<T : Resource>(
 
     private fun findByIdQuery(fhirId: String?): DbDoc? {
         if (fhirId == null) return null
-        return collection.run {
+        return schema.run(collection) {
             find("id = :id")
                 .bind("id", fhirId.removePrefix("${resourceType.simpleName}/"))
                 .execute()

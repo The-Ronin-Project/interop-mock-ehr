@@ -8,7 +8,7 @@ import org.hl7.fhir.r4.model.Practitioner
 import org.springframework.stereotype.Component
 
 @Component
-class R4PractitionerDAO(schema: SafeXDev, context: FhirContext) :
+class R4PractitionerDAO(private val schema: SafeXDev, context: FhirContext) :
     BaseResourceDAO<Practitioner>(context, schema, Practitioner::class.java) {
     fun searchByIdentifier(identifier: Identifier): Practitioner? {
         val parser = context.newJsonParser()
@@ -21,7 +21,7 @@ class R4PractitionerDAO(schema: SafeXDev, context: FhirContext) :
          */
         val searchString = "'${identifier.value.escapeSQL()}' in $.identifier[*].value"
         val practitionerDbDoc =
-            collection.run { find(searchString).execute().fetchAll() }
+            schema.run(collection) { find(searchString).execute().fetchAll() }
         val practitioners = practitionerDbDoc.mapNotNull { parser.parseResource(resourceType, it.toString()) }
         return practitioners.singleOrNull { practitioner ->
             practitioner.identifier.any {

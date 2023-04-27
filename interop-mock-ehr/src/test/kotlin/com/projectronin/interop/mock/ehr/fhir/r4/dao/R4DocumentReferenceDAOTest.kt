@@ -28,7 +28,15 @@ internal class R4DocumentReferenceDAOTest {
     fun initTest() {
         collection = mockk()
         val database = mockk<SafeXDev>()
-        every { database.createCollection(DocumentReference::class.java) } returns SafeXDev.SafeCollection(collection)
+        every { database.createCollection(DocumentReference::class.java) } returns SafeXDev.SafeCollection(
+            "resource",
+            collection
+        )
+        every { database.run(any(), captureLambda<Collection.() -> Any>()) } answers {
+            val collection = firstArg<SafeXDev.SafeCollection>()
+            val lamdba = secondArg<Collection.() -> Any>()
+            lamdba.invoke(collection.collection)
+        }
         dao = R4DocumentReferenceDAO(database, FhirContext.forR4())
     }
 

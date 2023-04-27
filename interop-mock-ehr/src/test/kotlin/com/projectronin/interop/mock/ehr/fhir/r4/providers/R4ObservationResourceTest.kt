@@ -47,7 +47,15 @@ class R4ObservationResourceTest : BaseMySQLTest() {
     fun initTest() {
         collection = createCollection(Observation::class.simpleName!!)
         val database = mockk<SafeXDev>()
-        every { database.createCollection(Observation::class.java) } returns SafeXDev.SafeCollection(collection)
+        every { database.createCollection(Observation::class.java) } returns SafeXDev.SafeCollection(
+            "resource",
+            collection
+        )
+        every { database.run(any(), captureLambda<Collection.() -> Any>()) } answers {
+            val collection = firstArg<SafeXDev.SafeCollection>()
+            val lamdba = secondArg<Collection.() -> Any>()
+            lamdba.invoke(collection.collection)
+        }
         val dao = R4ObservationDAO(database, FhirContext.forR4())
         observationProvider = R4ObservationResourceProvider(dao)
     }

@@ -8,7 +8,7 @@ import org.hl7.fhir.r4.model.Condition
 import org.springframework.stereotype.Component
 
 @Component
-class R4ConditionDAO(schema: SafeXDev, context: FhirContext) :
+class R4ConditionDAO(private val schema: SafeXDev, context: FhirContext) :
     BaseResourceDAO<Condition>(context, schema, Condition::class.java) {
 
     /**
@@ -38,6 +38,8 @@ class R4ConditionDAO(schema: SafeXDev, context: FhirContext) :
 
         // Run the query and return a List of Condition resources that match
         val parser = context.newJsonParser()
-        return collection.run { find(query).execute().map { parser.parseResource(resourceType, it.toString()) } }
+        return schema.run(collection) {
+            find(query).execute().map { parser.parseResource(resourceType, it.toString()) }
+        }
     }
 }

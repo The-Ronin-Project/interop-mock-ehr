@@ -30,7 +30,15 @@ class R4ConditionResourceTest : BaseMySQLTest() {
     fun initTest() {
         collection = createCollection(Condition::class.simpleName!!)
         val database = mockk<SafeXDev>()
-        every { database.createCollection(Condition::class.java) } returns SafeXDev.SafeCollection(collection)
+        every { database.createCollection(Condition::class.java) } returns SafeXDev.SafeCollection(
+            "resource",
+            collection
+        )
+        every { database.run(any(), captureLambda<Collection.() -> Any>()) } answers {
+            val collection = firstArg<SafeXDev.SafeCollection>()
+            val lamdba = secondArg<Collection.() -> Any>()
+            lamdba.invoke(collection.collection)
+        }
         dao = R4ConditionDAO(database, FhirContext.forR4())
         conditionProvider = R4ConditionResourceProvider(dao)
     }

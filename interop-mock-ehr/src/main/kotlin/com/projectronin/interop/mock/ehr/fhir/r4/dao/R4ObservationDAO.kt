@@ -9,7 +9,7 @@ import org.springframework.stereotype.Component
 import java.util.Date
 
 @Component
-class R4ObservationDAO(schema: SafeXDev, context: FhirContext) :
+class R4ObservationDAO(private val schema: SafeXDev, context: FhirContext) :
     BaseResourceDAO<Observation>(context, schema, Observation::class.java) {
     /**
      * Finds Observations based on input query parameters. Treats all inputs as a logical 'AND'.
@@ -40,7 +40,7 @@ class R4ObservationDAO(schema: SafeXDev, context: FhirContext) :
         // Run the query and return a List of resources that match
         val observationList = mutableListOf<Observation>()
         val parser = context.newJsonParser()
-        collection.run {
+        schema.run(collection) {
             find(query).execute().forEach {
                 observationList.add(parser.parseResource(resourceType, it.toString()))
             }

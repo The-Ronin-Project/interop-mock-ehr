@@ -1,12 +1,7 @@
 package com.projectronin.interop.mock.ehr
 
 import ca.uhn.fhir.context.FhirVersionEnum
-import com.mysql.cj.xdevapi.SessionFactory
-import io.mockk.every
-import io.mockk.mockk
-import io.mockk.mockkConstructor
-import io.mockk.slot
-import io.mockk.unmockkAll
+import com.projectronin.interop.mock.ehr.xdevapi.XDevConfig
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Assertions.assertNotNull
 import org.junit.jupiter.api.Test
@@ -15,12 +10,8 @@ internal class InteropMockEHRConfigTest {
 
     @Test
     fun `return correct URL`() {
-        val slot = slot<String>()
-        mockkConstructor(SessionFactory::class)
-        every { anyConstructed<SessionFactory>().getSession(capture(slot)).defaultSchema } returns mockk()
-        InteropMockEHRConfig().database("host", "9090", "name", "user", "pass")
-        assertEquals("mysqlx://host:9090/name?user=user&password=pass", slot.captured)
-        unmockkAll()
+        val xdevConfig = InteropMockEHRConfig().xdevConfig("host", "9090", "name", "user", "pass")
+        assertEquals(XDevConfig("host", "9090", "name", "user", "pass"), xdevConfig)
     }
 
     @Test

@@ -9,7 +9,7 @@ import org.springframework.stereotype.Component
 import java.util.Date
 
 @Component
-class R4AppointmentDAO(schema: SafeXDev, context: FhirContext) :
+class R4AppointmentDAO(private val schema: SafeXDev, context: FhirContext) :
     BaseResourceDAO<Appointment>(context, schema, Appointment::class.java) {
     /**
      * Finds appointments based on input query parameters. Treats all inputs as a logical 'AND'.
@@ -35,7 +35,7 @@ class R4AppointmentDAO(schema: SafeXDev, context: FhirContext) :
         val apptList = mutableListOf<Appointment>()
         val parser = context.newJsonParser()
 
-        collection.run {
+        schema.run(collection) {
             find(query).execute().forEach {
                 apptList.add(parser.parseResource(resourceType, it.toString()))
             }

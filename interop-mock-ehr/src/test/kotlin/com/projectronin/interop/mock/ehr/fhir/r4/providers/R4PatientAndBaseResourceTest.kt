@@ -44,7 +44,12 @@ class R4PatientAndBaseResourceTest : BaseMySQLTest() {
     fun initTest() {
         collection = createCollection(Patient::class.simpleName!!)
         val database = mockk<SafeXDev>()
-        every { database.createCollection(Patient::class.java) } returns SafeXDev.SafeCollection(collection)
+        every { database.createCollection(Patient::class.java) } returns SafeXDev.SafeCollection("resource", collection)
+        every { database.run(any(), captureLambda<Collection.() -> Any>()) } answers {
+            val collection = firstArg<SafeXDev.SafeCollection>()
+            val lamdba = secondArg<Collection.() -> Any>()
+            lamdba.invoke(collection.collection)
+        }
         dao = R4PatientDAO(database, FhirContext.forR4())
         patientProvider = R4PatientResourceProvider(dao)
     }

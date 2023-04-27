@@ -29,7 +29,15 @@ class R4OrganizationResourceTest : BaseMySQLTest() {
     fun initTest() {
         collection = createCollection(Organization::class.simpleName!!)
         val database = mockk<SafeXDev>()
-        every { database.createCollection(Organization::class.java) } returns SafeXDev.SafeCollection(collection)
+        every { database.createCollection(Organization::class.java) } returns SafeXDev.SafeCollection(
+            "resource",
+            collection
+        )
+        every { database.run(any(), captureLambda<Collection.() -> Any>()) } answers {
+            val collection = firstArg<SafeXDev.SafeCollection>()
+            val lamdba = secondArg<Collection.() -> Any>()
+            lamdba.invoke(collection.collection)
+        }
         val dao = R4OrganizationDAO(database, FhirContext.forR4())
         organizationProvider = R4OrganizationResourceProvider(dao)
     }
