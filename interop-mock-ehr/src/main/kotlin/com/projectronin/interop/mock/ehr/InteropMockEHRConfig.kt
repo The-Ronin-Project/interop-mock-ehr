@@ -12,6 +12,7 @@ import org.springframework.web.filter.CommonsRequestLoggingFilter
 
 @Configuration
 class InteropMockEHRConfig {
+    @Bean
     fun xdevConfig(
         @Value("#{environment.MOCK_EHR_DB_HOST}") host: String,
         @Value("#{environment.MOCK_EHR_DB_PORT}") port: String,
