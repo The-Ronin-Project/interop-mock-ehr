@@ -24,10 +24,6 @@ class R4PatientDAO(private val schema: SafeXDev, context: FhirContext) :
         birthdate?.let { queryFragments.add("birthDate = '${it.escapeSQL()}'") }
         gender?.let { queryFragments.add("gender = '${it.escapeSQL()}'") }
 
-        // name is surprisingly difficult to query, this isn't perfect
-        givenName?.let { queryFragments.add("'${it.escapeSQL()}' in name[*].given[*]") }
-        familyName?.let { queryFragments.add("'${it.escapeSQL()}' in name[*].family") }
-
         // it may be worth checking 'system' in the future for these, but this is fine for now
         email?.let { queryFragments.add("'${it.escapeSQL()}' in telecom[*].value") }
         telecom?.let { queryFragments.add("'${it.value}' in telecom[*].value") }
@@ -35,9 +31,19 @@ class R4PatientDAO(private val schema: SafeXDev, context: FhirContext) :
         val query = queryFragments.joinToString(" AND ")
         val parser = context.newJsonParser()
 
-        return schema.run(collection) {
+        val result = schema.run(collection) {
             find(query).execute().map {
                 parser.parseResource(resourceType, it.toString())
+            }
+        }
+        return result.filter { patient ->
+            (givenName == null && familyName == null && patient.name.isEmpty()) || patient.name.any { humanName ->
+                val matchesGivenName = givenName?.let { searchGiven ->
+                    humanName.given.any { it.toString().equals(searchGiven, ignoreCase = true) }
+                } ?: true
+                val matchesFamilyName = familyName?.let { it.equals(humanName.family, ignoreCase = true) } ?: true
+
+                matchesGivenName && matchesFamilyName
             }
         }
     }

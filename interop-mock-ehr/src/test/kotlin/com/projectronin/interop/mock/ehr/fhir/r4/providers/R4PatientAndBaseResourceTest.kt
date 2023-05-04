@@ -226,12 +226,95 @@ class R4PatientAndBaseResourceTest : BaseMySQLTest() {
 
         val output =
             patientProvider.search(
-                givenName = StringParam("testGiven"),
+                givenName = StringParam("TestGiven"), // test uppercase
                 familyName = StringParam("testFamily"),
                 gender = StringParam("male")
             ).first()
 
         assertEquals(output.nameFirstRep.family, testPat1.nameFirstRep.family)
+        assertEquals(output.gender, testPat1.gender)
+    }
+
+    @Test
+    fun `partial name mismatch test`() {
+        val testPat1 = Patient()
+        testPat1.addName().setFamily("testFamily").addGiven("testGiven")
+        testPat1.gender = Enumerations.AdministrativeGender.MALE
+        collection.add(FhirContext.forR4().newJsonParser().encodeResourceToString(testPat1)).execute()
+
+        val testPat2 = Patient()
+        testPat2.addName().setFamily("badFamily").addGiven("badGiven")
+        testPat2.gender = Enumerations.AdministrativeGender.FEMALE
+        collection.add(FhirContext.forR4().newJsonParser().encodeResourceToString(testPat2)).execute()
+
+        val output =
+            patientProvider.search(
+                givenName = StringParam("BadGivenName"), // test uppercase
+                familyName = StringParam("testFamily"),
+                gender = StringParam("male")
+            )
+
+        assertTrue(output.isEmpty())
+    }
+
+    @Test
+    fun `full name mismatch test`() {
+        val testPat1 = Patient()
+        testPat1.addName().setFamily("testFamily").addGiven("testGiven")
+        testPat1.gender = Enumerations.AdministrativeGender.MALE
+        collection.add(FhirContext.forR4().newJsonParser().encodeResourceToString(testPat1)).execute()
+
+        val output =
+            patientProvider.search(
+                givenName = StringParam("BadGivenName"), // test uppercase
+                familyName = StringParam("BadFamilyName"),
+                gender = StringParam("male")
+            )
+
+        assertTrue(output.isEmpty())
+    }
+
+    @Test
+    fun `no given name test`() {
+        val testPat1 = Patient()
+        testPat1.addName().setFamily("testFamily").addGiven("testGiven")
+        testPat1.gender = Enumerations.AdministrativeGender.MALE
+        collection.add(FhirContext.forR4().newJsonParser().encodeResourceToString(testPat1)).execute()
+
+        val testPat2 = Patient()
+        testPat2.addName().setFamily("badFamily").addGiven("badGiven")
+        testPat2.gender = Enumerations.AdministrativeGender.FEMALE
+        collection.add(FhirContext.forR4().newJsonParser().encodeResourceToString(testPat2)).execute()
+
+        val output =
+            patientProvider.search(
+                familyName = StringParam("testFamily"),
+                gender = StringParam("male")
+            ).first()
+
+        assertEquals(output.nameFirstRep.family, testPat1.nameFirstRep.family)
+        assertEquals(output.gender, testPat1.gender)
+    }
+
+    @Test
+    fun `no family name test`() {
+        val testPat1 = Patient()
+        testPat1.addName().setFamily("testFamily").addGiven("testGiven")
+        testPat1.gender = Enumerations.AdministrativeGender.MALE
+        collection.add(FhirContext.forR4().newJsonParser().encodeResourceToString(testPat1)).execute()
+
+        val testPat2 = Patient()
+        testPat2.addName().setFamily("badFamily").addGiven("badGiven")
+        testPat2.gender = Enumerations.AdministrativeGender.FEMALE
+        collection.add(FhirContext.forR4().newJsonParser().encodeResourceToString(testPat2)).execute()
+
+        val output =
+            patientProvider.search(
+                givenName = StringParam("TestGiven"),
+                gender = StringParam("male")
+            ).first()
+
+        assertEquals(output.nameFirstRep.given.first().value, testPat1.nameFirstRep.given.first().value)
         assertEquals(output.gender, testPat1.gender)
     }
 
