@@ -21,8 +21,7 @@ class HL7TCPServer(
 
     init {
         val mdmHandler = MDMReceiverHandler(binaryDAO, documentReferenceDAO, patientResolver, documentReferenceResolver)
-        server.registerApplication("MDM", "T10", mdmHandler)
-        server.registerApplication("MDM", "T02", mdmHandler)
+        server.registerApplication("MDM", "*", mdmHandler)
         // Add handlers for other message structures here
         server.start()
     }

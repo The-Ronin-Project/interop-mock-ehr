@@ -79,7 +79,7 @@ internal class MDMReceiverHandlerTest {
         val binarySlot = slot<Binary>()
         every { binaryDao.insert(capture(binarySlot)) } returns "binaryId"
 
-        message.txa.uniqueDocumentNumber.entityIdentifier.value = "unique"
+        message.txa.uniqueDocumentNumber.universalID.value = "unique"
         message.txa.insertOriginatorCodeName(0)
         message.txa.originatorCodeName.first().givenName.value = "given"
         message.txa.originatorCodeName.first().familyName.surname.value = "surname"
@@ -137,7 +137,7 @@ internal class MDMReceiverHandlerTest {
         val binarySlot = slot<Binary>()
         every { binaryDao.update(capture(binarySlot)) } just runs
 
-        message.txa.uniqueDocumentNumber.entityIdentifier.value = "unique"
+        message.txa.uniqueDocumentNumber.universalID.value = "unique"
         message.insertOBSERVATION(0)
         val allObs = message.observationAll
         allObs[0].obx.valueType.value = "TX"
@@ -176,7 +176,7 @@ internal class MDMReceiverHandlerTest {
         val binarySlot = slot<Binary>()
         every { binaryDao.update(capture(binarySlot)) } just runs
 
-        message.txa.uniqueDocumentNumber.entityIdentifier.value = "unique'value"
+        message.txa.uniqueDocumentNumber.universalID.value = "unique'value"
         message.insertOBSERVATION(0)
         val allObs = message.observationAll
         allObs[0].obx.valueType.value = "TX"
@@ -207,7 +207,7 @@ internal class MDMReceiverHandlerTest {
         val binarySlot = slot<Binary>()
         every { binaryDao.update(capture(binarySlot)) } just runs
 
-        message.txa.uniqueDocumentNumber.entityIdentifier.value = "unique"
+        message.txa.uniqueDocumentNumber.universalID.value = "unique"
 
         mdmHandler.processMessage(message, mutableMapOf())
         val resource = documentSlot.captured
@@ -236,7 +236,7 @@ internal class MDMReceiverHandlerTest {
         val binarySlot = slot<Binary>()
         every { binaryDao.update(capture(binarySlot)) } just runs
 
-        message.txa.uniqueDocumentNumber.entityIdentifier.value = "unique"
+        message.txa.uniqueDocumentNumber.universalID.value = "unique"
 
         mdmHandler.processMessage(message, mutableMapOf())
         val resource = documentSlot.captured
@@ -267,7 +267,7 @@ internal class MDMReceiverHandlerTest {
         val binarySlot = slot<Binary>()
         every { binaryDao.update(capture(binarySlot)) } just runs
 
-        message.txa.uniqueDocumentNumber.entityIdentifier.value = "unique"
+        message.txa.uniqueDocumentNumber.universalID.value = "unique"
 
         mdmHandler.processMessage(message, mutableMapOf())
         val resource = documentSlot.captured

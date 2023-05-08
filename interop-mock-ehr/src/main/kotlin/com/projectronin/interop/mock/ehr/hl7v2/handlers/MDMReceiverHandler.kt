@@ -43,7 +43,7 @@ class MDMReceiverHandler(
 
         // if there's an existing document grab the existing binary to update it
         // this just overwrites w/ w/e was last sent in for a document
-        val uniqueID = theMessage.txa.uniqueDocumentNumber.entityIdentifier.value
+        val uniqueID = theMessage.txa.uniqueDocumentNumber.universalID.value
         val existingDocumentReference = uniqueID?.let {
             val escaped = it.replace("'", "\\'")
             documentReferenceResolver.findDocumentReference(escaped)
@@ -153,7 +153,7 @@ class MDMReceiverHandler(
 
     private fun EI.toIdentifier(): Identifier {
         val identifier = Identifier()
-        identifier.value = this.entityIdentifier?.value
+        identifier.value = this.universalID.value
 
         val coding = CodeableConcept()
         coding.text = "Unique ID"
