@@ -9,9 +9,9 @@ hapi-hl7v2-base = "ca.uhn.hapi:hapi-base:2.3"
 hapi-hl7v2-http = "ca.uhn.hapi:hapi-hl7overhttp:2.3"
 hapi-hl7v2-251 = "ca.uhn.hapi:hapi-structures-v251:2.3"
 
-interop-ehr = "com.projectronin.interop.ehr:interop-ehr:9.10.0"
-interop-ehr-cerner = "com.projectronin.interop.ehr:interop-ehr-cerner:9.10.0"
-interop-ehr-epic = "com.projectronin.interop.ehr:interop-ehr-epic:9.10.0"
+interop-ehr = "com.projectronin.interop.ehr:interop-ehr:9.10.2"
+interop-ehr-cerner = "com.projectronin.interop.ehr:interop-ehr-cerner:9.10.2"
+interop-ehr-epic = "com.projectronin.interop.ehr:interop-ehr-epic:9.10.2"
 
 interop-fhir = "com.projectronin.interop.fhir:interop-fhir:7.8.2"
 
