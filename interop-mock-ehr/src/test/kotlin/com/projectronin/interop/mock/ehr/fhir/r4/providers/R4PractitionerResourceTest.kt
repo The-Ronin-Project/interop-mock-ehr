@@ -43,14 +43,14 @@ class R4PractitionerResourceTest : BaseMySQLTest() {
     }
 
     @Test
-    fun `identifier search test`() {
+    fun `identifier search test - external`() {
         val testPract = Practitioner()
         testPract.id = "TESTINGIDENTIFIER"
         testPract.birthDate = Date(87, 0, 15)
 
         val identifier = Identifier()
         identifier.value = "E2731"
-        identifier.system = "urn:oid:1.2.840.114350.1.1"
+        identifier.system = "mockEHRProviderSystem"
         testPract.addIdentifier(identifier)
         collection.add(FhirContext.forR4().newJsonParser().encodeResourceToString(testPract)).execute()
 
@@ -70,7 +70,40 @@ class R4PractitionerResourceTest : BaseMySQLTest() {
 
         val token = TokenParam()
         token.value = "E2731"
-        token.system = "urn:oid:1.2.840.114350.1.1"
+        token.system = "External"
+        val output = practitionerProvider.searchByIdentifier(token)
+        assertEquals(output?.birthDate, testPract.birthDate)
+    }
+
+    @Test
+    fun `identifier search test - internal`() {
+        val testPract = Practitioner()
+        testPract.id = "TESTINGIDENTIFIER"
+        testPract.birthDate = Date(87, 0, 15)
+
+        val identifier = Identifier()
+        identifier.value = "E2731"
+        identifier.system = "mockEHRProviderSystem"
+        testPract.addIdentifier(identifier)
+        collection.add(FhirContext.forR4().newJsonParser().encodeResourceToString(testPract)).execute()
+
+        val testPract2 = Practitioner()
+        testPract2.id = "TESTINGIDENTIFIER2"
+        testPract2.birthDate = Date(87, 1, 15)
+
+        val identifier2 = Identifier()
+        identifier2.value = "E1928341293"
+        identifier2.system = "urn:oid:1.2.840.114350.1.1"
+        testPract2.addIdentifier(identifier2)
+        val identifier3 = Identifier()
+        identifier3.value = "E2731"
+        identifier3.system = "NotTheSame"
+        testPract2.addIdentifier(identifier3)
+        collection.add(FhirContext.forR4().newJsonParser().encodeResourceToString(testPract2)).execute()
+
+        val token = TokenParam()
+        token.value = "E2731"
+        token.system = "Internal"
         val output = practitionerProvider.searchByIdentifier(token)
         assertEquals(output?.birthDate, testPract.birthDate)
     }

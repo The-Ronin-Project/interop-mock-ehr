@@ -21,7 +21,13 @@ class R4PractitionerResourceProvider(override var resourceDAO: R4PractitionerDAO
     fun searchByIdentifier(@RequiredParam(name = Practitioner.SP_IDENTIFIER) idToken: TokenParam): Practitioner? {
         val identifier = Identifier()
         identifier.value = idToken.value
-        identifier.system = idToken.system
+        identifier.system = idToken.system?.let {
+            if (it.contains("external", true) || it.contains("internal", true)) {
+                "mockEHRProviderSystem"
+            } else {
+                it
+            }
+        }
         return resourceDAO.searchByIdentifier(identifier)
     }
 }
