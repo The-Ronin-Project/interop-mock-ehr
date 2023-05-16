@@ -1,4 +1,4 @@
-name: Build and Deploy Docker Image to Nexus
+name: Build and Deploy Docker Image to DEV
 
 on:
   workflow_run:
@@ -10,10 +10,10 @@ jobs:
   main-image-push:
     if: ${{ github.event.workflow_run.conclusion == 'success' }}
     name: Push multiplatform Docker:latest to Nexus
-    uses: projectronin/github/.github/workflows/image_push_nexus.yml@master
+    uses: projectronin/github/.github/workflows/image_push_nexus.yml@image_push_nexus/v2
     with:
       base-directory: ./interop-mock-ehr
-      image-tag: latest
+      image-tag: latest,${{ github.sha }}
       repo: "interop-mock-ehr"
       build_boot_jar: true
     secrets:
@@ -23,38 +23,23 @@ jobs:
   init-image-push:
     if: ${{ github.event.workflow_run.conclusion == 'success' }}
     name: Push multiplatform Docker:init to Nexus
-    uses: projectronin/github/.github/workflows/image_push_nexus.yml@master
+    uses: projectronin/github/.github/workflows/image_push_nexus.yml@image_push_nexus/v2
     with:
       base-directory: ./init
-      image-tag: latest
+      image-tag: latest,${{ github.sha }}
       repo: "interop-mock-ehr-init"
       build_boot_jar: false
     secrets:
       username: ${{ secrets.NEXUS_DOCKER_USERNAME }}
       password: ${{ secrets.NEXUS_DOCKER_PASSWORD }}
 
-  main-image-push-sha:
+  deploy-argocd-dev:
     if: ${{ github.event.workflow_run.conclusion == 'success' }}
-    name: Push multiplatform Docker:SHA to Nexus
-    uses: projectronin/github/.github/workflows/image_push_nexus.yml@master
+    name: Deploy Images to DEV
+    uses: projectronin/github/.github/workflows/argocd_deploy.yml@argocd_deploy/v1
     with:
-      base-directory: ./interop-mock-ehr
+      environment: dev
       image-tag: ${{ github.sha }}
-      repo: "interop-mock-ehr"
-      build_boot_jar: true
     secrets:
-      username: ${{ secrets.NEXUS_DOCKER_USERNAME }}
-      password: ${{ secrets.NEXUS_DOCKER_PASSWORD }}
+      argocd-svc-automation: ${{ secrets.ARGOCD_SVC_AUTOMATION }}
 
-  init-image-push-sha:
-    if: ${{ github.event.workflow_run.conclusion == 'success' }}
-    name: Push multiplatform Docker:initSHA to Nexus
-    uses: projectronin/github/.github/workflows/image_push_nexus.yml@master
-    with:
-      base-directory: ./init
-      image-tag: ${{ github.sha }}
-      repo: "interop-mock-ehr-init"
-      build_boot_jar: false
-    secrets:
-      username: ${{ secrets.NEXUS_DOCKER_USERNAME }}
-      password: ${{ secrets.NEXUS_DOCKER_PASSWORD }}

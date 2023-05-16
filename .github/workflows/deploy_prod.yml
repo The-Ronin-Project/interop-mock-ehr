@@ -1,0 +1,18 @@
+name: PROD - Deploy to ArgoCD
+
+on:
+  workflow_dispatch:
+    inputs:
+      image_tag:
+        description: tag of the image to deploy
+        required: true
+        type: string
+
+jobs:
+  argocd_prod:
+    uses: projectronin/github/.github/workflows/argocd_deploy.yml@argocd_deploy/v1
+    with:
+      environment: prod
+      image-tag: ${{ inputs.image_tag }}
+    secrets:
+      argocd-svc-automation: ${{ secrets.ARGOCD_SVC_AUTOMATION }}
