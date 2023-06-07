@@ -35,6 +35,7 @@ jobs:
 
   deploy-argocd-dev:
     if: ${{ github.event.workflow_run.conclusion == 'success' }}
+    needs: [ main-image-push ]
     name: Deploy Images to DEV
     uses: projectronin/github/.github/workflows/argocd_deploy.yml@argocd_deploy/v1
     with:
