@@ -20,6 +20,7 @@ import com.projectronin.interop.mock.ehr.fhir.r4.providers.R4OrganizationResourc
 import com.projectronin.interop.mock.ehr.fhir.r4.providers.R4PatientResourceProvider
 import com.projectronin.interop.mock.ehr.fhir.r4.providers.R4PractitionerResourceProvider
 import com.projectronin.interop.mock.ehr.fhir.r4.providers.R4PractitionerRoleResourceProvider
+import com.projectronin.interop.mock.ehr.fhir.r4.providers.R4RequestGroupResourceProvider
 import io.mockk.every
 import io.mockk.just
 import io.mockk.mockk
@@ -42,6 +43,7 @@ import org.hl7.fhir.r4.model.Organization
 import org.hl7.fhir.r4.model.Patient
 import org.hl7.fhir.r4.model.Practitioner
 import org.hl7.fhir.r4.model.PractitionerRole
+import org.hl7.fhir.r4.model.RequestGroup
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Assertions.assertTrue
 import org.junit.jupiter.api.Test
@@ -88,6 +90,8 @@ internal class R4ServerTest {
         every { r4MedicationRequest.resourceType } returns MedicationRequest::class.java
         val r4Encounter = mockk<R4EncounterResourceProvider>()
         every { r4Encounter.resourceType } returns Encounter::class.java
+        val r4RequestGroup = mockk<R4RequestGroupResourceProvider>()
+        every { r4RequestGroup.resourceType } returns RequestGroup::class.java
         val server = R4Server(
             ctx,
             r4Patient,
@@ -107,7 +111,8 @@ internal class R4ServerTest {
             r4Medication,
             r4MedicationStatement,
             r4MedicationRequest,
-            r4Encounter
+            r4Encounter,
+            r4RequestGroup
         )
         server.init()
         assertTrue(
@@ -130,7 +135,8 @@ internal class R4ServerTest {
                     r4Medication,
                     r4MedicationStatement,
                     r4MedicationRequest,
-                    r4Encounter
+                    r4Encounter,
+                    r4RequestGroup
                 )
             )
         )

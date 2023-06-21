@@ -26,6 +26,7 @@ import com.projectronin.interop.mock.ehr.fhir.r4.providers.R4OrganizationResourc
 import com.projectronin.interop.mock.ehr.fhir.r4.providers.R4PatientResourceProvider
 import com.projectronin.interop.mock.ehr.fhir.r4.providers.R4PractitionerResourceProvider
 import com.projectronin.interop.mock.ehr.fhir.r4.providers.R4PractitionerRoleResourceProvider
+import com.projectronin.interop.mock.ehr.fhir.r4.providers.R4RequestGroupResourceProvider
 import org.springframework.http.HttpStatus
 import org.springframework.stereotype.Component
 import javax.servlet.annotation.WebServlet
@@ -52,7 +53,8 @@ class R4Server(
     private val r4MedicationResourceProvider: R4MedicationResourceProvider,
     private val r4MedicationStatementResourceProvider: R4MedicationStatementResourceProvider,
     private val r4MedicationRequestResourceProvider: R4MedicationRequestResourceProvider,
-    private val r4EncounterResourceProvider: R4EncounterResourceProvider
+    private val r4EncounterResourceProvider: R4EncounterResourceProvider,
+    private val r4RequestGroupResourceProvider: R4RequestGroupResourceProvider
 ) : RestfulServer(context) {
 
     override fun initialize() {
@@ -76,7 +78,8 @@ class R4Server(
             r4MedicationResourceProvider,
             r4MedicationStatementResourceProvider,
             r4MedicationRequestResourceProvider,
-            r4EncounterResourceProvider
+            r4EncounterResourceProvider,
+            r4RequestGroupResourceProvider
         )
         pagingProvider = FifoMemoryPagingProvider(10)
         maximumPageSize = 10 // in reality this is much higher, but this is easier to test with.
