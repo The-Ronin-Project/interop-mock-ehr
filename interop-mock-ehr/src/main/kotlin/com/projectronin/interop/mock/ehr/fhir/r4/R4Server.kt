@@ -111,7 +111,8 @@ class RoninVendorFilter {
         "Observation",
         "Organization",
         "PractitionerRole",
-        "Encounter"
+        "Encounter",
+        "RequestGroup"
     )
 
     private val cernerSupportedResources = listOf(
