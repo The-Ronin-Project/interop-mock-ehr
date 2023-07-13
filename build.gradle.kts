@@ -1,8 +1,10 @@
 plugins {
-    id("com.projectronin.interop.gradle.junit") apply false
-    id("com.projectronin.interop.gradle.server-publish") apply false
-    id("com.projectronin.interop.gradle.spring") apply false
-    id("com.projectronin.interop.gradle.server-version")
+    alias(libs.plugins.interop.gradle.junit) apply false
+    alias(libs.plugins.interop.gradle.server.publish) apply false
+    alias(libs.plugins.interop.gradle.spring) apply false
+    alias(libs.plugins.interop.gradle.spring.boot)
+    alias(libs.plugins.interop.gradle.server.version)
+    alias(libs.plugins.interop.version.catalog)
 }
 
 subprojects {

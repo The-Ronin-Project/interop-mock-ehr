@@ -1,36 +1,66 @@
+[versions]
+apache-commons-text = "1.10"
+hapi-fhir = "6.6.1"
+hapi-hl7v2 = "2.3"
+
+interop-ehr = "10.3.1"
+interop-fhir = "8.4.0"
+interop-gradle = "3.2.0"
+
+kotlinx-coroutines-core = "1.7.1"
+ktor-client = "2.3.1"
+mockk = "1.13.5"
+mysql-connector-java = "8.0.33"
+protobuf-java = "3.23.3"
+# @pin until can move to JDK 17
+spring-boot = "2.7.13"
+springdoc-openapi = "1.7.0"
+testcontainers-bom = "1.18.3"
+json-patch = "1.13"
+# @pin Stuck on 7.3 until we are off Spring 2.x
+logstash-logback-encoder = "7.3"
+
 [libraries]
-apache-commons-text = "org.apache.commons:commons-text:1.10"
-hapi-fhir-base = "ca.uhn.hapi.fhir:hapi-fhir-base:6.6.1"
-hapi-fhir-server = "ca.uhn.hapi.fhir:hapi-fhir-server:6.6.1"
-hapi-fhir-server-openapi = "ca.uhn.hapi.fhir:hapi-fhir-server-openapi:6.6.1"
-hapi-fhir-structures-r4 = "ca.uhn.hapi.fhir:hapi-fhir-structures-r4:6.6.1"
-hapi-fhir-structures-stu3 = "ca.uhn.hapi.fhir:hapi-fhir-structures-dstu3:6.6.1"
-hapi-hl7v2-base = "ca.uhn.hapi:hapi-base:2.3"
-hapi-hl7v2-http = "ca.uhn.hapi:hapi-hl7overhttp:2.3"
-hapi-hl7v2-251 = "ca.uhn.hapi:hapi-structures-v251:2.3"
+apache-commons-text = { module = "org.apache.commons:commons-text", version.ref = "apache-commons-text" }
+hapi-fhir-base = { module = "ca.uhn.hapi.fhir:hapi-fhir-base", version.ref = "hapi-fhir" }
+hapi-fhir-server = { module = "ca.uhn.hapi.fhir:hapi-fhir-server", version.ref = "hapi-fhir" }
+hapi-fhir-server-openapi = { module = "ca.uhn.hapi.fhir:hapi-fhir-server-openapi", version.ref = "hapi-fhir" }
+hapi-fhir-structures-r4 = { module = "ca.uhn.hapi.fhir:hapi-fhir-structures-r4", version.ref = "hapi-fhir" }
+hapi-fhir-structures-stu3 = { module = "ca.uhn.hapi.fhir:hapi-fhir-structures-dstu3", version.ref = "hapi-fhir" }
+hapi-hl7v2-base = { module = "ca.uhn.hapi:hapi-base", version.ref = "hapi-hl7v2" }
+hapi-hl7v2-http = { module = "ca.uhn.hapi:hapi-hl7overhttp", version.ref = "hapi-hl7v2" }
+hapi-hl7v2-251 = { module = "ca.uhn.hapi:hapi-structures-v251", version.ref = "hapi-hl7v2" }
 
-interop-ehr = "com.projectronin.interop.ehr:interop-ehr:10.3.1"
-interop-ehr-cerner = "com.projectronin.interop.ehr:interop-ehr-cerner:10.3.1"
-interop-ehr-epic = "com.projectronin.interop.ehr:interop-ehr-epic:10.3.1"
+interop-ehr = { module = "com.projectronin.interop.ehr:interop-ehr", version.ref = "interop-ehr" }
+interop-ehr-cerner = { module = "com.projectronin.interop.ehr:interop-ehr-cerner", version.ref = "interop-ehr" }
+interop-ehr-epic = { module = "com.projectronin.interop.ehr:interop-ehr-epic", version.ref = "interop-ehr" }
 
-interop-fhir = "com.projectronin.interop.fhir:interop-fhir:8.4.0"
+interop-fhir = { module = "com.projectronin.interop.fhir:interop-fhir", version.ref = "interop-fhir" }
 
-kotlinx-coroutines-core = "org.jetbrains.kotlinx:kotlinx-coroutines-core:1.7.1"
-ktor-client-cio = "io.ktor:ktor-client-cio:2.3.1"
-ktor-client-core = "io.ktor:ktor-client-core:2.3.1"
-mockk = "io.mockk:mockk:1.13.5"
-mysql-connector-java = "com.mysql:mysql-connector-j:8.0.33"
-protobuf-java = "com.google.protobuf:protobuf-java:3.23.3"
-spring-boot-parent = "org.springframework.boot:spring-boot-parent:2.7.5"
-springdoc-openapi-data = "org.springdoc:springdoc-openapi-data-rest:1.7.0"
-springdoc-openapi-kotlin = "org.springdoc:springdoc-openapi-kotlin:1.7.0"
-springdoc-openapi-ui = "org.springdoc:springdoc-openapi-ui:1.7.0"
-testcontainers-bom = "org.testcontainers:testcontainers-bom:1.18.3"
-json-patch = "com.github.java-json-tools:json-patch:1.13"
-# Stuck on 7.3 until we are off Spring 2.x
-logstash-logback-encoder = "net.logstash.logback:logstash-logback-encoder:7.3"
+kotlinx-coroutines-core = { module = "org.jetbrains.kotlinx:kotlinx-coroutines-core", version.ref = "kotlinx-coroutines-core" }
+ktor-client-cio = { module = "io.ktor:ktor-client-cio", version.ref = "ktor-client" }
+ktor-client-core = { module = "io.ktor:ktor-client-core", version.ref = "ktor-client" }
+mockk = { module = "io.mockk:mockk", version.ref = "mockk" }
+mysql-connector-java = { module = "com.mysql:mysql-connector-j", version.ref = "mysql-connector-java" }
+protobuf-java = { module = "com.google.protobuf:protobuf-java", version.ref = "protobuf-java" }
+spring-boot-parent = { module = "org.springframework.boot:spring-boot-parent", version.ref = "spring-boot" }
+springdoc-openapi-data = { module = "org.springdoc:springdoc-openapi-data-rest", version.ref = "springdoc-openapi" }
+springdoc-openapi-kotlin = { module = "org.springdoc:springdoc-openapi-kotlin", version.ref = "springdoc-openapi" }
+springdoc-openapi-ui = { module = "org.springdoc:springdoc-openapi-ui", version.ref = "springdoc-openapi" }
+testcontainers-bom = { module = "org.testcontainers:testcontainers-bom", version.ref = "testcontainers-bom" }
+json-patch = { module = "com.github.java-json-tools:json-patch", version.ref = "json-patch" }
+logstash-logback-encoder = { module = "net.logstash.logback:logstash-logback-encoder", version.ref = "logstash-logback-encoder" }
 
 [bundles]
 hapi-fhir = ["hapi-fhir-base", "hapi-fhir-server", "hapi-fhir-structures-r4", "hapi-fhir-server-openapi", "hapi-fhir-structures-stu3"]
 hapi-hl7v2 = ["hapi-hl7v2-base", "hapi-hl7v2-251", "hapi-hl7v2-http"]
 springdoc-openapi = ["springdoc-openapi-data", "springdoc-openapi-kotlin", "springdoc-openapi-ui"]
+
+[plugins]
+interop-gradle-base = { id = "com.projectronin.interop.gradle.base", version.ref = "interop-gradle" }
+interop-gradle-junit = { id = "com.projectronin.interop.gradle.junit", version.ref = "interop-gradle" }
+interop-gradle-server-publish = { id = "com.projectronin.interop.gradle.server-publish", version.ref = "interop-gradle" }
+interop-gradle-server-version = { id = "com.projectronin.interop.gradle.server-version", version.ref = "interop-gradle" }
+interop-gradle-spring = { id = "com.projectronin.interop.gradle.spring", version.ref = "interop-gradle" }
+interop-gradle-spring-boot = { id = "com.projectronin.interop.gradle.spring-boot", version.ref = "interop-gradle" }
+interop-version-catalog = { id = "com.projectronin.interop.gradle.version-catalog-update", version.ref = "interop-gradle" }

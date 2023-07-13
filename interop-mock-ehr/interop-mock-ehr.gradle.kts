@@ -1,6 +1,6 @@
 plugins {
-    id("com.projectronin.interop.gradle.spring-boot")
-    id("com.projectronin.interop.gradle.junit")
+    alias(libs.plugins.interop.gradle.spring.boot)
+    alias(libs.plugins.interop.gradle.junit)
 }
 
 dependencies {
