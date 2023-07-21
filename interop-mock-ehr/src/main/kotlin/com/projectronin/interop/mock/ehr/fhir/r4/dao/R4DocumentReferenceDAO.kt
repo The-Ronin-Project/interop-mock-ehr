@@ -7,6 +7,7 @@ import com.projectronin.interop.mock.ehr.xdevapi.SafeXDev
 import org.hl7.fhir.r4.model.DocumentReference
 import org.hl7.fhir.r4.model.Identifier
 import org.springframework.stereotype.Component
+import java.util.Date
 
 @Component
 class R4DocumentReferenceDAO(private val schema: SafeXDev, context: FhirContext) :
@@ -15,7 +16,9 @@ class R4DocumentReferenceDAO(private val schema: SafeXDev, context: FhirContext)
         subject: String? = null,
         category: TokenOrListParam? = null,
         docStatus: String? = null,
-        encounter: String? = null
+        encounter: String? = null,
+        fromDate: Date? = null,
+        toDate: Date? = null
     ): List<DocumentReference> {
         // Build queryFragments into query joined with 'AND'
         val queryFragments = mutableListOf<String>()
@@ -34,7 +37,10 @@ class R4DocumentReferenceDAO(private val schema: SafeXDev, context: FhirContext)
         // Run the query and return a List of resources that match
         val parser = context.newJsonParser()
         return schema.run(collection) {
-            find(query).execute().map { parser.parseResource(resourceType, it.toString()) }
+            find(query).execute().map { parser.parseResource(resourceType, it.toString()) }.filter { docRef ->
+                (toDate?.let { docRef.date?.before(it) ?: false } ?: true) && // before upper bound?
+                    (fromDate?.let { docRef.date?.after(it) ?: false } ?: true) // and after lower bound?
+            }
         }
     }
 

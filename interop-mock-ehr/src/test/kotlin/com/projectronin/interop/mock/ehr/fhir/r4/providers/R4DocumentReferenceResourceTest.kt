@@ -1,6 +1,8 @@
 package com.projectronin.interop.mock.ehr.fhir.r4.providers
 
 import ca.uhn.fhir.context.FhirContext
+import ca.uhn.fhir.rest.param.DateParam
+import ca.uhn.fhir.rest.param.DateRangeParam
 import ca.uhn.fhir.rest.param.ReferenceParam
 import ca.uhn.fhir.rest.param.StringParam
 import ca.uhn.fhir.rest.param.TokenOrListParam
@@ -20,6 +22,7 @@ import org.junit.jupiter.api.Assertions.assertTrue
 import org.junit.jupiter.api.BeforeAll
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.TestInstance
+import java.util.Date
 
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
 class R4DocumentReferenceResourceTest : BaseMySQLTest() {
@@ -300,6 +303,27 @@ class R4DocumentReferenceResourceTest : BaseMySQLTest() {
         val output =
             documentReferenceProvider.search(docStatusParam = StringParam(DocumentReference.ReferredDocumentStatus.FINAL.toCode()))
         assertEquals("DocumentReference/${testDocumentReference.id}", output[0].id)
+    }
+
+    @Test
+    fun `docStatus date search test`() {
+        collection.remove("true").execute() // Clear the collection in case other tests run first
+        val testDocumentReference = DocumentReference()
+        testDocumentReference.id = "DateTest1"
+        testDocumentReference.docStatus = DocumentReference.ReferredDocumentStatus.FINAL
+        testDocumentReference.date = Date(110, 0, 10)
+        collection.add(FhirContext.forR4().newJsonParser().encodeResourceToString(testDocumentReference)).execute()
+        testDocumentReference.id = "DateTest2"
+        testDocumentReference.docStatus = DocumentReference.ReferredDocumentStatus.FINAL
+        testDocumentReference.date = Date(108, 2, 10)
+        collection.add(FhirContext.forR4().newJsonParser().encodeResourceToString(testDocumentReference)).execute()
+        val dateParam = DateRangeParam()
+        dateParam.lowerBound = DateParam("2009-02-22T13:12:00-06:00")
+        dateParam.upperBound = DateParam("2020-02-22T13:12:00-06:00")
+        val output =
+            documentReferenceProvider.search(dateRangeParam = dateParam, docStatusParam = StringParam(DocumentReference.ReferredDocumentStatus.FINAL.toCode()))
+        assertEquals(1, output.size)
+        assertEquals("DocumentReference/DateTest1", output[0].id)
     }
 
     @Test
