@@ -4,10 +4,12 @@ import ca.uhn.fhir.rest.annotation.Create
 import ca.uhn.fhir.rest.annotation.Delete
 import ca.uhn.fhir.rest.annotation.IdParam
 import ca.uhn.fhir.rest.annotation.Read
+import ca.uhn.fhir.rest.annotation.RequiredParam
 import ca.uhn.fhir.rest.annotation.ResourceParam
 import ca.uhn.fhir.rest.annotation.Search
 import ca.uhn.fhir.rest.annotation.Update
 import ca.uhn.fhir.rest.api.MethodOutcome
+import ca.uhn.fhir.rest.param.TokenOrListParam
 import ca.uhn.fhir.rest.server.IResourceProvider
 import com.projectronin.interop.mock.ehr.fhir.r4.dao.BaseResourceDAO
 import com.projectronin.interop.mock.ehr.fhir.stu3.toDSTU3
@@ -23,6 +25,11 @@ abstract class STU3BaseResourceProvider<T : Resource, R4 : R4Resource, DAO : Bas
     @Read // ex. /fhir/stu3/Patient/123
     fun read(@IdParam theId: IdType): T {
         return (resourceDAO.findById(theId.idPart)).toDSTU3()
+    }
+
+    @Search // ex. /fhir/r4/Patient?_id=123,456
+    fun readMultiple(@RequiredParam(name = Resource.SP_RES_ID) idList: TokenOrListParam): List<T> {
+        return idList.valuesAsQueryTokens.map { resourceDAO.findById(it.value).toDSTU3() }
     }
 
     @Update

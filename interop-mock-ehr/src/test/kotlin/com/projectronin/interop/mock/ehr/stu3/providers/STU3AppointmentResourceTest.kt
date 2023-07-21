@@ -135,6 +135,19 @@ class STU3AppointmentResourceTest : BaseMySQLTest() {
     }
 
     @Test
+    fun `read test using multiple ids`() {
+        val testAppt1 = Appointment()
+        testAppt1.id = "TESTINGIDMULTI1"
+        collection.add(FhirContext.forR4().newJsonParser().encodeResourceToString(testAppt1.toR4())).execute()
+        val testAppt2 = Appointment()
+        testAppt2.id = "TESTINGIDMULTI2"
+        collection.add(FhirContext.forR4().newJsonParser().encodeResourceToString(testAppt2.toR4())).execute()
+
+        val output = appointmentProvider.readMultiple(TokenOrListParam("", "TESTINGIDMULTI1", "TESTINGIDMULTI2"))
+        assertEquals(output.size, 2)
+    }
+
+    @Test
     fun `read test all`() {
         val testAppt = Appointment()
         testAppt.id = "TESTINGID7"

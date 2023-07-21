@@ -155,6 +155,20 @@ class R4PatientAndBaseResourceTest : BaseMySQLTest() {
     }
 
     @Test
+    fun `read test using multiple ids`() {
+        val testPat1 = Patient()
+        testPat1.birthDate = Date(87, 0, 15)
+        testPat1.id = "TESTINGIDMULTI1"
+        collection.add(FhirContext.forR4().newJsonParser().encodeResourceToString(testPat1)).execute()
+        val testPat2 = Patient()
+        testPat2.birthDate = Date(87, 0, 15)
+        testPat2.id = "TESTINGIDMULTI2"
+        collection.add(FhirContext.forR4().newJsonParser().encodeResourceToString(testPat2)).execute()
+        val output = patientProvider.readMultiple(TokenOrListParam("", "TESTINGIDMULTI1", "TESTINGIDMULTI2"))
+        assertEquals(output.size, 2)
+    }
+
+    @Test
     fun `include throws error`() {
         val testPat = Patient()
         testPat.birthDate = Date(87, 0, 15)

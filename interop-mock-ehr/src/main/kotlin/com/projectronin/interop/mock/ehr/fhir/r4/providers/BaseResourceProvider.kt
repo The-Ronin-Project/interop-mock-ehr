@@ -13,6 +13,7 @@ import ca.uhn.fhir.rest.annotation.Search
 import ca.uhn.fhir.rest.annotation.Update
 import ca.uhn.fhir.rest.api.MethodOutcome
 import ca.uhn.fhir.rest.api.PatchTypeEnum
+import ca.uhn.fhir.rest.param.TokenOrListParam
 import ca.uhn.fhir.rest.server.IResourceProvider
 import com.projectronin.interop.mock.ehr.fhir.r4.dao.BaseResourceDAO
 import org.hl7.fhir.r4.model.IdType
@@ -26,6 +27,11 @@ abstract class BaseResourceProvider<T : Resource, DAO : BaseResourceDAO<T>> : IR
     @Read // ex. /fhir/r4/Patient/123
     fun read(@IdParam theId: IdType): T {
         return resourceDAO.findById(theId.idPart)
+    }
+
+    @Search // ex. /fhir/r4/Patient?_id=123,456
+    fun readMultiple(@RequiredParam(name = Resource.SP_RES_ID) idList: TokenOrListParam): List<T> {
+        return idList.valuesAsQueryTokens.map { (resourceDAO.findById(it.value)) }
     }
 
     @Search // ex. /fhir/r4/Patient?_id=123&_include=Patient:managingOrganization
