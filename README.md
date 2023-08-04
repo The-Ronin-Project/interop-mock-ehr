@@ -14,6 +14,13 @@ There will also be a TCP/IP port open for HL7v2 communication at `http://localho
 `http:localhost:8081/HL7overHTTP/`.
 Only version 2.5.1 messages are accepted at the moment. If using HTTP, the Content-Type must be set to `application/hl7-v2`.
 
+## Projects
+
+- [interop-mock-ehr](interop-mock-ehr) - to stand up locally with interop-mirth [see here](interop-mock-ehr)
+
+- [interop-mock-ehr-testcontainer](interop-mock-ehr-testcontainer)
+
+Notes below may apply to either project and may need adjusting.
 
 ## Running Locally
 

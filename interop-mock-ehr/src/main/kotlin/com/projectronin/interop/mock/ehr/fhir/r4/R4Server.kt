@@ -128,7 +128,6 @@ class RoninVendorFilter {
         "Location",
         "Medication",
         "MedicationRequest",
-        "MedicationStatement",
         "Observation",
         "Organization",
         "Encounter"
