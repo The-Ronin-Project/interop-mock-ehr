@@ -7,6 +7,8 @@ import com.projectronin.interop.ehr.epic.apporchard.model.GetProviderAppointment
 import com.projectronin.interop.ehr.epic.apporchard.model.IDType
 import com.projectronin.interop.ehr.epic.apporchard.model.SendMessageRequest
 import com.projectronin.interop.ehr.epic.apporchard.model.SendMessageResponse
+import com.projectronin.interop.ehr.epic.apporchard.model.SetSmartDataValuesRequest
+import com.projectronin.interop.ehr.epic.apporchard.model.SetSmartDataValuesResult
 import com.projectronin.interop.ehr.epic.auth.EpicAuthentication
 import com.projectronin.interop.mock.ehr.epic.dal.EpicDAL
 import io.swagger.v3.oas.annotations.Operation
@@ -15,10 +17,12 @@ import io.swagger.v3.oas.annotations.media.Schema
 import io.swagger.v3.oas.annotations.responses.ApiResponse
 import io.swagger.v3.oas.annotations.responses.ApiResponses
 import org.hl7.fhir.r4.model.CodeableConcept
+import org.hl7.fhir.r4.model.Flag
 import org.hl7.fhir.r4.model.Identifier
 import org.hl7.fhir.r4.model.Reference
 import org.springframework.http.HttpStatus
 import org.springframework.web.bind.annotation.PostMapping
+import org.springframework.web.bind.annotation.PutMapping
 import org.springframework.web.bind.annotation.RequestBody
 import org.springframework.web.bind.annotation.RequestMapping
 import org.springframework.web.bind.annotation.RestController
@@ -232,6 +236,53 @@ class EpicServer(private var dal: EpicDAL) {
         val communication = dal.r4CommunicationTransformer.transformFromSendMessage(sendMessageRequest)
         val newCommunicationId = dal.r4CommunicationDAO.insert(communication)
         return SendMessageResponse(listOf(IDType(id = newCommunicationId, type = "FHIR ID")))
+    }
+
+    @Operation(
+        summary = "Add onboard flag",
+        description = "Adds a smart data element to patient indicating Ronin onboarding"
+    )
+    @ApiResponses(
+        value = [
+            ApiResponse(
+                responseCode = "200",
+                description = "Successful operation",
+                content = [
+                    Content(
+                        mediaType = "application/json",
+                        schema = Schema(implementation = SetSmartDataValuesResult::class)
+                    )
+                ]
+            ),
+            ApiResponse(
+                responseCode = "400",
+                description = "Bad Request",
+                content = [Content(mediaType = "application/text")]
+            )
+        ]
+    )
+    @PutMapping("/api/epic/2013/Clinical/Utility/SETSMARTDATAVALUES/SmartData/Values")
+    fun addOnboardFlag(@RequestBody request: SetSmartDataValuesRequest): SetSmartDataValuesResult {
+        // validate patient if it exists
+        // expecting "MRN" or something similar, so hardcode MockEHR MRN system.
+        val patient =
+            dal.r4PatientDAO.searchByIdentifier(Identifier().setValue(request.id).setSystem("mockEHRMRNSystem"))
+                ?: throw ResponseStatusException(
+                    HttpStatus.BAD_REQUEST,
+                    "NO-ENTITY-FOUND details: No entity found for the provided EntityID($request.id) and EntityIDType(mockEHRMRNSystem)."
+                )
+        val existingFlags = dal.r4FlagDAO.searchByQuery("Patient/${patient.id.removePrefix("Patient/")}")
+        // don't create multiple flags
+        val flagCode = "mockEHRPatientOnboardedFlag"
+        if (existingFlags.any { it.code.text.contains(flagCode) }) {
+            return SetSmartDataValuesResult(success = true)
+        }
+        // add R4 flag indicating onboarding
+        val flag = Flag()
+        flag.code = CodeableConcept().setText(flagCode)
+        flag.subject = Reference().setReference("Patient/${patient.id.removePrefix("Patient/")}")
+        dal.r4FlagDAO.insert(flag)
+        return SetSmartDataValuesResult(success = true)
     }
 }
 

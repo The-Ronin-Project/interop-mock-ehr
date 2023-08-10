@@ -8,6 +8,8 @@ import com.projectronin.interop.ehr.epic.apporchard.model.IDType
 import com.projectronin.interop.ehr.epic.apporchard.model.ScheduleProvider
 import com.projectronin.interop.ehr.epic.apporchard.model.SendMessageRecipient
 import com.projectronin.interop.ehr.epic.apporchard.model.SendMessageRequest
+import com.projectronin.interop.ehr.epic.apporchard.model.SetSmartDataValuesRequest
+import com.projectronin.interop.ehr.epic.apporchard.model.SmartDataValue
 import com.projectronin.interop.ehr.epic.auth.EpicAuthentication
 import com.projectronin.interop.mock.ehr.epic.dal.EpicDAL
 import io.mockk.every
@@ -25,6 +27,7 @@ import org.hl7.fhir.r4.model.Patient
 import org.hl7.fhir.r4.model.Practitioner
 import org.hl7.fhir.r4.model.Reference
 import org.junit.jupiter.api.Assertions.assertEquals
+import org.junit.jupiter.api.Assertions.assertTrue
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.assertThrows
 import org.springframework.web.server.ResponseStatusException
@@ -476,6 +479,56 @@ internal class EpicServerTest {
 
         val output = assertThrows<ResponseStatusException> { server.getAppointmentsByPractitioner(request) }
         assertEquals("NO-PROVIDER-FOUND", output.reason)
+    }
+
+    @Test
+    fun `onboard flag test - error`() {
+        val request = SetSmartDataValuesRequest(
+            idType = "MRN",
+            id = "12345",
+            userID = "1",
+            userIDType = "External",
+            source = "Ronin",
+            contextName = "PATIENT",
+            smartDataValues = listOf(
+                SmartDataValue(
+                    comments = listOf("Comment"),
+                    values = listOf("Value"),
+                    smartDataIDType = "SDI",
+                    smartDataID = "SDEID"
+                )
+            )
+        )
+        every { dal.r4PatientDAO.searchByIdentifier(any()) } returns null
+        val output = assertThrows<ResponseStatusException> { server.addOnboardFlag(request) }
+        assertTrue(output.reason!!.contains("NO-ENTITY-FOUND"))
+    }
+
+    @Test
+    fun `onboard flag test - success`() {
+        val request = SetSmartDataValuesRequest(
+            idType = "MRN",
+            id = "12345",
+            userID = "1",
+            userIDType = "External",
+            source = "Ronin",
+            contextName = "PATIENT",
+            smartDataValues = listOf(
+                SmartDataValue(
+                    comments = listOf("Comment"),
+                    values = listOf("Value"),
+                    smartDataIDType = "SDI",
+                    smartDataID = "SDEID"
+                )
+            )
+        )
+        every { dal.r4FlagDAO.searchByQuery(any()) } returns listOf()
+        every { dal.r4FlagDAO.insert(any()) } returns ""
+        every { dal.r4PatientDAO.searchByIdentifier(any()) } returns mockk {
+            every { id } returns "12345"
+        }
+        val output = server.addOnboardFlag(request)
+        assertTrue(output.success)
     }
 
     @Test

@@ -5,6 +5,7 @@ import com.projectronin.interop.mock.ehr.epic.transform.R4CommunicationTransform
 import com.projectronin.interop.mock.ehr.fhir.r4.dao.R4AppointmentDAO
 import com.projectronin.interop.mock.ehr.fhir.r4.dao.R4CommunicationDAO
 import com.projectronin.interop.mock.ehr.fhir.r4.dao.R4EncounterDAO
+import com.projectronin.interop.mock.ehr.fhir.r4.dao.R4FlagDAO
 import com.projectronin.interop.mock.ehr.fhir.r4.dao.R4LocationDAO
 import com.projectronin.interop.mock.ehr.fhir.r4.dao.R4PatientDAO
 import com.projectronin.interop.mock.ehr.fhir.r4.dao.R4PractitionerDAO
@@ -19,5 +20,6 @@ class EpicDAL(
     val r4CommunicationDAO: R4CommunicationDAO,
     val r4CommunicationTransformer: R4CommunicationTransformer,
     val r4LocationDAO: R4LocationDAO,
-    val r4EncounterDAO: R4EncounterDAO
+    val r4EncounterDAO: R4EncounterDAO,
+    val r4FlagDAO: R4FlagDAO
 )
