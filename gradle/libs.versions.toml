@@ -12,7 +12,7 @@ ktor-client = "2.3.3"
 logstash-logback-encoder = "7.3"
 mockk = "1.13.5"
 mysql-connector-java = "8.1.0"
-protobuf-java = "3.23.4"
+protobuf-java = "3.24.0"
 # @pin until can move to JDK 17
 spring-boot = "2.7.13"
 springdoc-openapi = "1.7.0"
