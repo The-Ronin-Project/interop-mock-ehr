@@ -2,7 +2,7 @@
 apache-commons-text = "1.10"
 hapi-fhir = "6.6.2"
 hapi-hl7v2 = "2.3"
-interop-ehr = "10.8.1"
+interop-ehr = "10.8.2"
 interop-fhir = "8.8.1"
 interop-gradle = "3.2.0"
 json-patch = "1.13"
@@ -10,7 +10,7 @@ kotlinx-coroutines-core = "1.7.3"
 ktor-client = "2.3.3"
 # @pin Stuck on 7.3 until we are off Spring 2.x
 logstash-logback-encoder = "7.3"
-mockk = "1.13.5"
+mockk = "1.13.7"
 mysql-connector-java = "8.1.0"
 protobuf-java = "3.24.0"
 # @pin until can move to JDK 17
