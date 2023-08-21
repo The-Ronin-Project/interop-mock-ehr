@@ -4,6 +4,12 @@ plugins {
 }
 
 dependencies {
+    configurations.all {
+        resolutionStrategy {
+            force(libs.jackson.core)
+        }
+    }
+
     implementation(platform(libs.spring.boot.parent))
     implementation("org.springframework.boot:spring-boot-starter")
     implementation("org.springframework.boot:spring-boot-starter-web")
