@@ -11,6 +11,7 @@ import com.projectronin.interop.mock.ehr.fhir.r4.providers.R4CommunicationResour
 import com.projectronin.interop.mock.ehr.fhir.r4.providers.R4ConditionResourceProvider
 import com.projectronin.interop.mock.ehr.fhir.r4.providers.R4DocumentReferenceResourceProvider
 import com.projectronin.interop.mock.ehr.fhir.r4.providers.R4EncounterResourceProvider
+import com.projectronin.interop.mock.ehr.fhir.r4.providers.R4FlagResourceProvider
 import com.projectronin.interop.mock.ehr.fhir.r4.providers.R4LocationResourceProvider
 import com.projectronin.interop.mock.ehr.fhir.r4.providers.R4MedicationRequestResourceProvider
 import com.projectronin.interop.mock.ehr.fhir.r4.providers.R4MedicationResourceProvider
@@ -34,6 +35,7 @@ import org.hl7.fhir.r4.model.Communication
 import org.hl7.fhir.r4.model.Condition
 import org.hl7.fhir.r4.model.DocumentReference
 import org.hl7.fhir.r4.model.Encounter
+import org.hl7.fhir.r4.model.Flag
 import org.hl7.fhir.r4.model.Location
 import org.hl7.fhir.r4.model.Medication
 import org.hl7.fhir.r4.model.MedicationRequest
@@ -92,6 +94,8 @@ internal class R4ServerTest {
         every { r4Encounter.resourceType } returns Encounter::class.java
         val r4RequestGroup = mockk<R4RequestGroupResourceProvider>()
         every { r4RequestGroup.resourceType } returns RequestGroup::class.java
+        val r4Flag = mockk<R4FlagResourceProvider>()
+        every { r4Flag.resourceType } returns Flag::class.java
         val server = R4Server(
             ctx,
             r4Patient,
@@ -112,7 +116,8 @@ internal class R4ServerTest {
             r4MedicationStatement,
             r4MedicationRequest,
             r4Encounter,
-            r4RequestGroup
+            r4RequestGroup,
+            r4Flag
         )
         server.init()
         assertTrue(
@@ -136,7 +141,8 @@ internal class R4ServerTest {
                     r4MedicationStatement,
                     r4MedicationRequest,
                     r4Encounter,
-                    r4RequestGroup
+                    r4RequestGroup,
+                    r4Flag
                 )
             )
         )

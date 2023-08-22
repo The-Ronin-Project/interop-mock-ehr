@@ -17,6 +17,7 @@ import com.projectronin.interop.mock.ehr.fhir.r4.providers.R4CommunicationResour
 import com.projectronin.interop.mock.ehr.fhir.r4.providers.R4ConditionResourceProvider
 import com.projectronin.interop.mock.ehr.fhir.r4.providers.R4DocumentReferenceResourceProvider
 import com.projectronin.interop.mock.ehr.fhir.r4.providers.R4EncounterResourceProvider
+import com.projectronin.interop.mock.ehr.fhir.r4.providers.R4FlagResourceProvider
 import com.projectronin.interop.mock.ehr.fhir.r4.providers.R4LocationResourceProvider
 import com.projectronin.interop.mock.ehr.fhir.r4.providers.R4MedicationRequestResourceProvider
 import com.projectronin.interop.mock.ehr.fhir.r4.providers.R4MedicationResourceProvider
@@ -54,7 +55,8 @@ class R4Server(
     private val r4MedicationStatementResourceProvider: R4MedicationStatementResourceProvider,
     private val r4MedicationRequestResourceProvider: R4MedicationRequestResourceProvider,
     private val r4EncounterResourceProvider: R4EncounterResourceProvider,
-    private val r4RequestGroupResourceProvider: R4RequestGroupResourceProvider
+    private val r4RequestGroupResourceProvider: R4RequestGroupResourceProvider,
+    private val r4FlagResourceProvider: R4FlagResourceProvider
 ) : RestfulServer(context) {
 
     override fun initialize() {
@@ -79,7 +81,8 @@ class R4Server(
             r4MedicationStatementResourceProvider,
             r4MedicationRequestResourceProvider,
             r4EncounterResourceProvider,
-            r4RequestGroupResourceProvider
+            r4RequestGroupResourceProvider,
+            r4FlagResourceProvider
         )
         pagingProvider = FifoMemoryPagingProvider(10)
         maximumPageSize = 10 // in reality this is much higher, but this is easier to test with.
