@@ -17,7 +17,7 @@ protobuf-java = "3.24.1"
 # @pin until can move to JDK 17
 spring-boot = "2.7.13"
 springdoc-openapi = "1.7.0"
-testcontainers-bom = "1.18.3"
+testcontainers-bom = "1.19.0"
 
 [libraries]
 # @keep Upgrade plugin wants to remove this for some reason
@@ -34,6 +34,7 @@ interop-ehr = { module = "com.projectronin.interop.ehr:interop-ehr", version.ref
 interop-ehr-cerner = { module = "com.projectronin.interop.ehr:interop-ehr-cerner", version.ref = "interop-ehr" }
 interop-ehr-epic = { module = "com.projectronin.interop.ehr:interop-ehr-epic", version.ref = "interop-ehr" }
 interop-fhir = { module = "com.projectronin.interop.fhir:interop-fhir", version.ref = "interop-fhir" }
+# @keep Need to force this version
 jackson-core = { module = "com.fasterxml.jackson.core:jackson-core", version.ref = "jackson" }
 json-patch = { module = "com.github.java-json-tools:json-patch", version.ref = "json-patch" }
 kotlinx-coroutines-core = { module = "org.jetbrains.kotlinx:kotlinx-coroutines-core", version.ref = "kotlinx-coroutines-core" }
