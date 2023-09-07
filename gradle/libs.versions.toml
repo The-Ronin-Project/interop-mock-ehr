@@ -1,6 +1,6 @@
 [versions]
 apache-commons-text = "1.10"
-hapi-fhir = "6.8.0"
+hapi-fhir = "6.8.2"
 hapi-hl7v2 = "2.3"
 interop-ehr = "10.8.5"
 interop-fhir = "8.9.1"
