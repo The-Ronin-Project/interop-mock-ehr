@@ -230,7 +230,9 @@ internal class EpicServerTest {
         val ident = mockk<Identifier>()
         val mockCodeableConcept = mockk<CodeableConcept>()
         every { anyConstructed<CodeableConcept>().setText("External") } returns mockCodeableConcept
-        every { anyConstructed<Identifier>().setValue("DEPT#1").setSystem("mockEHRDepartmentInternalSystem") } returns ident
+        every {
+            anyConstructed<Identifier>().setValue("DEPT#1").setSystem("mockEHRDepartmentInternalSystem")
+        } returns ident
         every {
             dal.r4LocationDAO.searchByIdentifier(
                 ident
@@ -493,7 +495,7 @@ internal class EpicServerTest {
             smartDataValues = listOf(
                 SmartDataValue(
                     comments = listOf("Comment"),
-                    values = listOf("Value"),
+                    values = "Value",
                     smartDataIDType = "SDI",
                     smartDataID = "SDEID"
                 )
@@ -516,7 +518,7 @@ internal class EpicServerTest {
             smartDataValues = listOf(
                 SmartDataValue(
                     comments = listOf("Comment"),
-                    values = listOf("Value"),
+                    values = "Value",
                     smartDataIDType = "SDI",
                     smartDataID = "SDEID"
                 )
