@@ -19,6 +19,7 @@ import com.projectronin.interop.mock.ehr.fhir.r4.providers.R4DocumentReferenceRe
 import com.projectronin.interop.mock.ehr.fhir.r4.providers.R4EncounterResourceProvider
 import com.projectronin.interop.mock.ehr.fhir.r4.providers.R4FlagResourceProvider
 import com.projectronin.interop.mock.ehr.fhir.r4.providers.R4LocationResourceProvider
+import com.projectronin.interop.mock.ehr.fhir.r4.providers.R4MedicationAdministrationResourceProvider
 import com.projectronin.interop.mock.ehr.fhir.r4.providers.R4MedicationRequestResourceProvider
 import com.projectronin.interop.mock.ehr.fhir.r4.providers.R4MedicationResourceProvider
 import com.projectronin.interop.mock.ehr.fhir.r4.providers.R4MedicationStatementResourceProvider
@@ -56,7 +57,8 @@ class R4Server(
     private val r4MedicationRequestResourceProvider: R4MedicationRequestResourceProvider,
     private val r4EncounterResourceProvider: R4EncounterResourceProvider,
     private val r4RequestGroupResourceProvider: R4RequestGroupResourceProvider,
-    private val r4FlagResourceProvider: R4FlagResourceProvider
+    private val r4FlagResourceProvider: R4FlagResourceProvider,
+    private val r4MedicationAdministrationResourceProvider: R4MedicationAdministrationResourceProvider
 ) : RestfulServer(context) {
 
     override fun initialize() {
@@ -82,7 +84,8 @@ class R4Server(
             r4MedicationRequestResourceProvider,
             r4EncounterResourceProvider,
             r4RequestGroupResourceProvider,
-            r4FlagResourceProvider
+            r4FlagResourceProvider,
+            r4MedicationAdministrationResourceProvider
         )
         pagingProvider = FifoMemoryPagingProvider(10)
         maximumPageSize = 10 // in reality this is much higher, but this is easier to test with.
@@ -134,7 +137,8 @@ class RoninVendorFilter {
         "MedicationRequest",
         "Observation",
         "Organization",
-        "Encounter"
+        "Encounter",
+        "MedicationAdministration"
     )
 
     private val supportedMap = mapOf("epic" to epicSupportedResources, "cerner" to cernerSupportedResources)

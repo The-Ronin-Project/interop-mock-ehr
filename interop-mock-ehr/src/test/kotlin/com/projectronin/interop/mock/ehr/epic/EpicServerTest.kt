@@ -1,5 +1,7 @@
 package com.projectronin.interop.mock.ehr.epic
 
+import com.projectronin.interop.ehr.epic.EpicMedAdminRequest
+import com.projectronin.interop.ehr.epic.EpicOrderID
 import com.projectronin.interop.ehr.epic.apporchard.model.EpicAppointment
 import com.projectronin.interop.ehr.epic.apporchard.model.GetAppointmentsResponse
 import com.projectronin.interop.ehr.epic.apporchard.model.GetPatientAppointmentsRequest
@@ -23,6 +25,7 @@ import org.hl7.fhir.r4.model.CodeableConcept
 import org.hl7.fhir.r4.model.Communication
 import org.hl7.fhir.r4.model.Identifier
 import org.hl7.fhir.r4.model.Location
+import org.hl7.fhir.r4.model.MedicationAdministration
 import org.hl7.fhir.r4.model.Patient
 import org.hl7.fhir.r4.model.Practitioner
 import org.hl7.fhir.r4.model.Reference
@@ -583,5 +586,108 @@ internal class EpicServerTest {
             )
         } returns null
         assertThrows<ResponseStatusException> { server.createCommunication(request) }
+    }
+
+    @Test
+    fun `working med admin test`() {
+        val request = EpicMedAdminRequest(
+            patientID = "TESTINGINTERNAL",
+            patientIDType = "Internal",
+            contactID = "Con#1",
+            contactIDType = "ConType#1",
+            orderIDs = listOf(
+                EpicOrderID(
+                    "MedAdmin#1",
+                    "External"
+                )
+            )
+        )
+
+        mockkConstructor(Identifier::class)
+        val ident = mockk<Identifier>()
+        val patient = Patient()
+        patient.id = "TESTINGID"
+        every {
+            anyConstructed<Identifier>().setValue("TESTINGINTERNAL").setSystem("mockPatientInternalSystem")
+        } returns ident
+        every {
+            dal.r4PatientDAO.searchByIdentifier(
+                ident
+            )
+        } returns patient
+        every { dal.r4MedicationRequestDAO.searchByQuery(any(), any(), any(), any()) } returns listOf(
+            mockk {
+                every { id } returns "MedRequest#1"
+            }
+        )
+        every { dal.r4MedAdminDAO.searchByRequest("MedRequest#1") } returns listOf(
+            mockk {
+                every { effectiveDateTimeType.valueAsString } returns "dateTime"
+                every { status } returns MedicationAdministration.MedicationAdministrationStatus.COMPLETED
+            }
+        )
+        val output = server.getMedicationAdministration(request)
+        assertEquals(output.orders.size, 1)
+    }
+
+    @Test
+    fun `med admin test fails - no patient`() {
+        val request = EpicMedAdminRequest(
+            patientID = "TESTINGINTERNAL",
+            patientIDType = "Internal",
+            contactID = "Con#1",
+            contactIDType = "ConType#1",
+            orderIDs = listOf(
+                EpicOrderID(
+                    "MedAdmin#1",
+                    "External"
+                )
+            )
+        )
+
+        mockkConstructor(Identifier::class)
+        val ident = mockk<Identifier>()
+        val patient = Patient()
+        patient.id = "TESTINGID"
+        every {
+            anyConstructed<Identifier>().setValue("TESTINGINTERNAL").setSystem("mockPatientInternalSystem")
+        } returns ident
+        every {
+            dal.r4PatientDAO.searchByIdentifier(
+                ident
+            )
+        } returns null
+        assertThrows<ResponseStatusException> { server.getMedicationAdministration(request) }
+    }
+
+    @Test
+    fun `med admin test fails - no med request`() {
+        val request = EpicMedAdminRequest(
+            patientID = "TESTINGINTERNAL",
+            patientIDType = "Internal",
+            contactID = "Con#1",
+            contactIDType = "ConType#1",
+            orderIDs = listOf(
+                EpicOrderID(
+                    "MedAdmin#1",
+                    "External"
+                )
+            )
+        )
+
+        mockkConstructor(Identifier::class)
+        val ident = mockk<Identifier>()
+        val patient = Patient()
+        patient.id = "TESTINGID"
+        every {
+            anyConstructed<Identifier>().setValue("TESTINGINTERNAL").setSystem("mockPatientInternalSystem")
+        } returns ident
+        every {
+            dal.r4PatientDAO.searchByIdentifier(
+                ident
+            )
+        } returns patient
+        every { dal.r4MedicationRequestDAO.searchByQuery(any(), any(), any(), any()) } returns listOf()
+        assertThrows<ResponseStatusException> { server.getMedicationAdministration(request) }
     }
 }

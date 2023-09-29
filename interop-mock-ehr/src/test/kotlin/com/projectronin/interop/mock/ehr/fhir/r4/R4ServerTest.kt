@@ -13,6 +13,7 @@ import com.projectronin.interop.mock.ehr.fhir.r4.providers.R4DocumentReferenceRe
 import com.projectronin.interop.mock.ehr.fhir.r4.providers.R4EncounterResourceProvider
 import com.projectronin.interop.mock.ehr.fhir.r4.providers.R4FlagResourceProvider
 import com.projectronin.interop.mock.ehr.fhir.r4.providers.R4LocationResourceProvider
+import com.projectronin.interop.mock.ehr.fhir.r4.providers.R4MedicationAdministrationResourceProvider
 import com.projectronin.interop.mock.ehr.fhir.r4.providers.R4MedicationRequestResourceProvider
 import com.projectronin.interop.mock.ehr.fhir.r4.providers.R4MedicationResourceProvider
 import com.projectronin.interop.mock.ehr.fhir.r4.providers.R4MedicationStatementResourceProvider
@@ -38,6 +39,7 @@ import org.hl7.fhir.r4.model.Encounter
 import org.hl7.fhir.r4.model.Flag
 import org.hl7.fhir.r4.model.Location
 import org.hl7.fhir.r4.model.Medication
+import org.hl7.fhir.r4.model.MedicationAdministration
 import org.hl7.fhir.r4.model.MedicationRequest
 import org.hl7.fhir.r4.model.MedicationStatement
 import org.hl7.fhir.r4.model.Observation
@@ -96,6 +98,8 @@ internal class R4ServerTest {
         every { r4RequestGroup.resourceType } returns RequestGroup::class.java
         val r4Flag = mockk<R4FlagResourceProvider>()
         every { r4Flag.resourceType } returns Flag::class.java
+        val r4MedAdmin = mockk<R4MedicationAdministrationResourceProvider>()
+        every { r4MedAdmin.resourceType } returns MedicationAdministration::class.java
         val server = R4Server(
             ctx,
             r4Patient,
@@ -117,7 +121,8 @@ internal class R4ServerTest {
             r4MedicationRequest,
             r4Encounter,
             r4RequestGroup,
-            r4Flag
+            r4Flag,
+            r4MedAdmin
         )
         server.init()
         assertTrue(
@@ -142,7 +147,8 @@ internal class R4ServerTest {
                     r4MedicationRequest,
                     r4Encounter,
                     r4RequestGroup,
-                    r4Flag
+                    r4Flag,
+                    r4MedAdmin
                 )
             )
         )

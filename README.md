@@ -58,7 +58,7 @@ For building M1 images:
 ```
 docker buildx create --name mybuilder
 docker buildx use mybuilder
-docker buildx build --tag mock-ehr-test3 -o type=docker --platform=linux/arm64 ./interop-mock-ehr
+docker buildx build --tag mock-ehr-test -o type=docker --platform=linux/arm64 ./interop-mock-ehr
 ```
 
 ## Running via Testcontainer

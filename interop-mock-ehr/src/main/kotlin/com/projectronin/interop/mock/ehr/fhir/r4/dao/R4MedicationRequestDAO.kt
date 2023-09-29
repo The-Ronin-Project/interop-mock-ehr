@@ -3,6 +3,7 @@ package com.projectronin.interop.mock.ehr.fhir.r4.dao
 import ca.uhn.fhir.context.FhirContext
 import com.projectronin.interop.mock.ehr.util.escapeSQL
 import com.projectronin.interop.mock.ehr.xdevapi.SafeXDev
+import org.hl7.fhir.r4.model.Identifier
 import org.hl7.fhir.r4.model.MedicationRequest
 import org.springframework.stereotype.Component
 import java.util.Date
@@ -19,12 +20,13 @@ class R4MedicationRequestDAO(private val schema: SafeXDev, context: FhirContext)
     fun searchByQuery(
         subject: String? = null,
         fromDate: Date? = null,
-        toDate: Date? = null
+        toDate: Date? = null,
+        identifier: Identifier? = null
     ): List<MedicationRequest> {
         // Build queryFragments into query joined with 'AND'
         val queryFragments = mutableListOf<String>()
         subject?.let { queryFragments.add("('${it.escapeSQL()}' = subject.reference)") }
-
+        identifier?.let { queryFragments.add("{'value':'${identifier.value.escapeSQL()}','system':'${identifier.system.escapeSQL()}'} in identifier[*]") }
         if (queryFragments.isEmpty()) return listOf()
         val query = queryFragments.joinToString(" AND ")
 

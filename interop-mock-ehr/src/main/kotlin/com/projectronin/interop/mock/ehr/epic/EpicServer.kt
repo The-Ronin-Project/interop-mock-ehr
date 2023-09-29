@@ -1,5 +1,9 @@
 package com.projectronin.interop.mock.ehr.epic
 
+import com.projectronin.interop.ehr.epic.EpicMedAdmin
+import com.projectronin.interop.ehr.epic.EpicMedAdminRequest
+import com.projectronin.interop.ehr.epic.EpicMedicationAdministration
+import com.projectronin.interop.ehr.epic.EpicMedicationOrder
 import com.projectronin.interop.ehr.epic.apporchard.model.EpicAppointment
 import com.projectronin.interop.ehr.epic.apporchard.model.GetAppointmentsResponse
 import com.projectronin.interop.ehr.epic.apporchard.model.GetPatientAppointmentsRequest
@@ -283,6 +287,47 @@ class EpicServer(private var dal: EpicDAL) {
         flag.subject = Reference().setReference("Patient/${patient.id.removePrefix("Patient/")}")
         dal.r4FlagDAO.insert(flag)
         return SetSmartDataValuesResult(success = true)
+    }
+
+    @PostMapping("/api/epic/2014/Clinical/Patient/GETMEDICATIONADMINISTRATIONHISTORY/MedicationAdministration")
+    fun getMedicationAdministration(@RequestBody request: EpicMedAdminRequest): EpicMedAdmin {
+        val patientID = dal.r4PatientDAO.searchByIdentifier(
+            Identifier().setValue(request.patientID).setSystem("mockPatientInternalSystem")
+        )?.id?.removePrefix("Patient/") ?: throw ResponseStatusException(
+            HttpStatus.BAD_REQUEST,
+            "INVALID-PATIENT"
+        )
+        val medOrders = request.orderIDs.map {
+            val medRequest = dal.r4MedicationRequestDAO.searchByQuery(
+                subject = "Patient/$patientID",
+                identifier = Identifier().setSystem("mockEHROrderSystem").setValue(it.ID)
+            )
+            if (medRequest.size != 1) {
+                throw ResponseStatusException(
+                    HttpStatus.INTERNAL_SERVER_ERROR,
+                    "${medRequest.size} MedicationRequests found for Order ID ${it.ID}, expected 1."
+                )
+            }
+            val medAdminList =
+                dal.r4MedAdminDAO.searchByRequest(medRequest.first().id.removePrefix("MedicationRequest/"))
+            EpicMedicationOrder(
+                medicationAdministrations = medAdminList.map { R4MedAdmin ->
+                    EpicMedicationAdministration(
+                        administrationInstant = R4MedAdmin.effectiveDateTimeType.valueAsString,
+                        action = when (R4MedAdmin.status.toCode()) {
+                            "completed" -> "Given"
+                            "in-progress" -> "Pending"
+                            "not-done" -> "Missed"
+                            "entered-in-error" -> "Canceled Entry"
+                            "stopped" -> "Stopped"
+                            "on-hold" -> "Held"
+                            else -> "?"
+                        }
+                    )
+                }
+            )
+        }
+        return EpicMedAdmin(medOrders)
     }
 }
 
