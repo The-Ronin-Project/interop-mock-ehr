@@ -2,7 +2,7 @@
 apache-commons-text = "1.10"
 hapi-fhir = "6.8.3"
 hapi-hl7v2 = "2.3"
-interop-ehr = "11.2.1"
+interop-ehr = "11.3.1"
 interop-fhir = "8.10.1"
 interop-gradle = "3.2.0"
 jackson = "2.15.2"

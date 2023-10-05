@@ -623,6 +623,11 @@ internal class EpicServerTest {
         every { dal.r4MedAdminDAO.searchByRequest("MedRequest#1") } returns listOf(
             mockk {
                 every { effectiveDateTimeType.valueAsString } returns "dateTime"
+                every { medicationCodeableConcept.text } returns "MedicationName"
+                every { dosage.dose } returns mockk {
+                    every { unit } returns "unit"
+                    every { value.toPlainString() } returns "1.0"
+                }
                 every { status } returns MedicationAdministration.MedicationAdministrationStatus.COMPLETED
             }
         )

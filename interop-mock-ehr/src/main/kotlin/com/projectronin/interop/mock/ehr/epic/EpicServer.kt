@@ -1,5 +1,6 @@
 package com.projectronin.interop.mock.ehr.epic
 
+import com.projectronin.interop.ehr.epic.EpicDose
 import com.projectronin.interop.ehr.epic.EpicMedAdmin
 import com.projectronin.interop.ehr.epic.EpicMedAdminRequest
 import com.projectronin.interop.ehr.epic.EpicMedicationAdministration
@@ -311,9 +312,14 @@ class EpicServer(private var dal: EpicDAL) {
             val medAdminList =
                 dal.r4MedAdminDAO.searchByRequest(medRequest.first().id.removePrefix("MedicationRequest/"))
             EpicMedicationOrder(
+                name = medAdminList.first().medicationCodeableConcept.text,
                 medicationAdministrations = medAdminList.map { R4MedAdmin ->
                     EpicMedicationAdministration(
                         administrationInstant = R4MedAdmin.effectiveDateTimeType.valueAsString,
+                        dose = EpicDose(
+                            value = R4MedAdmin.dosage.dose.value.toPlainString(),
+                            unit = R4MedAdmin.dosage.dose.unit
+                        ),
                         action = when (R4MedAdmin.status.toCode()) {
                             "completed" -> "Given"
                             "in-progress" -> "Pending"
