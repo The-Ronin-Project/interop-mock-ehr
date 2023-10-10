@@ -2,22 +2,22 @@
 apache-commons-text = "1.10"
 hapi-fhir = "6.8.3"
 hapi-hl7v2 = "2.3"
-interop-ehr = "11.3.1"
-interop-fhir = "8.10.1"
+interop-ehr = "11.4.0"
+interop-fhir = "8.10.2"
 interop-gradle = "3.2.0"
 jackson = "2.15.2"
 json-patch = "1.13"
 kotlinx-coroutines-core = "1.7.3"
-ktor-client = "2.3.4"
+ktor-client = "2.3.5"
 # @pin Stuck on 7.3 until we are off Spring 2.x
 logstash-logback-encoder = "7.3"
 mockk = "1.13.8"
 mysql-connector-java = "8.1.0"
-protobuf-java = "3.24.3"
+protobuf-java = "3.24.4"
 # @pin until can move to JDK 17
 spring-boot = "2.7.13"
 springdoc-openapi = "1.7.0"
-testcontainers-bom = "1.19.0"
+testcontainers-bom = "1.19.1"
 
 [libraries]
 # @keep Upgrade plugin wants to remove this for some reason
