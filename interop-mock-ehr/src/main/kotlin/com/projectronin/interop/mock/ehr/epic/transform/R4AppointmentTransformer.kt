@@ -68,7 +68,7 @@ class R4AppointmentTransformer(
             contactIDs = listOf(IDType(r4Appointment.id.removePrefix("Appointment/"), "CSN")),
             date = SimpleDateFormat("MM/dd/yyyy").format(r4Appointment.start),
             patientIDs = patientIDs ?: listOf(),
-            patientName = r4Patient?.name?.find { it.use.toCode() == "usual" }?.nameAsSingleString
+            patientName = r4Patient?.name?.find { it.use?.toCode() == "usual" }?.nameAsSingleString
                 ?: r4Patient?.nameFirstRep?.nameAsSingleString ?: "",
             providers = providers,
             visitTypeName = r4Appointment.appointmentType.text ?: ""

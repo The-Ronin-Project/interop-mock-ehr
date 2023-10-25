@@ -498,7 +498,7 @@ internal class EpicServerTest {
             smartDataValues = listOf(
                 SmartDataValue(
                     comments = listOf("Comment"),
-                    values = "Value",
+                    values = listOf("Value"),
                     smartDataIDType = "SDI",
                     smartDataID = "SDEID"
                 )
@@ -521,7 +521,7 @@ internal class EpicServerTest {
             smartDataValues = listOf(
                 SmartDataValue(
                     comments = listOf("Comment"),
-                    values = "Value",
+                    values = listOf("Value"),
                     smartDataIDType = "SDI",
                     smartDataID = "SDEID"
                 )

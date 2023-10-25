@@ -119,6 +119,40 @@ internal class R4AppointmentTransformerTest {
     }
 
     @Test
+    fun `transform when no use`() {
+        val practDAO = mockk<R4PractitionerDAO> {
+            every { findById("PRACTID#1") } throws Exception()
+        }
+        val locationDAO = mockk<R4LocationDAO> {
+            every { findById("LOCID#1") } throws Exception()
+        }
+        val patient = Patient()
+        patient.addName(HumanName().addGiven("given").setFamily("family"))
+        patient.addName(HumanName().addGiven("given2").setFamily("family").setUse(HumanName.NameUse.OFFICIAL))
+        val input = R4Appointment()
+        input.minutesDuration = 30
+        input.start = Date(120, 0, 1)
+        input.status = org.hl7.fhir.r4.model.Appointment.AppointmentStatus.BOOKED
+        input.id = "Appointment/APPTID#1"
+        input.participant = listOf()
+
+        val expected = EpicAppointment(
+            appointmentDuration = "30",
+            appointmentNotes = listOf("", ""),
+            appointmentStartTime = "12:00 AM",
+            appointmentStatus = "Scheduled",
+            contactIDs = listOf(IDType(id = "APPTID#1", type = "CSN")),
+            date = "01/01/2020",
+            patientIDs = listOf(),
+            patientName = "given family",
+            providers = listOf(),
+            visitTypeName = ""
+        )
+        val actual = R4AppointmentTransformer(practDAO, locationDAO).transformToEpicAppointment(input, patient)
+        assertEquals(expected, actual)
+    }
+
+    @Test
     fun `correctly translate the special systems`() {
         val practDAO = mockk<R4PractitionerDAO> {
             every { findById("PRACTID#1") } returns Practitioner().setIdentifier(
