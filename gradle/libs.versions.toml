@@ -4,7 +4,7 @@ hapi-fhir = "6.8.4"
 hapi-hl7v2 = "2.3"
 interop-ehr = "12.3.0"
 interop-fhir = "8.10.3"
-interop-gradle = "3.2.0"
+interop-gradle = "3.3.0"
 jackson = "2.15.2"
 json-patch = "1.13"
 kotlinx-coroutines-core = "1.7.3"
@@ -12,7 +12,7 @@ ktor-client = "2.3.5"
 # @pin Stuck on 7.3 until we are off Spring 2.x
 logstash-logback-encoder = "7.3"
 mockk = "1.13.8"
-mysql-connector-java = "8.1.0"
+mysql-connector-java = "8.2.0"
 protobuf-java = "3.24.4"
 # @pin until can move to JDK 17
 spring-boot = "2.7.13"
@@ -22,11 +22,11 @@ testcontainers-bom = "1.19.1"
 [libraries]
 # @keep Upgrade plugin wants to remove this for some reason
 apache-commons-text = { module = "org.apache.commons:commons-text", version.ref = "apache-commons-text" }
-hapi-fhir-base = { module = "ca.uhn.hapi.fhir:hapi-fhir-base", version.ref = "hapi-fhir" }
+hapi-fhir-base = "ca.uhn.hapi.fhir:hapi-fhir-base:6.8.5"
 hapi-fhir-server = { module = "ca.uhn.hapi.fhir:hapi-fhir-server", version.ref = "hapi-fhir" }
 hapi-fhir-server-openapi = { module = "ca.uhn.hapi.fhir:hapi-fhir-server-openapi", version.ref = "hapi-fhir" }
 hapi-fhir-structures-r4 = { module = "ca.uhn.hapi.fhir:hapi-fhir-structures-r4", version.ref = "hapi-fhir" }
-hapi-fhir-structures-stu3 = { module = "ca.uhn.hapi.fhir:hapi-fhir-structures-dstu3", version.ref = "hapi-fhir" }
+hapi-fhir-structures-stu3 = "ca.uhn.hapi.fhir:hapi-fhir-structures-dstu3:6.8.5"
 hapi-hl7v2-251 = { module = "ca.uhn.hapi:hapi-structures-v251", version.ref = "hapi-hl7v2" }
 hapi-hl7v2-base = { module = "ca.uhn.hapi:hapi-base", version.ref = "hapi-hl7v2" }
 hapi-hl7v2-http = { module = "ca.uhn.hapi:hapi-hl7overhttp", version.ref = "hapi-hl7v2" }
