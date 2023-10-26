@@ -5,6 +5,7 @@ plugins {
     alias(libs.plugins.interop.gradle.spring.boot) apply false
     alias(libs.plugins.interop.gradle.server.version)
     alias(libs.plugins.interop.version.catalog)
+    alias(libs.plugins.interop.gradle.sonarqube)
 }
 
 subprojects {
