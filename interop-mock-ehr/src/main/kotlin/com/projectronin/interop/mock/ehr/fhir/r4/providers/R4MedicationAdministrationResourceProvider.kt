@@ -1,7 +1,8 @@
 package com.projectronin.interop.mock.ehr.fhir.r4.providers
 
-import ca.uhn.fhir.rest.annotation.RequiredParam
+import ca.uhn.fhir.rest.annotation.OptionalParam
 import ca.uhn.fhir.rest.annotation.Search
+import ca.uhn.fhir.rest.param.DateRangeParam
 import ca.uhn.fhir.rest.param.ReferenceParam
 import com.projectronin.interop.mock.ehr.fhir.r4.dao.R4MedicationAdministrationDAO
 import org.hl7.fhir.instance.model.api.IBaseResource
@@ -17,7 +18,23 @@ class R4MedicationAdministrationResourceProvider(override var resourceDAO: R4Med
     }
 
     @Search
-    fun search(@RequiredParam(name = MedicationAdministration.SP_REQUEST) referenceParam: ReferenceParam): List<MedicationAdministration> {
-        return resourceDAO.searchByRequest(referenceParam.value)
+    fun search(
+        @OptionalParam(name = MedicationAdministration.SP_REQUEST) requestParam: ReferenceParam? = null,
+        @OptionalParam(name = MedicationAdministration.SP_PATIENT) patientParam: ReferenceParam? = null,
+        @OptionalParam(name = MedicationAdministration.SP_EFFECTIVE_TIME) effectiveTimeParam: DateRangeParam? = null
+    ): List<MedicationAdministration> {
+        if (requestParam != null) {
+            return resourceDAO.searchByRequest(requestParam.value)
+        }
+
+        if (patientParam != null) {
+            return resourceDAO.searchByPatient(
+                patientParam.value,
+                effectiveTimeParam?.lowerBoundAsInstant,
+                effectiveTimeParam?.upperBoundAsInstant
+            )
+        }
+
+        throw IllegalArgumentException("Either request or patient must be provided")
     }
 }
