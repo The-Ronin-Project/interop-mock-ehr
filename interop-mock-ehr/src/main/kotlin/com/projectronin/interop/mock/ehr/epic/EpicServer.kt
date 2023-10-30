@@ -301,12 +301,12 @@ class EpicServer(private var dal: EpicDAL) {
         val medOrders = request.orderIDs.map {
             val medRequest = dal.r4MedicationRequestDAO.searchByQuery(
                 subject = "Patient/$patientID",
-                identifier = Identifier().setSystem("mockEHROrderSystem").setValue(it.ID)
+                identifier = Identifier().setSystem("mockEHROrderSystem").setValue(it.id)
             )
             if (medRequest.size != 1) {
                 throw ResponseStatusException(
                     HttpStatus.INTERNAL_SERVER_ERROR,
-                    "${medRequest.size} MedicationRequests found for Order ID ${it.ID}, expected 1."
+                    "${medRequest.size} MedicationRequests found for Order ID ${it.id}, expected 1."
                 )
             }
             val medAdminList =
