@@ -29,6 +29,7 @@ import com.projectronin.interop.mock.ehr.fhir.r4.providers.R4PatientResourceProv
 import com.projectronin.interop.mock.ehr.fhir.r4.providers.R4PractitionerResourceProvider
 import com.projectronin.interop.mock.ehr.fhir.r4.providers.R4PractitionerRoleResourceProvider
 import com.projectronin.interop.mock.ehr.fhir.r4.providers.R4RequestGroupResourceProvider
+import com.projectronin.interop.mock.ehr.fhir.r4.providers.R4ServiceRequestResourceProvider
 import org.springframework.http.HttpStatus
 import org.springframework.stereotype.Component
 import javax.servlet.annotation.WebServlet
@@ -58,7 +59,8 @@ class R4Server(
     private val r4EncounterResourceProvider: R4EncounterResourceProvider,
     private val r4RequestGroupResourceProvider: R4RequestGroupResourceProvider,
     private val r4FlagResourceProvider: R4FlagResourceProvider,
-    private val r4MedicationAdministrationResourceProvider: R4MedicationAdministrationResourceProvider
+    private val r4MedicationAdministrationResourceProvider: R4MedicationAdministrationResourceProvider,
+    private val r4ServiceRequestResourceProvider: R4ServiceRequestResourceProvider
 ) : RestfulServer(context) {
 
     override fun initialize() {
@@ -85,7 +87,8 @@ class R4Server(
             r4EncounterResourceProvider,
             r4RequestGroupResourceProvider,
             r4FlagResourceProvider,
-            r4MedicationAdministrationResourceProvider
+            r4MedicationAdministrationResourceProvider,
+            r4ServiceRequestResourceProvider
         )
         pagingProvider = FifoMemoryPagingProvider(10)
         maximumPageSize = 10 // in reality this is much higher, but this is easier to test with.
@@ -101,44 +104,46 @@ class R4Server(
 class RoninVendorFilter {
 
     private val epicSupportedResources = listOf(
-        "Patient",
-        "Binary",
-        "Practitioner",
         "Appointment",
+        "Binary",
         "CarePlan",
         "CareTeam",
         "Communication",
         "Condition",
         "DocumentReference",
+        "Encounter",
+        "Flag",
         "Location",
         "Medication",
         "MedicationRequest",
         "MedicationStatement",
         "Observation",
         "Organization",
+        "Patient",
+        "Practitioner",
         "PractitionerRole",
-        "Encounter",
         "RequestGroup",
-        "Flag"
+        "ServiceRequest"
     )
 
     private val cernerSupportedResources = listOf(
-        "Patient",
-        "Binary",
-        "Practitioner",
         "Appointment",
+        "Binary",
         "CarePlan",
         "CareTeam",
         "Communication",
         "Condition",
         "DocumentReference",
+        "Encounter",
         "Location",
         "Medication",
+        "MedicationAdministration",
         "MedicationRequest",
         "Observation",
         "Organization",
-        "Encounter",
-        "MedicationAdministration"
+        "Patient",
+        "Practitioner",
+        "ServiceRequest"
     )
 
     private val supportedMap = mapOf("epic" to epicSupportedResources, "cerner" to cernerSupportedResources)
