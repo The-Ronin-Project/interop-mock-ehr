@@ -28,6 +28,7 @@ import com.projectronin.interop.mock.ehr.fhir.r4.providers.R4OrganizationResourc
 import com.projectronin.interop.mock.ehr.fhir.r4.providers.R4PatientResourceProvider
 import com.projectronin.interop.mock.ehr.fhir.r4.providers.R4PractitionerResourceProvider
 import com.projectronin.interop.mock.ehr.fhir.r4.providers.R4PractitionerRoleResourceProvider
+import com.projectronin.interop.mock.ehr.fhir.r4.providers.R4ProcedureResourceProvider
 import com.projectronin.interop.mock.ehr.fhir.r4.providers.R4RequestGroupResourceProvider
 import com.projectronin.interop.mock.ehr.fhir.r4.providers.R4ServiceRequestResourceProvider
 import org.springframework.http.HttpStatus
@@ -60,7 +61,8 @@ class R4Server(
     private val r4RequestGroupResourceProvider: R4RequestGroupResourceProvider,
     private val r4FlagResourceProvider: R4FlagResourceProvider,
     private val r4MedicationAdministrationResourceProvider: R4MedicationAdministrationResourceProvider,
-    private val r4ServiceRequestResourceProvider: R4ServiceRequestResourceProvider
+    private val r4ServiceRequestResourceProvider: R4ServiceRequestResourceProvider,
+    private val r4ProcedureResourceProvider: R4ProcedureResourceProvider
 ) : RestfulServer(context) {
 
     override fun initialize() {
@@ -88,7 +90,8 @@ class R4Server(
             r4RequestGroupResourceProvider,
             r4FlagResourceProvider,
             r4MedicationAdministrationResourceProvider,
-            r4ServiceRequestResourceProvider
+            r4ServiceRequestResourceProvider,
+            r4ProcedureResourceProvider
         )
         pagingProvider = FifoMemoryPagingProvider(10)
         maximumPageSize = 10 // in reality this is much higher, but this is easier to test with.
@@ -122,6 +125,7 @@ class RoninVendorFilter {
         "Patient",
         "Practitioner",
         "PractitionerRole",
+        "Procedure",
         "RequestGroup",
         "ServiceRequest"
     )
@@ -143,6 +147,7 @@ class RoninVendorFilter {
         "Organization",
         "Patient",
         "Practitioner",
+        "Procedure",
         "ServiceRequest"
     )
 

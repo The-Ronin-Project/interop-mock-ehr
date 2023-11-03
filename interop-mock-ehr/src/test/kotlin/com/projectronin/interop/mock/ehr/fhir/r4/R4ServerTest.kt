@@ -22,6 +22,7 @@ import com.projectronin.interop.mock.ehr.fhir.r4.providers.R4OrganizationResourc
 import com.projectronin.interop.mock.ehr.fhir.r4.providers.R4PatientResourceProvider
 import com.projectronin.interop.mock.ehr.fhir.r4.providers.R4PractitionerResourceProvider
 import com.projectronin.interop.mock.ehr.fhir.r4.providers.R4PractitionerRoleResourceProvider
+import com.projectronin.interop.mock.ehr.fhir.r4.providers.R4ProcedureResourceProvider
 import com.projectronin.interop.mock.ehr.fhir.r4.providers.R4RequestGroupResourceProvider
 import com.projectronin.interop.mock.ehr.fhir.r4.providers.R4ServiceRequestResourceProvider
 import io.mockk.every
@@ -48,6 +49,7 @@ import org.hl7.fhir.r4.model.Organization
 import org.hl7.fhir.r4.model.Patient
 import org.hl7.fhir.r4.model.Practitioner
 import org.hl7.fhir.r4.model.PractitionerRole
+import org.hl7.fhir.r4.model.Procedure
 import org.hl7.fhir.r4.model.RequestGroup
 import org.hl7.fhir.r4.model.ServiceRequest
 import org.junit.jupiter.api.Assertions.assertEquals
@@ -104,6 +106,8 @@ internal class R4ServerTest {
         every { r4MedAdmin.resourceType } returns MedicationAdministration::class.java
         val r4ServiceRequest = mockk<R4ServiceRequestResourceProvider>()
         every { r4ServiceRequest.resourceType } returns ServiceRequest::class.java
+        val r4Procedure = mockk<R4ProcedureResourceProvider>()
+        every { r4Procedure.resourceType } returns Procedure::class.java
         val server = R4Server(
             ctx,
             r4Patient,
@@ -127,7 +131,8 @@ internal class R4ServerTest {
             r4RequestGroup,
             r4Flag,
             r4MedAdmin,
-            r4ServiceRequest
+            r4ServiceRequest,
+            r4Procedure
         )
         server.init()
         assertTrue(
@@ -154,7 +159,8 @@ internal class R4ServerTest {
                     r4RequestGroup,
                     r4Flag,
                     r4MedAdmin,
-                    r4ServiceRequest
+                    r4ServiceRequest,
+                    r4Procedure
                 )
             )
         )
