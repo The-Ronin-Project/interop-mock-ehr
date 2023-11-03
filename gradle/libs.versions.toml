@@ -1,8 +1,9 @@
 [versions]
-apache-commons-text = "1.10"
+apache-commons-text = "1.11.0"
 hapi-fhir = "6.8.4"
-hapi-hl7v2 = "2.3"
-interop-ehr = "12.4.0"
+# @pin until spring 3
+hapi-hl7v2 = "2.4.1"
+interop-ehr = "12.5.0"
 interop-fhir = "8.10.3"
 interop-gradle = "3.3.0"
 jackson = "2.15.2"
@@ -13,7 +14,7 @@ ktor-client = "2.3.5"
 logstash-logback-encoder = "7.3"
 mockk = "1.13.8"
 mysql-connector-java = "8.2.0"
-protobuf-java = "3.24.4"
+protobuf-java = "3.25.0"
 # @pin until can move to JDK 17
 spring-boot = "2.7.13"
 springdoc-openapi = "1.7.0"
