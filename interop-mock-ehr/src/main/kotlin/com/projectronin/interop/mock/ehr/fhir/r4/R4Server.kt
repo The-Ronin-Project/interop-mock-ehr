@@ -15,6 +15,7 @@ import com.projectronin.interop.mock.ehr.fhir.r4.providers.R4CarePlanResourcePro
 import com.projectronin.interop.mock.ehr.fhir.r4.providers.R4CareTeamResourceProvider
 import com.projectronin.interop.mock.ehr.fhir.r4.providers.R4CommunicationResourceProvider
 import com.projectronin.interop.mock.ehr.fhir.r4.providers.R4ConditionResourceProvider
+import com.projectronin.interop.mock.ehr.fhir.r4.providers.R4DiagnosticReportResourceProvider
 import com.projectronin.interop.mock.ehr.fhir.r4.providers.R4DocumentReferenceResourceProvider
 import com.projectronin.interop.mock.ehr.fhir.r4.providers.R4EncounterResourceProvider
 import com.projectronin.interop.mock.ehr.fhir.r4.providers.R4FlagResourceProvider
@@ -62,7 +63,8 @@ class R4Server(
     private val r4FlagResourceProvider: R4FlagResourceProvider,
     private val r4MedicationAdministrationResourceProvider: R4MedicationAdministrationResourceProvider,
     private val r4ServiceRequestResourceProvider: R4ServiceRequestResourceProvider,
-    private val r4ProcedureResourceProvider: R4ProcedureResourceProvider
+    private val r4ProcedureResourceProvider: R4ProcedureResourceProvider,
+    private val r4DiagnosticReportResourceProvider: R4DiagnosticReportResourceProvider
 ) : RestfulServer(context) {
 
     override fun initialize() {
@@ -91,7 +93,8 @@ class R4Server(
             r4FlagResourceProvider,
             r4MedicationAdministrationResourceProvider,
             r4ServiceRequestResourceProvider,
-            r4ProcedureResourceProvider
+            r4ProcedureResourceProvider,
+            r4DiagnosticReportResourceProvider
         )
         pagingProvider = FifoMemoryPagingProvider(10)
         maximumPageSize = 10 // in reality this is much higher, but this is easier to test with.
@@ -113,6 +116,7 @@ class RoninVendorFilter {
         "CareTeam",
         "Communication",
         "Condition",
+        "DiagnosticReport",
         "DocumentReference",
         "Encounter",
         "Flag",
@@ -137,6 +141,7 @@ class RoninVendorFilter {
         "CareTeam",
         "Communication",
         "Condition",
+        "DiagnosticReport",
         "DocumentReference",
         "Encounter",
         "Location",

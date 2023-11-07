@@ -9,6 +9,7 @@ import com.projectronin.interop.mock.ehr.fhir.r4.providers.R4CarePlanResourcePro
 import com.projectronin.interop.mock.ehr.fhir.r4.providers.R4CareTeamResourceProvider
 import com.projectronin.interop.mock.ehr.fhir.r4.providers.R4CommunicationResourceProvider
 import com.projectronin.interop.mock.ehr.fhir.r4.providers.R4ConditionResourceProvider
+import com.projectronin.interop.mock.ehr.fhir.r4.providers.R4DiagnosticReportResourceProvider
 import com.projectronin.interop.mock.ehr.fhir.r4.providers.R4DocumentReferenceResourceProvider
 import com.projectronin.interop.mock.ehr.fhir.r4.providers.R4EncounterResourceProvider
 import com.projectronin.interop.mock.ehr.fhir.r4.providers.R4FlagResourceProvider
@@ -36,6 +37,7 @@ import org.hl7.fhir.r4.model.CarePlan
 import org.hl7.fhir.r4.model.CareTeam
 import org.hl7.fhir.r4.model.Communication
 import org.hl7.fhir.r4.model.Condition
+import org.hl7.fhir.r4.model.DiagnosticReport
 import org.hl7.fhir.r4.model.DocumentReference
 import org.hl7.fhir.r4.model.Encounter
 import org.hl7.fhir.r4.model.Flag
@@ -108,6 +110,8 @@ internal class R4ServerTest {
         every { r4ServiceRequest.resourceType } returns ServiceRequest::class.java
         val r4Procedure = mockk<R4ProcedureResourceProvider>()
         every { r4Procedure.resourceType } returns Procedure::class.java
+        val r4DiagnosticReport = mockk<R4DiagnosticReportResourceProvider>()
+        every { r4DiagnosticReport.resourceType } returns DiagnosticReport::class.java
         val server = R4Server(
             ctx,
             r4Patient,
@@ -132,7 +136,8 @@ internal class R4ServerTest {
             r4Flag,
             r4MedAdmin,
             r4ServiceRequest,
-            r4Procedure
+            r4Procedure,
+            r4DiagnosticReport
         )
         server.init()
         assertTrue(
@@ -160,7 +165,8 @@ internal class R4ServerTest {
                     r4Flag,
                     r4MedAdmin,
                     r4ServiceRequest,
-                    r4Procedure
+                    r4Procedure,
+                    r4DiagnosticReport
                 )
             )
         )
