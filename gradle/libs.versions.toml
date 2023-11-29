@@ -1,9 +1,9 @@
 [versions]
 apache-commons-text = "1.11.0"
-hapi-fhir = "6.8.4"
+hapi-fhir = "6.10.0"
 # @pin until spring 3
 hapi-hl7v2 = "2.4.1"
-interop-ehr = "12.5.0"
+interop-ehr = "12.7.0"
 interop-fhir = "8.11.0"
 interop-gradle = "3.3.0"
 jackson = "2.15.2"
@@ -14,20 +14,21 @@ ktor-client = "2.3.6"
 logstash-logback-encoder = "7.3"
 mockk = "1.13.8"
 mysql-connector-java = "8.2.0"
-protobuf-java = "3.25.0"
+protobuf-java = "3.25.1"
 # @pin until can move to JDK 17
 spring-boot = "2.7.13"
 springdoc-openapi = "1.7.0"
-testcontainers-bom = "1.19.1"
+testcontainers-bom = "1.19.3"
+thymeleaf = "3.1.2.RELEASE"
 
 [libraries]
 # @keep Upgrade plugin wants to remove this for some reason
 apache-commons-text = { module = "org.apache.commons:commons-text", version.ref = "apache-commons-text" }
-hapi-fhir-base = "ca.uhn.hapi.fhir:hapi-fhir-base:6.8.5"
+hapi-fhir-base = { module = "ca.uhn.hapi.fhir:hapi-fhir-base", version.ref = "hapi-fhir" }
 hapi-fhir-server = { module = "ca.uhn.hapi.fhir:hapi-fhir-server", version.ref = "hapi-fhir" }
 hapi-fhir-server-openapi = { module = "ca.uhn.hapi.fhir:hapi-fhir-server-openapi", version.ref = "hapi-fhir" }
 hapi-fhir-structures-r4 = { module = "ca.uhn.hapi.fhir:hapi-fhir-structures-r4", version.ref = "hapi-fhir" }
-hapi-fhir-structures-stu3 = "ca.uhn.hapi.fhir:hapi-fhir-structures-dstu3:6.8.5"
+hapi-fhir-structures-stu3 = { module = "ca.uhn.hapi.fhir:hapi-fhir-structures-dstu3", version.ref = "hapi-fhir" }
 hapi-hl7v2-251 = { module = "ca.uhn.hapi:hapi-structures-v251", version.ref = "hapi-hl7v2" }
 hapi-hl7v2-base = { module = "ca.uhn.hapi:hapi-base", version.ref = "hapi-hl7v2" }
 hapi-hl7v2-http = { module = "ca.uhn.hapi:hapi-hl7overhttp", version.ref = "hapi-hl7v2" }
@@ -50,6 +51,7 @@ springdoc-openapi-data = { module = "org.springdoc:springdoc-openapi-data-rest",
 springdoc-openapi-kotlin = { module = "org.springdoc:springdoc-openapi-kotlin", version.ref = "springdoc-openapi" }
 springdoc-openapi-ui = { module = "org.springdoc:springdoc-openapi-ui", version.ref = "springdoc-openapi" }
 testcontainers-bom = { module = "org.testcontainers:testcontainers-bom", version.ref = "testcontainers-bom" }
+thymeleaf = { module = "org.thymeleaf:thymeleaf", version.ref = "thymeleaf" }
 
 [bundles]
 hapi-fhir = [

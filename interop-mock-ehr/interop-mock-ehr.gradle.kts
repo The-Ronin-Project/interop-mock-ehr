@@ -7,6 +7,7 @@ dependencies {
     configurations.all {
         resolutionStrategy {
             force(libs.jackson.core)
+            force(libs.thymeleaf)
         }
     }
 
@@ -26,6 +27,8 @@ dependencies {
     implementation(libs.bundles.hapi.fhir)
     implementation(libs.bundles.hapi.hl7v2)
     implementation(libs.bundles.springdoc.openapi)
+
+    runtimeOnly(libs.thymeleaf)
 
     testImplementation(libs.mockk)
     testImplementation(platform(libs.testcontainers.bom))
