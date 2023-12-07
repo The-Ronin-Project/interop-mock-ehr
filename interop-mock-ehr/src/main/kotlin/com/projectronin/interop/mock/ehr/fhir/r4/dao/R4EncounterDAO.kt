@@ -20,7 +20,7 @@ class R4EncounterDAO(private val schema: SafeXDev, context: FhirContext) :
     fun searchByQuery(
         reference: List<Reference> = listOf(),
         fromDate: Date? = null,
-        toDate: Date? = null
+        toDate: Date? = null,
     ): List<Encounter> {
         val queryFragments = mutableListOf<String>()
 

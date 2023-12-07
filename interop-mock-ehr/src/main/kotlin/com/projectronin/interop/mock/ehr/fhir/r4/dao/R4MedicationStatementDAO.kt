@@ -19,7 +19,7 @@ class R4MedicationStatementDAO(private val schema: SafeXDev, context: FhirContex
     fun searchByQuery(
         subject: String? = null,
         fromDate: Date? = null,
-        toDate: Date? = null
+        toDate: Date? = null,
     ): List<MedicationStatement> {
         // Build queryFragments into query joined with 'AND'
         val queryFragments = mutableListOf<String>()

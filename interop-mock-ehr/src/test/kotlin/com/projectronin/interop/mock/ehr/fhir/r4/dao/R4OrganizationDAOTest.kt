@@ -26,10 +26,11 @@ internal class R4OrganizationDAOTest : BaseMySQLTest() {
     fun initTest() {
         collection = createCollection(Organization::class.simpleName!!)
         val database = mockk<SafeXDev>()
-        every { database.createCollection(Organization::class.java) } returns SafeXDev.SafeCollection(
-            "resource",
-            collection
-        )
+        every { database.createCollection(Organization::class.java) } returns
+            SafeXDev.SafeCollection(
+                "resource",
+                collection,
+            )
         dao = R4OrganizationDAO(database, FhirContext.forR4())
     }
 

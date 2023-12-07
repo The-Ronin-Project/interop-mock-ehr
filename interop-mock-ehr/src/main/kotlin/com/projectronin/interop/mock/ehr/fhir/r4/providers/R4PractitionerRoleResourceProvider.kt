@@ -21,10 +21,11 @@ import java.security.InvalidParameterException
 @Component
 class R4PractitionerRoleResourceProvider(
     override var resourceDAO: R4PractitionerRoleDAO,
-    private var locationDAO: R4LocationDAO, // necessary for _include
-    private var practitionerDAO: R4PractitionerDAO // necessary for _include
+    // necessary for _include
+    private var locationDAO: R4LocationDAO,
+    // necessary for _include
+    private var practitionerDAO: R4PractitionerDAO,
 ) : BaseResourceProvider<PractitionerRole, R4PractitionerRoleDAO>() {
-
     override fun getResourceType(): Class<out IBaseResource> {
         return PractitionerRole::class.java
     }
@@ -32,7 +33,7 @@ class R4PractitionerRoleResourceProvider(
     @Search
     fun searchByIdentifier(
         @RequiredParam(name = PractitionerRole.SP_IDENTIFIER) idToken: TokenParam,
-        @IncludeParam includeSetParam: Set<Include>? = null
+        @IncludeParam includeSetParam: Set<Include>? = null,
     ): PractitionerRole? {
         val identifier = Identifier()
         identifier.value = idToken.value
@@ -44,7 +45,7 @@ class R4PractitionerRoleResourceProvider(
     fun search(
         @OptionalParam(name = PractitionerRole.SP_LOCATION) locationReferenceParam: ReferenceAndListParam? = null,
         @OptionalParam(name = PractitionerRole.SP_PRACTITIONER) practitionerReferenceParam: ReferenceParam? = null,
-        @IncludeParam includeSetParam: Set<Include>? = null
+        @IncludeParam includeSetParam: Set<Include>? = null,
     ): List<PractitionerRole> {
         val roleList = mutableListOf<PractitionerRole>()
         val locationList = mutableListOf<Reference>()
@@ -69,29 +70,35 @@ class R4PractitionerRoleResourceProvider(
         return roleList
     }
 
-    override fun handleIncludes(resource: PractitionerRole, includeSet: Set<Include>?): PractitionerRole {
+    override fun handleIncludes(
+        resource: PractitionerRole,
+        includeSet: Set<Include>?,
+    ): PractitionerRole {
         includeSet?.forEach {
             when (it.value) {
                 "PractitionerRole:location" -> {
-                    resource.location = resource.location.mapNotNull { location ->
-                        try {
-                            location.resource = locationDAO.findById(location.reference.removePrefix("Location/"))
-                            location
-                        } catch (_: Exception) {
-                            // a more robust server would error here,
-                            // but we shouldn't enforce reference links for the purposes of this mock EHR
-                        }
-                    }.filterIsInstance<Reference>() // avoid 'unchecked cast' error
+                    resource.location =
+                        resource.location.mapNotNull { location ->
+                            try {
+                                location.resource = locationDAO.findById(location.reference.removePrefix("Location/"))
+                                location
+                            } catch (_: Exception) {
+                                // a more robust server would error here,
+                                // but we shouldn't enforce reference links for the purposes of this mock EHR
+                            }
+                        }.filterIsInstance<Reference>() // avoid 'unchecked cast' error
                 }
+
                 "PractitionerRole:practitioner" -> {
                     try {
                         resource.practitioner.resource =
                             practitionerDAO.findById(
-                                resource.practitioner.reference.removePrefix("Practitioner/")
+                                resource.practitioner.reference.removePrefix("Practitioner/"),
                             )
                     } catch (_: Exception) {
                     }
                 }
+
                 else -> throw InvalidParameterException("${it.value} is not a supported value for _include.")
             }
         }

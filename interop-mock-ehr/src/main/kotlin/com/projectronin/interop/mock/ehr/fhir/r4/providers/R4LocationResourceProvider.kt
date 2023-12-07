@@ -12,13 +12,14 @@ import org.springframework.stereotype.Component
 @Component
 class R4LocationResourceProvider(override var resourceDAO: R4LocationDAO) :
     BaseResourceProvider<Location, R4LocationDAO>() {
-
     override fun getResourceType(): Class<out IBaseResource> {
         return Location::class.java
     }
 
     @Search
-    fun searchByIdentifier(@RequiredParam(name = Location.SP_IDENTIFIER) idToken: TokenParam): Location? {
+    fun searchByIdentifier(
+        @RequiredParam(name = Location.SP_IDENTIFIER) idToken: TokenParam,
+    ): Location? {
         val identifier = Identifier()
         identifier.value = idToken.value
         identifier.system = idToken.system

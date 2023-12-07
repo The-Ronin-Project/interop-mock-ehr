@@ -39,7 +39,6 @@ import java.util.UUID
 import org.hl7.fhir.r4.model.Appointment as R4Appointment
 
 internal class EpicServerTest {
-
     private var dal = mockk<EpicDAL>()
     private var server = EpicServer(dal)
 
@@ -47,12 +46,13 @@ internal class EpicServerTest {
     fun `check auth test`() {
         mockkStatic(UUID::class)
         every { UUID.randomUUID().toString() } returns "UUID-GENERATED-ID"
-        val expected = EpicAuthentication(
-            accessToken = "UUID-GENERATED-ID",
-            tokenType = "bearer",
-            expiresIn = 3600,
-            scope = "Patient.read Patient.search"
-        )
+        val expected =
+            EpicAuthentication(
+                accessToken = "UUID-GENERATED-ID",
+                tokenType = "bearer",
+                expiresIn = 3600,
+                scope = "Patient.read Patient.search",
+            )
         val actual = server.getAuthToken()
         assertEquals(expected, actual)
         unmockkStatic(UUID::class)
@@ -62,14 +62,15 @@ internal class EpicServerTest {
     fun `working patient appointment request test`() {
         val patient = Patient()
         patient.id = "TESTINGID"
-        val request = GetPatientAppointmentsRequest(
-            patientId = "TESTINGMRN",
-            patientIdType = "",
-            startDate = "01/01/2020",
-            endDate = "01/01/2021",
-            userID = "12345",
-            userIDType = "Internal"
-        )
+        val request =
+            GetPatientAppointmentsRequest(
+                patientId = "TESTINGMRN",
+                patientIdType = "",
+                startDate = "01/01/2020",
+                endDate = "01/01/2021",
+                userID = "12345",
+                userIDType = "Internal",
+            )
         mockkConstructor(Identifier::class)
         val ident = mockk<Identifier>()
         every {
@@ -77,7 +78,7 @@ internal class EpicServerTest {
         } returns ident
         every {
             dal.r4PatientDAO.searchByIdentifier(
-                ident
+                ident,
             )
         } returns patient
 
@@ -93,7 +94,7 @@ internal class EpicServerTest {
             dal.r4AppointmentDAO.searchByQuery(
                 references = listOf(ref),
                 fromDate = Date(120, 0, 1),
-                toDate = Date(121, 0, 1, 23, 59)
+                toDate = Date(121, 0, 1, 23, 59),
             )
         } returns listOf(appointment1, appointment2)
 
@@ -103,20 +104,21 @@ internal class EpicServerTest {
         every {
             dal.r4AppointmentTransformer.transformToEpicAppointment(
                 appointment1,
-                patient
+                patient,
             )
         } returns epicAppointment1
         every {
             dal.r4AppointmentTransformer.transformToEpicAppointment(
                 appointment2,
-                patient
+                patient,
             )
         } returns epicAppointment2
         val output = server.getAppointmentsByPatient(request)
-        val expected = GetAppointmentsResponse(
-            appointments = listOf(epicAppointment1, epicAppointment2),
-            error = null
-        )
+        val expected =
+            GetAppointmentsResponse(
+                appointments = listOf(epicAppointment1, epicAppointment2),
+                error = null,
+            )
         assertEquals(expected, output)
         unmockkAll()
     }
@@ -127,25 +129,27 @@ internal class EpicServerTest {
         patient.id = "TESTINGPATID"
         every {
             dal.r4PatientDAO.findById(
-                "TESTINGPATID"
+                "TESTINGPATID",
             )
         } returns patient
 
         val provider = Practitioner()
         provider.id = "TESTINGPRACTID"
 
-        val request = GetProviderAppointmentRequest(
-            providers = listOf(
-                ScheduleProvider(
-                    "PRACT#1",
-                    "External"
-                )
-            ),
-            startDate = "01/01/2020",
-            endDate = "01/01/2021",
-            userID = "12345",
-            userIDType = "Internal"
-        )
+        val request =
+            GetProviderAppointmentRequest(
+                providers =
+                    listOf(
+                        ScheduleProvider(
+                            "PRACT#1",
+                            "External",
+                        ),
+                    ),
+                startDate = "01/01/2020",
+                endDate = "01/01/2021",
+                userID = "12345",
+                userIDType = "Internal",
+            )
 
         mockkConstructor(Identifier::class)
         mockkConstructor(CodeableConcept::class)
@@ -155,7 +159,7 @@ internal class EpicServerTest {
         every { anyConstructed<Identifier>().setValue("PRACT#1").setType(mockCodeableConcept) } returns ident
         every {
             dal.r4PractitionerDAO.searchByIdentifier(
-                ident
+                ident,
             )
         } returns provider
 
@@ -175,7 +179,7 @@ internal class EpicServerTest {
             dal.r4AppointmentDAO.searchByQuery(
                 references = listOf(ref),
                 fromDate = Date(120, 0, 1),
-                toDate = Date(121, 0, 1, 23, 59)
+                toDate = Date(121, 0, 1, 23, 59),
             )
         } returns listOf(appointment1, appointment2)
 
@@ -185,22 +189,23 @@ internal class EpicServerTest {
         every {
             dal.r4AppointmentTransformer.transformToEpicAppointment(
                 appointment1,
-                patient
+                patient,
             )
         } returns epicAppointment1
 
         every {
             dal.r4AppointmentTransformer.transformToEpicAppointment(
                 appointment2,
-                null
+                null,
             )
         } returns epicAppointment2
 
         val output = server.getAppointmentsByPractitioner(request)
-        val expected = GetAppointmentsResponse(
-            appointments = listOf(epicAppointment1, epicAppointment2),
-            error = null
-        )
+        val expected =
+            GetAppointmentsResponse(
+                appointments = listOf(epicAppointment1, epicAppointment2),
+                error = null,
+            )
         assertEquals(expected, output)
         unmockkAll()
     }
@@ -211,22 +216,24 @@ internal class EpicServerTest {
         patient.id = "TESTINGPATID"
         every {
             dal.r4PatientDAO.findById(
-                "TESTINGPATID"
+                "TESTINGPATID",
             )
         } returns patient
 
         val location = Location()
         location.id = "TESTINGLOCID"
 
-        val request = GetProviderAppointmentRequest(
-            departments = listOf(
-                IDType("DEPT#1", "Internal")
-            ),
-            startDate = "01/01/2020",
-            endDate = "01/01/2021",
-            userID = "12345",
-            userIDType = "Internal"
-        )
+        val request =
+            GetProviderAppointmentRequest(
+                departments =
+                    listOf(
+                        IDType("DEPT#1", "Internal"),
+                    ),
+                startDate = "01/01/2020",
+                endDate = "01/01/2021",
+                userID = "12345",
+                userIDType = "Internal",
+            )
 
         mockkConstructor(Identifier::class)
         mockkConstructor(CodeableConcept::class)
@@ -238,7 +245,7 @@ internal class EpicServerTest {
         } returns ident
         every {
             dal.r4LocationDAO.searchByIdentifier(
-                ident
+                ident,
             )
         } returns location
 
@@ -258,7 +265,7 @@ internal class EpicServerTest {
             dal.r4AppointmentDAO.searchByQuery(
                 references = listOf(ref),
                 fromDate = Date(120, 0, 1),
-                toDate = Date(121, 0, 1, 23, 59)
+                toDate = Date(121, 0, 1, 23, 59),
             )
         } returns listOf(appointment1, appointment2)
 
@@ -268,36 +275,38 @@ internal class EpicServerTest {
         every {
             dal.r4AppointmentTransformer.transformToEpicAppointment(
                 appointment1,
-                patient
+                patient,
             )
         } returns epicAppointment1
 
         every {
             dal.r4AppointmentTransformer.transformToEpicAppointment(
                 appointment2,
-                null
+                null,
             )
         } returns epicAppointment2
 
         val output = server.getAppointmentsByPractitioner(request)
-        val expected = GetAppointmentsResponse(
-            appointments = listOf(epicAppointment1, epicAppointment2),
-            error = null
-        )
+        val expected =
+            GetAppointmentsResponse(
+                appointments = listOf(epicAppointment1, epicAppointment2),
+                error = null,
+            )
         assertEquals(expected, output)
         unmockkAll()
     }
 
     @Test
     fun `no patient found test`() {
-        val request = GetPatientAppointmentsRequest(
-            patientId = "TESTINGMRN",
-            patientIdType = "",
-            startDate = "01/01/2020",
-            endDate = "01/01/2021",
-            userID = "12345",
-            userIDType = "Internal"
-        )
+        val request =
+            GetPatientAppointmentsRequest(
+                patientId = "TESTINGMRN",
+                patientIdType = "",
+                startDate = "01/01/2020",
+                endDate = "01/01/2021",
+                userID = "12345",
+                userIDType = "Internal",
+            )
         mockkConstructor(Identifier::class)
         mockkConstructor(CodeableConcept::class)
         val ident = mockk<Identifier>()
@@ -306,7 +315,7 @@ internal class EpicServerTest {
         } returns ident
         every {
             dal.r4PatientDAO.searchByIdentifier(
-                ident
+                ident,
             )
         } returns null
         val output = assertThrows<ResponseStatusException> { server.getAppointmentsByPatient(request) }
@@ -316,146 +325,160 @@ internal class EpicServerTest {
 
     @Test
     fun `bad date test 1`() {
-        val request = GetPatientAppointmentsRequest(
-            patientId = "TESTINGMRN",
-            patientIdType = "",
-            startDate = "lalala",
-            endDate = "01/01/2021",
-            userID = "12345",
-            userIDType = "Internal"
-        )
+        val request =
+            GetPatientAppointmentsRequest(
+                patientId = "TESTINGMRN",
+                patientIdType = "",
+                startDate = "lalala",
+                endDate = "01/01/2021",
+                userID = "12345",
+                userIDType = "Internal",
+            )
         val output = assertThrows<ResponseStatusException> { server.getAppointmentsByPatient(request) }
         assertEquals("INVALID-START-DATE", output.reason)
     }
 
     @Test
     fun `bad date test 2`() {
-        val request = GetPatientAppointmentsRequest(
-            patientId = "TESTINGMRN",
-            patientIdType = "",
-            startDate = "01/01/2020",
-            endDate = "lalala",
-            userID = "12345",
-            userIDType = "Internal"
-        )
+        val request =
+            GetPatientAppointmentsRequest(
+                patientId = "TESTINGMRN",
+                patientIdType = "",
+                startDate = "01/01/2020",
+                endDate = "lalala",
+                userID = "12345",
+                userIDType = "Internal",
+            )
         val output = assertThrows<ResponseStatusException> { server.getAppointmentsByPatient(request) }
         assertEquals("INVALID-END-DATE", output.reason)
     }
 
     @Test
     fun `bad date test 3`() {
-        val request = GetPatientAppointmentsRequest(
-            patientId = "TESTINGMRN",
-            patientIdType = "",
-            startDate = "01/01/2020",
-            endDate = "01/01/2019",
-            userID = "12345",
-            userIDType = "Internal"
-        )
+        val request =
+            GetPatientAppointmentsRequest(
+                patientId = "TESTINGMRN",
+                patientIdType = "",
+                startDate = "01/01/2020",
+                endDate = "01/01/2019",
+                userID = "12345",
+                userIDType = "Internal",
+            )
         val output = assertThrows<ResponseStatusException> { server.getAppointmentsByPatient(request) }
         assertEquals("END-DATE-BEFORE-START-DATE", output.reason)
     }
 
     @Test
     fun `no end date test`() {
-        val request = GetPatientAppointmentsRequest(
-            patientId = "TESTINGMRN",
-            patientIdType = "",
-            startDate = "01/01/2020",
-            endDate = null,
-            userID = null,
-            userIDType = "Internal"
-        )
+        val request =
+            GetPatientAppointmentsRequest(
+                patientId = "TESTINGMRN",
+                patientIdType = "",
+                startDate = "01/01/2020",
+                endDate = null,
+                userID = null,
+                userIDType = "Internal",
+            )
         val output = assertThrows<ResponseStatusException> { server.getAppointmentsByPatient(request) }
         assertEquals("NO-USER-FOUND", output.reason)
     }
 
     @Test
     fun `provider bad date test 1`() {
-        val request = GetProviderAppointmentRequest(
-            providers = listOf(
-                ScheduleProvider(
-                    "PRACT#1",
-                    "External"
-                )
-            ),
-            startDate = "lalala",
-            endDate = "01/01/2021",
-            userID = "12345",
-            userIDType = "Internal"
-        )
+        val request =
+            GetProviderAppointmentRequest(
+                providers =
+                    listOf(
+                        ScheduleProvider(
+                            "PRACT#1",
+                            "External",
+                        ),
+                    ),
+                startDate = "lalala",
+                endDate = "01/01/2021",
+                userID = "12345",
+                userIDType = "Internal",
+            )
         val output = assertThrows<ResponseStatusException> { server.getAppointmentsByPractitioner(request) }
         assertEquals("INVALID-START-DATE", output.reason)
     }
 
     @Test
     fun `provider bad date test 2`() {
-        val request = GetProviderAppointmentRequest(
-            providers = listOf(
-                ScheduleProvider(
-                    "PRACT#1",
-                    "External"
-                )
-            ),
-            startDate = "01/01/2020",
-            endDate = "lalala",
-            userID = "12345",
-            userIDType = "Internal"
-        )
+        val request =
+            GetProviderAppointmentRequest(
+                providers =
+                    listOf(
+                        ScheduleProvider(
+                            "PRACT#1",
+                            "External",
+                        ),
+                    ),
+                startDate = "01/01/2020",
+                endDate = "lalala",
+                userID = "12345",
+                userIDType = "Internal",
+            )
         val output = assertThrows<ResponseStatusException> { server.getAppointmentsByPractitioner(request) }
         assertEquals("INVALID-END-DATE", output.reason)
     }
 
     @Test
     fun `provider bad date test 3`() {
-        val request = GetProviderAppointmentRequest(
-            providers = listOf(
-                ScheduleProvider(
-                    "PRACT#1",
-                    "External"
-                )
-            ),
-            startDate = "01/01/2020",
-            endDate = "01/01/2019",
-            userID = "12345",
-            userIDType = "Internal"
-        )
+        val request =
+            GetProviderAppointmentRequest(
+                providers =
+                    listOf(
+                        ScheduleProvider(
+                            "PRACT#1",
+                            "External",
+                        ),
+                    ),
+                startDate = "01/01/2020",
+                endDate = "01/01/2019",
+                userID = "12345",
+                userIDType = "Internal",
+            )
         val output = assertThrows<ResponseStatusException> { server.getAppointmentsByPractitioner(request) }
         assertEquals("END-DATE-BEFORE-START-DATE", output.reason)
     }
 
     @Test
     fun `provider no end date test`() {
-        val request = GetProviderAppointmentRequest(
-            providers = listOf(
-                ScheduleProvider(
-                    "PRACT#1",
-                    "External"
-                )
-            ),
-            startDate = "01/01/2020",
-            endDate = null,
-            userID = null,
-            userIDType = "Internal"
-        )
+        val request =
+            GetProviderAppointmentRequest(
+                providers =
+                    listOf(
+                        ScheduleProvider(
+                            "PRACT#1",
+                            "External",
+                        ),
+                    ),
+                startDate = "01/01/2020",
+                endDate = null,
+                userID = null,
+                userIDType = "Internal",
+            )
         val output = assertThrows<ResponseStatusException> { server.getAppointmentsByPractitioner(request) }
         assertEquals("NO-USER-FOUND", output.reason)
     }
 
     @Test
     fun `no practitioners found test 1`() {
-        val request = GetProviderAppointmentRequest(
-            providers = listOf(
-                ScheduleProvider(
-                    "PRACT#1",
-                    "External"
-                )
-            ),
-            startDate = "01/01/2020",
-            endDate = "01/01/2021",
-            userID = "12345",
-            userIDType = "Internal"
-        )
+        val request =
+            GetProviderAppointmentRequest(
+                providers =
+                    listOf(
+                        ScheduleProvider(
+                            "PRACT#1",
+                            "External",
+                        ),
+                    ),
+                startDate = "01/01/2020",
+                endDate = "01/01/2021",
+                userID = "12345",
+                userIDType = "Internal",
+            )
         mockkConstructor(Identifier::class)
         mockkConstructor(CodeableConcept::class)
         val ident = mockk<Identifier>()
@@ -464,7 +487,7 @@ internal class EpicServerTest {
         every { anyConstructed<Identifier>().setValue("PRACT#1").setType(mockCodeableConcept) } returns ident
         every {
             dal.r4PractitionerDAO.searchByIdentifier(
-                ident
+                ident,
             )
         } returns null
 
@@ -474,13 +497,14 @@ internal class EpicServerTest {
 
     @Test
     fun `no practitioners found test 2`() {
-        val request = GetProviderAppointmentRequest(
-            providers = null,
-            startDate = "01/01/2020",
-            endDate = "01/01/2021",
-            userID = "12345",
-            userIDType = "Internal"
-        )
+        val request =
+            GetProviderAppointmentRequest(
+                providers = null,
+                startDate = "01/01/2020",
+                endDate = "01/01/2021",
+                userID = "12345",
+                userIDType = "Internal",
+            )
 
         val output = assertThrows<ResponseStatusException> { server.getAppointmentsByPractitioner(request) }
         assertEquals("NO-PROVIDER-FOUND", output.reason)
@@ -488,22 +512,24 @@ internal class EpicServerTest {
 
     @Test
     fun `onboard flag test - error`() {
-        val request = SetSmartDataValuesRequest(
-            idType = "MRN",
-            id = "12345",
-            userID = "1",
-            userIDType = "External",
-            source = "Ronin",
-            contextName = "PATIENT",
-            smartDataValues = listOf(
-                SmartDataValue(
-                    comments = listOf("Comment"),
-                    values = listOf("Value"),
-                    smartDataIDType = "SDI",
-                    smartDataID = "SDEID"
-                )
+        val request =
+            SetSmartDataValuesRequest(
+                idType = "MRN",
+                id = "12345",
+                userID = "1",
+                userIDType = "External",
+                source = "Ronin",
+                contextName = "PATIENT",
+                smartDataValues =
+                    listOf(
+                        SmartDataValue(
+                            comments = listOf("Comment"),
+                            values = listOf("Value"),
+                            smartDataIDType = "SDI",
+                            smartDataID = "SDEID",
+                        ),
+                    ),
             )
-        )
         every { dal.r4PatientDAO.searchByIdentifier(any()) } returns null
         val output = assertThrows<ResponseStatusException> { server.addOnboardFlag(request) }
         assertTrue(output.reason!!.contains("NO-ENTITY-FOUND"))
@@ -511,48 +537,53 @@ internal class EpicServerTest {
 
     @Test
     fun `onboard flag test - success`() {
-        val request = SetSmartDataValuesRequest(
-            idType = "MRN",
-            id = "12345",
-            userID = "1",
-            userIDType = "External",
-            source = "Ronin",
-            contextName = "PATIENT",
-            smartDataValues = listOf(
-                SmartDataValue(
-                    comments = listOf("Comment"),
-                    values = listOf("Value"),
-                    smartDataIDType = "SDI",
-                    smartDataID = "SDEID"
-                )
+        val request =
+            SetSmartDataValuesRequest(
+                idType = "MRN",
+                id = "12345",
+                userID = "1",
+                userIDType = "External",
+                source = "Ronin",
+                contextName = "PATIENT",
+                smartDataValues =
+                    listOf(
+                        SmartDataValue(
+                            comments = listOf("Comment"),
+                            values = listOf("Value"),
+                            smartDataIDType = "SDI",
+                            smartDataID = "SDEID",
+                        ),
+                    ),
             )
-        )
         every { dal.r4FlagDAO.searchByQuery(any()) } returns listOf()
         every { dal.r4FlagDAO.insert(any()) } returns ""
-        every { dal.r4PatientDAO.searchByIdentifier(any()) } returns mockk {
-            every { id } returns "12345"
-        }
+        every { dal.r4PatientDAO.searchByIdentifier(any()) } returns
+            mockk {
+                every { id } returns "12345"
+            }
         val output = server.addOnboardFlag(request)
         assertTrue(output.success)
     }
 
     @Test
     fun `working communication test`() {
-        val request = SendMessageRequest(
-            messageText = listOf("Message Text", "Line 2"),
-            patientID = "TESTINGMRN",
-            recipients = listOf(
-                SendMessageRecipient("first", false, "External"),
-                SendMessageRecipient("second", true, "External")
-            ),
-            senderID = "Sender#1",
-            messageType = "messageType",
-            senderIDType = "SendType#1",
-            patientIDType = "MRN",
-            contactID = "Con#1",
-            contactIDType = "ConType#1",
-            messagePriority = "just incoherent gibberish"
-        )
+        val request =
+            SendMessageRequest(
+                messageText = listOf("Message Text", "Line 2"),
+                patientID = "TESTINGMRN",
+                recipients =
+                    listOf(
+                        SendMessageRecipient("first", false, "External"),
+                        SendMessageRecipient("second", true, "External"),
+                    ),
+                senderID = "Sender#1",
+                messageType = "messageType",
+                senderIDType = "SendType#1",
+                patientIDType = "MRN",
+                contactID = "Con#1",
+                contactIDType = "ConType#1",
+                messagePriority = "just incoherent gibberish",
+            )
         val communication = mockk<Communication>()
         every {
             dal.r4CommunicationTransformer.transformFromSendMessage(request)
@@ -569,7 +600,7 @@ internal class EpicServerTest {
         } returns ident
         every {
             dal.r4PatientDAO.searchByIdentifier(
-                ident
+                ident,
             )
         } returns patient
         val output = server.createCommunication(request)
@@ -582,7 +613,7 @@ internal class EpicServerTest {
         } returns ident
         every {
             dal.r4PatientDAO.searchByIdentifier(
-                ident
+                ident,
             )
         } returns null
         assertThrows<ResponseStatusException> { server.createCommunication(request) }
@@ -590,18 +621,20 @@ internal class EpicServerTest {
 
     @Test
     fun `working med admin test`() {
-        val request = EpicMedAdminRequest(
-            patientID = "TESTINGINTERNAL",
-            patientIDType = "Internal",
-            contactID = "Con#1",
-            contactIDType = "ConType#1",
-            orderIDs = listOf(
-                EpicOrderID(
-                    "MedAdmin#1",
-                    "External"
-                )
+        val request =
+            EpicMedAdminRequest(
+                patientID = "TESTINGINTERNAL",
+                patientIDType = "Internal",
+                contactID = "Con#1",
+                contactIDType = "ConType#1",
+                orderIDs =
+                    listOf(
+                        EpicOrderID(
+                            "MedAdmin#1",
+                            "External",
+                        ),
+                    ),
             )
-        )
 
         mockkConstructor(Identifier::class)
         val ident = mockk<Identifier>()
@@ -612,43 +645,48 @@ internal class EpicServerTest {
         } returns ident
         every {
             dal.r4PatientDAO.searchByIdentifier(
-                ident
+                ident,
             )
         } returns patient
-        every { dal.r4MedicationRequestDAO.searchByQuery(any(), any(), any(), any()) } returns listOf(
-            mockk {
-                every { id } returns "MedRequest#1"
-            }
-        )
-        every { dal.r4MedAdminDAO.searchByRequest("MedRequest#1") } returns listOf(
-            mockk {
-                every { effectiveDateTimeType.valueAsString } returns "dateTime"
-                every { medicationCodeableConcept.text } returns "MedicationName"
-                every { dosage.dose } returns mockk {
-                    every { unit } returns "unit"
-                    every { value.toPlainString() } returns "1.0"
-                }
-                every { status } returns MedicationAdministration.MedicationAdministrationStatus.COMPLETED
-            }
-        )
+        every { dal.r4MedicationRequestDAO.searchByQuery(any(), any(), any(), any()) } returns
+            listOf(
+                mockk {
+                    every { id } returns "MedRequest#1"
+                },
+            )
+        every { dal.r4MedAdminDAO.searchByRequest("MedRequest#1") } returns
+            listOf(
+                mockk {
+                    every { effectiveDateTimeType.valueAsString } returns "dateTime"
+                    every { medicationCodeableConcept.text } returns "MedicationName"
+                    every { dosage.dose } returns
+                        mockk {
+                            every { unit } returns "unit"
+                            every { value.toPlainString() } returns "1.0"
+                        }
+                    every { status } returns MedicationAdministration.MedicationAdministrationStatus.COMPLETED
+                },
+            )
         val output = server.getMedicationAdministration(request)
         assertEquals(output.orders.size, 1)
     }
 
     @Test
     fun `med admin test fails - no patient`() {
-        val request = EpicMedAdminRequest(
-            patientID = "TESTINGINTERNAL",
-            patientIDType = "Internal",
-            contactID = "Con#1",
-            contactIDType = "ConType#1",
-            orderIDs = listOf(
-                EpicOrderID(
-                    "MedAdmin#1",
-                    "External"
-                )
+        val request =
+            EpicMedAdminRequest(
+                patientID = "TESTINGINTERNAL",
+                patientIDType = "Internal",
+                contactID = "Con#1",
+                contactIDType = "ConType#1",
+                orderIDs =
+                    listOf(
+                        EpicOrderID(
+                            "MedAdmin#1",
+                            "External",
+                        ),
+                    ),
             )
-        )
 
         mockkConstructor(Identifier::class)
         val ident = mockk<Identifier>()
@@ -659,7 +697,7 @@ internal class EpicServerTest {
         } returns ident
         every {
             dal.r4PatientDAO.searchByIdentifier(
-                ident
+                ident,
             )
         } returns null
         assertThrows<ResponseStatusException> { server.getMedicationAdministration(request) }
@@ -667,18 +705,20 @@ internal class EpicServerTest {
 
     @Test
     fun `med admin test fails - no med request`() {
-        val request = EpicMedAdminRequest(
-            patientID = "TESTINGINTERNAL",
-            patientIDType = "Internal",
-            contactID = "Con#1",
-            contactIDType = "ConType#1",
-            orderIDs = listOf(
-                EpicOrderID(
-                    "MedAdmin#1",
-                    "External"
-                )
+        val request =
+            EpicMedAdminRequest(
+                patientID = "TESTINGINTERNAL",
+                patientIDType = "Internal",
+                contactID = "Con#1",
+                contactIDType = "ConType#1",
+                orderIDs =
+                    listOf(
+                        EpicOrderID(
+                            "MedAdmin#1",
+                            "External",
+                        ),
+                    ),
             )
-        )
 
         mockkConstructor(Identifier::class)
         val ident = mockk<Identifier>()
@@ -689,7 +729,7 @@ internal class EpicServerTest {
         } returns ident
         every {
             dal.r4PatientDAO.searchByIdentifier(
-                ident
+                ident,
             )
         } returns patient
         every { dal.r4MedicationRequestDAO.searchByQuery(any(), any(), any(), any()) } returns listOf()

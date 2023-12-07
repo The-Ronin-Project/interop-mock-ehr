@@ -15,9 +15,7 @@ class R4OrganizationDAO(schema: SafeXDev, context: FhirContext) :
      * @param idList for filtering one or more Organization.id values. Treats id values in the list as a logical 'OR'.
      *               searchByIds with one id input is equivalent to an Organization.read.
      */
-    fun searchByQuery(
-        idList: StringOrListParam? = null
-    ): List<Organization> {
+    fun searchByQuery(idList: StringOrListParam? = null): List<Organization> {
         return idList?.valuesAsQueryTokens?.mapNotNull { idParam ->
             try {
                 idParam?.value?.let { id -> this.findById(id) }

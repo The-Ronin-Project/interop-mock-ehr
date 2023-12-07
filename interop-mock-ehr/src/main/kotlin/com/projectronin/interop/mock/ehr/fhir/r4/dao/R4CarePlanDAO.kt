@@ -14,7 +14,7 @@ class R4CarePlanDAO(private val schema: SafeXDev, context: FhirContext) :
         subject: String,
         category: String,
         fromDate: Date? = null,
-        toDate: Date? = null
+        toDate: Date? = null,
     ): List<CarePlan> {
         // Build queryFragments into query care plans joined with 'AND'
         val queryFragments = mutableListOf<String>()

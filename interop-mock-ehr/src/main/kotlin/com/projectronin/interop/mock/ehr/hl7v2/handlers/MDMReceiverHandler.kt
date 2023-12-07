@@ -30,35 +30,40 @@ class MDMReceiverHandler(
     private val binaryDAO: R4BinaryDAO,
     private val documentReferenceDAO: R4DocumentReferenceDAO,
     private val patientResolver: PatientResolver,
-    private val documentReferenceResolver: DocumentReferenceResolver
+    private val documentReferenceResolver: DocumentReferenceResolver,
 ) : ReceivingApplication<MDM_T02> {
     private val logger = KotlinLogging.logger { }
 
     /*
         'theMessage' is a HAPI Message object with many convenience functions for retrieving data from the HL7v2 structure.
      */
-    override fun processMessage(theMessage: MDM_T02, theMetadata: MutableMap<String, Any>?): Message {
+    override fun processMessage(
+        theMessage: MDM_T02,
+        theMetadata: MutableMap<String, Any>?,
+    ): Message {
         val binary = buildBinary(theMessage.observationAll)
         var binaryId: String? = null
 
         // if there's an existing document grab the existing binary to update it
         // this just overwrites w/ w/e was last sent in for a document
         val uniqueID = theMessage.txa.uniqueDocumentNumber.universalID.value
-        val existingDocumentReference = uniqueID?.let {
-            val escaped = it.replace("'", "\\'")
-            documentReferenceResolver.findDocumentReference(escaped)
-        }
+        val existingDocumentReference =
+            uniqueID?.let {
+                val escaped = it.replace("'", "\\'")
+                documentReferenceResolver.findDocumentReference(escaped)
+            }
 
         if (existingDocumentReference != null) {
             logger.info { "Finding existing binary" }
-            binaryId = if (existingDocumentReference.hasContent()) {
-                // grab the first attachment that has a url (ok since it's mock EHR and we're creating these)
-                val attachment =
-                    existingDocumentReference.content.firstOrNull { it.hasAttachment() && it.attachment.hasUrl() }?.attachment
-                attachment?.url?.substringAfterLast("/")
-            } else {
-                null
-            }
+            binaryId =
+                if (existingDocumentReference.hasContent()) {
+                    // grab the first attachment that has a url (ok since it's mock EHR and we're creating these)
+                    val attachment =
+                        existingDocumentReference.content.firstOrNull { it.hasAttachment() && it.attachment.hasUrl() }?.attachment
+                    attachment?.url?.substringAfterLast("/")
+                } else {
+                    null
+                }
             // update existing binary
             binary?.id = binaryId
             binary?.let {
@@ -96,15 +101,16 @@ class MDMReceiverHandler(
         if (allObservations.isNullOrEmpty()) return null
 
         // Turn all the obx values into a list of strings
-        val note = allObservations.mapNotNull { observation ->
-            val obx = observation.obx
-            // only grab those OBX lines where the value is TX
-            if (obx.valueType.value == "TX") {
-                "${obx.getObservationValue(0).data}"
-            } else {
-                null
+        val note =
+            allObservations.mapNotNull { observation ->
+                val obx = observation.obx
+                // only grab those OBX lines where the value is TX
+                if (obx.valueType.value == "TX") {
+                    "${obx.getObservationValue(0).data}"
+                } else {
+                    null
+                }
             }
-        }
 
         val binary = Binary()
         binary.contentTypeElement = CodeType("text/plain")
@@ -112,7 +118,10 @@ class MDMReceiverHandler(
         return binary
     }
 
-    private fun buildDocumentReference(theMessage: MDM_T02, binaryId: String?): DocumentReference {
+    private fun buildDocumentReference(
+        theMessage: MDM_T02,
+        binaryId: String?,
+    ): DocumentReference {
         val originator = theMessage.txa.originatorCodeName.firstOrNull()
         val uniqueId = theMessage.txa.uniqueDocumentNumber
         val creationDate = theMessage.evn.recordedDateTime.time.value

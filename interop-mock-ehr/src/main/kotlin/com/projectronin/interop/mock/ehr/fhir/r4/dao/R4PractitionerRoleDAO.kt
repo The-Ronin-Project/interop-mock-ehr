@@ -25,7 +25,7 @@ class R4PractitionerRoleDAO(private val schema: SafeXDev, context: FhirContext) 
 
     fun searchByQuery(
         locationReferences: List<Reference> = listOf(),
-        practitionerReference: Reference? = null
+        practitionerReference: Reference? = null,
     ): List<PractitionerRole> {
         val parser = context.newJsonParser()
         val roleList = mutableListOf<PractitionerRole>()

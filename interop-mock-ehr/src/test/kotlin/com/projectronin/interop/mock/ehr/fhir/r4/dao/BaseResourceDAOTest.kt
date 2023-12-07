@@ -25,10 +25,11 @@ internal class BaseResourceDAOTest {
     fun initTest() {
         val collection = mockk<Collection>()
         val database = mockk<SafeXDev>()
-        every { database.createCollection(Observation::class.java) } returns SafeXDev.SafeCollection(
-            "resource",
-            collection
-        )
+        every { database.createCollection(Observation::class.java) } returns
+            SafeXDev.SafeCollection(
+                "resource",
+                collection,
+            )
         dao = R4ObservationDAO(database, FhirContext.forR4())
     }
 
@@ -90,7 +91,7 @@ internal class BaseResourceDAOTest {
         val searchString = dao.getSearchStringForFHIRTokens(tokenList)
         assertEquals(
             expectedString.joinToString(""),
-            searchString
+            searchString,
         )
     }
 

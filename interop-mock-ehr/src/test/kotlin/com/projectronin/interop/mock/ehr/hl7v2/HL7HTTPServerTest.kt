@@ -5,7 +5,6 @@ import org.junit.jupiter.api.Test
 import javax.servlet.ServletConfig
 
 internal class HL7HTTPServerTest {
-
     @Test
     fun `init test`() {
         val config = mockk<ServletConfig>()

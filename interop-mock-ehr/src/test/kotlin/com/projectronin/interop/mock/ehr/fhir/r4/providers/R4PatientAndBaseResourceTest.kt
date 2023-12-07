@@ -35,7 +35,6 @@ import java.util.UUID
 
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
 class R4PatientAndBaseResourceTest : BaseMySQLTest() {
-
     private lateinit var collection: Collection
     private lateinit var patientProvider: R4PatientResourceProvider
     private lateinit var dao: R4PatientDAO
@@ -240,9 +239,9 @@ class R4PatientAndBaseResourceTest : BaseMySQLTest() {
 
         val output =
             patientProvider.search(
-                givenName = StringParam("TestGiven"), // test uppercase
+                givenName = StringParam("TestGiven"),
                 familyName = StringParam("testFamily"),
-                gender = StringParam("male")
+                gender = StringParam("male"),
             ).first()
 
         assertEquals(output.nameFirstRep.family, testPat1.nameFirstRep.family)
@@ -263,9 +262,9 @@ class R4PatientAndBaseResourceTest : BaseMySQLTest() {
 
         val output =
             patientProvider.search(
-                givenName = StringParam("BadGivenName"), // test uppercase
+                givenName = StringParam("BadGivenName"),
                 familyName = StringParam("testFamily"),
-                gender = StringParam("male")
+                gender = StringParam("male"),
             )
 
         assertTrue(output.isEmpty())
@@ -280,9 +279,9 @@ class R4PatientAndBaseResourceTest : BaseMySQLTest() {
 
         val output =
             patientProvider.search(
-                givenName = StringParam("BadGivenName"), // test uppercase
+                givenName = StringParam("BadGivenName"),
                 familyName = StringParam("BadFamilyName"),
-                gender = StringParam("male")
+                gender = StringParam("male"),
             )
 
         assertTrue(output.isEmpty())
@@ -303,7 +302,7 @@ class R4PatientAndBaseResourceTest : BaseMySQLTest() {
         val output =
             patientProvider.search(
                 familyName = StringParam("testFamily"),
-                gender = StringParam("male")
+                gender = StringParam("male"),
             ).first()
 
         assertEquals(output.nameFirstRep.family, testPat1.nameFirstRep.family)
@@ -325,7 +324,7 @@ class R4PatientAndBaseResourceTest : BaseMySQLTest() {
         val output =
             patientProvider.search(
                 givenName = StringParam("TestGiven"),
-                gender = StringParam("male")
+                gender = StringParam("male"),
             ).first()
 
         assertEquals(output.nameFirstRep.given.first().value, testPat1.nameFirstRep.given.first().value)
@@ -341,7 +340,7 @@ class R4PatientAndBaseResourceTest : BaseMySQLTest() {
         val output =
             patientProvider.search(
                 givenName = StringParam("test'Given"),
-                familyName = StringParam("testFamily'")
+                familyName = StringParam("testFamily'"),
             ).first()
 
         assertEquals(output.nameFirstRep.family, testPat1.nameFirstRep.family)
@@ -352,13 +351,13 @@ class R4PatientAndBaseResourceTest : BaseMySQLTest() {
     fun `email search test`() {
         val testPat1 = Patient()
         testPat1.telecom.add(
-            ContactPoint().setSystem(ContactPoint.ContactPointSystem.EMAIL).setValue("goodEmail@com.com")
+            ContactPoint().setSystem(ContactPoint.ContactPointSystem.EMAIL).setValue("goodEmail@com.com"),
         )
         collection.add(FhirContext.forR4().newJsonParser().encodeResourceToString(testPat1)).execute()
 
         val testPat2 = Patient()
         testPat2.telecom.add(
-            ContactPoint().setSystem(ContactPoint.ContactPointSystem.EMAIL).setValue("badEmail@com.com")
+            ContactPoint().setSystem(ContactPoint.ContactPointSystem.EMAIL).setValue("badEmail@com.com"),
         )
         collection.add(FhirContext.forR4().newJsonParser().encodeResourceToString(testPat2)).execute()
 
@@ -371,13 +370,13 @@ class R4PatientAndBaseResourceTest : BaseMySQLTest() {
     fun `phone search test`() {
         val testPat1 = Patient()
         testPat1.telecom.add(
-            ContactPoint().setSystem(ContactPoint.ContactPointSystem.PHONE).setValue("608-608-6080")
+            ContactPoint().setSystem(ContactPoint.ContactPointSystem.PHONE).setValue("608-608-6080"),
         )
         collection.add(FhirContext.forR4().newJsonParser().encodeResourceToString(testPat1)).execute()
 
         val testPat2 = Patient()
         testPat2.telecom.add(
-            ContactPoint().setSystem(ContactPoint.ContactPointSystem.PHONE).setValue("808-908-9090")
+            ContactPoint().setSystem(ContactPoint.ContactPointSystem.PHONE).setValue("808-908-9090"),
         )
         collection.add(FhirContext.forR4().newJsonParser().encodeResourceToString(testPat2)).execute()
 
@@ -492,11 +491,12 @@ class R4PatientAndBaseResourceTest : BaseMySQLTest() {
         assertEquals(output.birthDate, patient.birthDate)
 
         collection.remove("true").execute() // Clear the collection in case other tests run first
-        val message = try {
-            dao.findById("TESTINGFINDID")
-        } catch (e: ResourceNotFoundException) {
-            e.message
-        }
+        val message =
+            try {
+                dao.findById("TESTINGFINDID")
+            } catch (e: ResourceNotFoundException) {
+                e.message
+            }
         assertEquals(message, "No resource found with id: TESTINGFINDID")
     }
 

@@ -187,36 +187,40 @@ class STU3AppointmentResourceTest : BaseMySQLTest() {
         testAppt2.id = "TESTAPPT10"
         collection.add(FhirContext.forDstu3().newJsonParser().encodeResourceToString(testAppt2)).execute()
 
-        val output = appointmentProvider.search(
-            patientReferenceParam = ReferenceParam("TESTINGID9"),
-            identifiersParam = TokenOrListParam("mockEncounterCSNSystem", "TESTAPPT9")
-        )
+        val output =
+            appointmentProvider.search(
+                patientReferenceParam = ReferenceParam("TESTINGID9"),
+                identifiersParam = TokenOrListParam("mockEncounterCSNSystem", "TESTAPPT9"),
+            )
         assertEquals(1, output.size)
         assertEquals("Appointment/${testAppt.id}", output[0].id)
 
-        val output2 = appointmentProvider.search(
-            patientReferenceParam = ReferenceParam("TESTINGID9"),
-            identifiersParam = TokenOrListParam("mockEncounterCSNSystem", "TESTAPPT9", "TESTAPPT10")
-        )
+        val output2 =
+            appointmentProvider.search(
+                patientReferenceParam = ReferenceParam("TESTINGID9"),
+                identifiersParam = TokenOrListParam("mockEncounterCSNSystem", "TESTAPPT9", "TESTAPPT10"),
+            )
         assertEquals(2, output2.size)
 
         assertThrows<UnsupportedOperationException> {
             appointmentProvider.search(
-                patientReferenceParam = ReferenceParam(
-                    "TESTINGID9"
-                ),
-                identifiersParam = TokenOrListParam("badSystem", "12345")
+                patientReferenceParam =
+                    ReferenceParam(
+                        "TESTINGID9",
+                    ),
+                identifiersParam = TokenOrListParam("badSystem", "12345"),
             )
         }
 
         assertEquals(
             emptyList<Appointment>(),
             appointmentProvider.search(
-                patientReferenceParam = ReferenceParam(
-                    "TESTINGID9"
-                ),
-                identifiersParam = TokenOrListParam()
-            )
+                patientReferenceParam =
+                    ReferenceParam(
+                        "TESTINGID9",
+                    ),
+                identifiersParam = TokenOrListParam(),
+            ),
         )
     }
 
@@ -234,10 +238,11 @@ class STU3AppointmentResourceTest : BaseMySQLTest() {
         testAppt2.status = Appointment.AppointmentStatus.CANCELLED
         collection.add(FhirContext.forDstu3().newJsonParser().encodeResourceToString(testAppt2)).execute()
 
-        val output = appointmentProvider.search(
-            patientReferenceParam = ReferenceParam("TESTINGID4"),
-            statusParam = StringParam("booked")
-        )
+        val output =
+            appointmentProvider.search(
+                patientReferenceParam = ReferenceParam("TESTINGID4"),
+                statusParam = StringParam("booked"),
+            )
         assertEquals(1, output.size)
         assertEquals("Appointment/${testAppt.id}", output[0].id)
     }
@@ -258,10 +263,11 @@ class STU3AppointmentResourceTest : BaseMySQLTest() {
 
         val dateParam = DateRangeParam()
         dateParam.lowerBound = DateParam("2011-02-22T13:12:00-06:00")
-        val output = appointmentProvider.search(
-            dateRangeParam = dateParam,
-            patientReferenceParam = ReferenceParam("TESTINGID2")
-        )
+        val output =
+            appointmentProvider.search(
+                dateRangeParam = dateParam,
+                patientReferenceParam = ReferenceParam("TESTINGID2"),
+            )
         assertEquals(1, output.size)
         assertEquals("Appointment/${testAppt2.id}", output[0].id)
     }
@@ -283,10 +289,11 @@ class STU3AppointmentResourceTest : BaseMySQLTest() {
         val dateParam = DateRangeParam()
         dateParam.lowerBound = DateParam("2011-02-22T13:12:00-06:00")
         dateParam.upperBound = DateParam("2020-02-22T13:12:00-06:00")
-        val output = appointmentProvider.search(
-            dateRangeParam = dateParam,
-            patientReferenceParam = ReferenceParam("TESTINGID3")
-        )
+        val output =
+            appointmentProvider.search(
+                dateRangeParam = dateParam,
+                patientReferenceParam = ReferenceParam("TESTINGID3"),
+            )
         assertEquals(0, output.size)
     }
 

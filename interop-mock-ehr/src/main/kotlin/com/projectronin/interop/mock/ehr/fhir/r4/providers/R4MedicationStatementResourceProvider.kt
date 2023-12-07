@@ -19,14 +19,14 @@ class R4MedicationStatementResourceProvider(override var resourceDAO: R4Medicati
     @Search
     fun search(
         @OptionalParam(name = MedicationStatement.SP_PATIENT) patientReferenceParam: ReferenceParam? = null,
-        @OptionalParam(name = MedicationStatement.SP_EFFECTIVE) dateRangeParam: DateRangeParam? = null
+        @OptionalParam(name = MedicationStatement.SP_EFFECTIVE) dateRangeParam: DateRangeParam? = null,
     ): List<MedicationStatement> {
         val subject = patientReferenceParam?.let { "Patient/${it.value}" }
 
         return resourceDAO.searchByQuery(
             subject,
             dateRangeParam?.lowerBoundAsInstant,
-            dateRangeParam?.upperBoundAsInstant
+            dateRangeParam?.upperBoundAsInstant,
         )
     }
 }

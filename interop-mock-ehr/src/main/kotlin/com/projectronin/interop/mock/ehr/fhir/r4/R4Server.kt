@@ -40,7 +40,7 @@ import javax.servlet.http.HttpServletResponse
 @WebServlet(urlPatterns = ["/fhir/r4/*", "/cerner/fhir/r4/*", "/epic/api/FHIR/R4/*"])
 @Component
 class R4Server(
-    context: FhirContext, // autowired
+    context: FhirContext,
     private val r4PatientProvider: R4PatientResourceProvider,
     private val r4ConditionProvider: R4ConditionResourceProvider,
     private val r4AppointmentProvider: R4AppointmentResourceProvider,
@@ -64,9 +64,8 @@ class R4Server(
     private val r4MedicationAdministrationResourceProvider: R4MedicationAdministrationResourceProvider,
     private val r4ServiceRequestResourceProvider: R4ServiceRequestResourceProvider,
     private val r4ProcedureResourceProvider: R4ProcedureResourceProvider,
-    private val r4DiagnosticReportResourceProvider: R4DiagnosticReportResourceProvider
+    private val r4DiagnosticReportResourceProvider: R4DiagnosticReportResourceProvider,
 ) : RestfulServer(context) {
-
     override fun initialize() {
         registerInterceptor(RoninVendorFilter())
 
@@ -94,7 +93,7 @@ class R4Server(
             r4MedicationAdministrationResourceProvider,
             r4ServiceRequestResourceProvider,
             r4ProcedureResourceProvider,
-            r4DiagnosticReportResourceProvider
+            r4DiagnosticReportResourceProvider,
         )
         pagingProvider = FifoMemoryPagingProvider(10)
         maximumPageSize = 10 // in reality this is much higher, but this is easier to test with.
@@ -108,53 +107,54 @@ class R4Server(
 
 @Interceptor
 class RoninVendorFilter {
+    private val epicSupportedResources =
+        listOf(
+            "Appointment",
+            "Binary",
+            "CarePlan",
+            "CareTeam",
+            "Communication",
+            "Condition",
+            "DiagnosticReport",
+            "DocumentReference",
+            "Encounter",
+            "Flag",
+            "Location",
+            "Medication",
+            "MedicationRequest",
+            "MedicationStatement",
+            "Observation",
+            "Organization",
+            "Patient",
+            "Practitioner",
+            "PractitionerRole",
+            "Procedure",
+            "RequestGroup",
+            "ServiceRequest",
+        )
 
-    private val epicSupportedResources = listOf(
-        "Appointment",
-        "Binary",
-        "CarePlan",
-        "CareTeam",
-        "Communication",
-        "Condition",
-        "DiagnosticReport",
-        "DocumentReference",
-        "Encounter",
-        "Flag",
-        "Location",
-        "Medication",
-        "MedicationRequest",
-        "MedicationStatement",
-        "Observation",
-        "Organization",
-        "Patient",
-        "Practitioner",
-        "PractitionerRole",
-        "Procedure",
-        "RequestGroup",
-        "ServiceRequest"
-    )
-
-    private val cernerSupportedResources = listOf(
-        "Appointment",
-        "Binary",
-        "CarePlan",
-        "CareTeam",
-        "Communication",
-        "Condition",
-        "DiagnosticReport",
-        "DocumentReference",
-        "Encounter",
-        "Location",
-        "Medication",
-        "MedicationAdministration",
-        "MedicationRequest",
-        "Observation",
-        "Organization",
-        "Patient",
-        "Practitioner",
-        "Procedure",
-        "ServiceRequest"
-    )
+    private val cernerSupportedResources =
+        listOf(
+            "Appointment",
+            "Binary",
+            "CarePlan",
+            "CareTeam",
+            "Communication",
+            "Condition",
+            "DiagnosticReport",
+            "DocumentReference",
+            "Encounter",
+            "Location",
+            "Medication",
+            "MedicationAdministration",
+            "MedicationRequest",
+            "Observation",
+            "Organization",
+            "Patient",
+            "Practitioner",
+            "Procedure",
+            "ServiceRequest",
+        )
 
     private val supportedMap = mapOf("epic" to epicSupportedResources, "cerner" to cernerSupportedResources)
 
@@ -163,16 +163,20 @@ class RoninVendorFilter {
      * Must return true if the request should continue or false if processing should stop. (Returns a 400 in this case).
      */
     @Hook(Pointcut.SERVER_INCOMING_REQUEST_PRE_HANDLER_SELECTED) // We could put this anywhere before processing, really
-    fun filterVendor(details: RequestDetails, response: HttpServletResponse): Boolean {
+    fun filterVendor(
+        details: RequestDetails,
+        response: HttpServletResponse,
+    ): Boolean {
         if (details.resourceName.isNullOrEmpty()) return true // short-circuit for edge cases
         val url = details.completeUrl.lowercase()
-        val vendorName = if (url.contains("cerner/")) {
-            "cerner"
-        } else if (url.contains("epic/")) {
-            "epic"
-        } else {
-            return true // default server
-        }
+        val vendorName =
+            if (url.contains("cerner/")) {
+                "cerner"
+            } else if (url.contains("epic/")) {
+                "epic"
+            } else {
+                return true // default server
+            }
 
         return if (supportedMap[vendorName]!!.contains(details.resourceName)) {
             details.tenantId = vendorName // maybe useful later
@@ -180,7 +184,7 @@ class RoninVendorFilter {
         } else {
             response.sendError(
                 HttpStatus.BAD_REQUEST.value(),
-                "Vendor type '$vendorName' does not support FHIR resource '${details.resourceName}'"
+                "Vendor type '$vendorName' does not support FHIR resource '${details.resourceName}'",
             )
             false // stop processing
         }

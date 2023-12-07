@@ -10,7 +10,7 @@ import java.util.Date
 @Component
 class R4DiagnosticReportDAO(
     private val schema: SafeXDev,
-    context: FhirContext
+    context: FhirContext,
 ) : BaseResourceDAO<DiagnosticReport>(context, schema, DiagnosticReport::class.java) {
     /**
      * Finds the Diagnostic Report based on the input query parameters
@@ -21,16 +21,17 @@ class R4DiagnosticReportDAO(
     fun searchByQuery(
         patientId: String,
         fromDate: Date? = null,
-        toDate: Date? = null
+        toDate: Date? = null,
     ): List<DiagnosticReport> {
         val parser = context.newJsonParser()
 
         // run query
-        val diagnosticReports = schema.run(collection) {
-            find("subject.reference = 'Patient/${patientId.escapeSQL()}'").execute().map {
-                parser.parseResource(resourceType, it.toString())
+        val diagnosticReports =
+            schema.run(collection) {
+                find("subject.reference = 'Patient/${patientId.escapeSQL()}'").execute().map {
+                    parser.parseResource(resourceType, it.toString())
+                }
             }
-        }
 
         // compare and filter dates after query is run
         return diagnosticReports.filter { diagnosticReport ->

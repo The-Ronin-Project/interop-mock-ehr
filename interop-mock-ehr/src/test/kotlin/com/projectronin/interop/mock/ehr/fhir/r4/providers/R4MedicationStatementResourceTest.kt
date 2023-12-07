@@ -22,7 +22,6 @@ import java.util.Date
 
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
 class R4MedicationStatementResourceTest : BaseMySQLTest() {
-
     private lateinit var collection: Collection
     private lateinit var medicationStatementProvider: R4MedicationStatementResourceProvider
 
@@ -30,10 +29,11 @@ class R4MedicationStatementResourceTest : BaseMySQLTest() {
     fun initTest() {
         collection = createCollection(MedicationStatement::class.simpleName!!)
         val database = mockk<SafeXDev>()
-        every { database.createCollection(MedicationStatement::class.java) } returns SafeXDev.SafeCollection(
-            "resource",
-            collection
-        )
+        every { database.createCollection(MedicationStatement::class.java) } returns
+            SafeXDev.SafeCollection(
+                "resource",
+                collection,
+            )
         every { database.run(any(), captureLambda<Collection.() -> Any>()) } answers {
             val collection = firstArg<SafeXDev.SafeCollection>()
             val lamdba = secondArg<Collection.() -> Any>()
@@ -63,41 +63,44 @@ class R4MedicationStatementResourceTest : BaseMySQLTest() {
     @Test
     fun `search by date range using only lower bound`() {
         val testPatientId = "98765"
-        val testMedicationStatement3 = MedicationStatement()
-            .setEffective(
-                Period().setStart(
-                    Date(110, 0, 10)
+        val testMedicationStatement3 =
+            MedicationStatement()
+                .setEffective(
+                    Period().setStart(
+                        Date(110, 0, 10),
+                    ),
                 )
-            )
-            .setSubject(
-                Reference().setReference(
-                    "Patient/$testPatientId"
+                .setSubject(
+                    Reference().setReference(
+                        "Patient/$testPatientId",
+                    ),
                 )
-            )
         testMedicationStatement3.setId("MEDSTMNT3")
         collection.add(FhirContext.forR4().newJsonParser().encodeResourceToString(testMedicationStatement3)).execute()
 
-        val testMedicationStatement4 = MedicationStatement()
-            .setEffective(
-                Period().setStart(
-                    Date(115, 0, 10)
+        val testMedicationStatement4 =
+            MedicationStatement()
+                .setEffective(
+                    Period().setStart(
+                        Date(115, 0, 10),
+                    ),
                 )
-            )
-            .setSubject(
-                Reference().setReference(
-                    "Patient/$testPatientId"
+                .setSubject(
+                    Reference().setReference(
+                        "Patient/$testPatientId",
+                    ),
                 )
-            )
         testMedicationStatement4.setId("MEDSTMNT4")
         collection.add(FhirContext.forR4().newJsonParser().encodeResourceToString(testMedicationStatement4)).execute()
 
         val dateParam = DateRangeParam()
         dateParam.lowerBound = DateParam("2011-02-22T13:12:00-06:00")
 
-        val output = medicationStatementProvider.search(
-            patientReferenceParam = ReferenceParam(testPatientId),
-            dateRangeParam = dateParam
-        )
+        val output =
+            medicationStatementProvider.search(
+                patientReferenceParam = ReferenceParam(testPatientId),
+                dateRangeParam = dateParam,
+            )
         assertEquals(1, output.size)
         assertEquals("MedicationStatement/${testMedicationStatement4.id}", output.first().id)
         assertEquals(115, output.first().effectivePeriod.start.year)
@@ -108,41 +111,44 @@ class R4MedicationStatementResourceTest : BaseMySQLTest() {
     @Test
     fun `search by date range using only upper bound`() {
         val testPatientId = "98741"
-        val testMedicationStatement5 = MedicationStatement()
-            .setEffective(
-                Period().setStart(
-                    Date(110, 0, 10)
+        val testMedicationStatement5 =
+            MedicationStatement()
+                .setEffective(
+                    Period().setStart(
+                        Date(110, 0, 10),
+                    ),
                 )
-            )
-            .setSubject(
-                Reference().setReference(
-                    "Patient/$testPatientId"
+                .setSubject(
+                    Reference().setReference(
+                        "Patient/$testPatientId",
+                    ),
                 )
-            )
         testMedicationStatement5.setId("MEDSTMNT5")
         collection.add(FhirContext.forR4().newJsonParser().encodeResourceToString(testMedicationStatement5)).execute()
 
-        val testMedicationStatement6 = MedicationStatement()
-            .setEffective(
-                Period().setStart(
-                    Date(115, 0, 10)
+        val testMedicationStatement6 =
+            MedicationStatement()
+                .setEffective(
+                    Period().setStart(
+                        Date(115, 0, 10),
+                    ),
                 )
-            )
-            .setSubject(
-                Reference().setReference(
-                    "Patient/$testPatientId"
+                .setSubject(
+                    Reference().setReference(
+                        "Patient/$testPatientId",
+                    ),
                 )
-            )
         testMedicationStatement6.setId("MEDSTMNT6")
         collection.add(FhirContext.forR4().newJsonParser().encodeResourceToString(testMedicationStatement6)).execute()
 
         val dateParam = DateRangeParam()
         dateParam.upperBound = DateParam("2011-02-22T13:12:00-06:00")
 
-        val output = medicationStatementProvider.search(
-            patientReferenceParam = ReferenceParam(testPatientId),
-            dateRangeParam = dateParam
-        )
+        val output =
+            medicationStatementProvider.search(
+                patientReferenceParam = ReferenceParam(testPatientId),
+                dateRangeParam = dateParam,
+            )
         assertEquals(1, output.size)
         assertEquals("MedicationStatement/${testMedicationStatement5.id}", output.first().id)
         assertEquals(110, output.first().effectivePeriod.start.year)
@@ -153,45 +159,48 @@ class R4MedicationStatementResourceTest : BaseMySQLTest() {
     @Test
     fun `search by date range using both bounds`() {
         val testPatientId = "55541"
-        val testMedicationStatement7 = MedicationStatement()
-            .setEffective(
-                Period().setStart(
-                    Date(110, 0, 10)
+        val testMedicationStatement7 =
+            MedicationStatement()
+                .setEffective(
+                    Period().setStart(
+                        Date(110, 0, 10),
+                    ),
                 )
-            )
-            .setSubject(
-                Reference().setReference(
-                    "Patient/$testPatientId"
+                .setSubject(
+                    Reference().setReference(
+                        "Patient/$testPatientId",
+                    ),
                 )
-            )
         testMedicationStatement7.setId("MEDSTMNT7")
         collection.add(FhirContext.forR4().newJsonParser().encodeResourceToString(testMedicationStatement7)).execute()
 
-        val testMedicationStatement8 = MedicationStatement()
-            .setEffective(
-                Period().setStart(
-                    Date(115, 0, 10)
+        val testMedicationStatement8 =
+            MedicationStatement()
+                .setEffective(
+                    Period().setStart(
+                        Date(115, 0, 10),
+                    ),
                 )
-            )
-            .setSubject(
-                Reference().setReference(
-                    "Patient/$testPatientId"
+                .setSubject(
+                    Reference().setReference(
+                        "Patient/$testPatientId",
+                    ),
                 )
-            )
         testMedicationStatement8.setId("MEDSTMNT8")
         collection.add(FhirContext.forR4().newJsonParser().encodeResourceToString(testMedicationStatement8)).execute()
 
-        val testMedicationStatement9 = MedicationStatement()
-            .setEffective(
-                Period().setStart(
-                    Date(120, 0, 10)
+        val testMedicationStatement9 =
+            MedicationStatement()
+                .setEffective(
+                    Period().setStart(
+                        Date(120, 0, 10),
+                    ),
                 )
-            )
-            .setSubject(
-                Reference().setReference(
-                    "Patient/$testPatientId"
+                .setSubject(
+                    Reference().setReference(
+                        "Patient/$testPatientId",
+                    ),
                 )
-            )
         testMedicationStatement9.setId("MEDSTMNT9")
         collection.add(FhirContext.forR4().newJsonParser().encodeResourceToString(testMedicationStatement9)).execute()
 
@@ -199,10 +208,11 @@ class R4MedicationStatementResourceTest : BaseMySQLTest() {
         dateParam.upperBound = DateParam("2017-02-22T13:12:00-06:00")
         dateParam.lowerBound = DateParam("2011-02-22T13:12:00-06:00")
 
-        val output = medicationStatementProvider.search(
-            patientReferenceParam = ReferenceParam(testPatientId),
-            dateRangeParam = dateParam
-        )
+        val output =
+            medicationStatementProvider.search(
+                patientReferenceParam = ReferenceParam(testPatientId),
+                dateRangeParam = dateParam,
+            )
         assertEquals(1, output.size)
         assertEquals("MedicationStatement/${testMedicationStatement8.id}", output.first().id)
         assertEquals(115, output.first().effectivePeriod.start.year)
@@ -212,9 +222,10 @@ class R4MedicationStatementResourceTest : BaseMySQLTest() {
 
     @Test
     fun `date param without patient param returns empty list`() {
-        val output = medicationStatementProvider.search(
-            dateRangeParam = DateRangeParam()
-        )
+        val output =
+            medicationStatementProvider.search(
+                dateRangeParam = DateRangeParam(),
+            )
 
         assertEquals(0, output.size)
     }

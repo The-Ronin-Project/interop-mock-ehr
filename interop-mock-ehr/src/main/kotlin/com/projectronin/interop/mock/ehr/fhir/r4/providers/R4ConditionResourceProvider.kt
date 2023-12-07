@@ -12,7 +12,6 @@ import org.springframework.stereotype.Component
 @Component
 class R4ConditionResourceProvider(override var resourceDAO: R4ConditionDAO) :
     BaseResourceProvider<Condition, R4ConditionDAO>() {
-
     override fun getResourceType(): Class<out IBaseResource> {
         return Condition::class.java
     }
@@ -21,20 +20,20 @@ class R4ConditionResourceProvider(override var resourceDAO: R4ConditionDAO) :
     fun search(
         @OptionalParam(name = Condition.SP_PATIENT) patientReferenceParam: ReferenceParam? = null,
         @OptionalParam(name = Condition.SP_CATEGORY) categoryParam: TokenOrListParam? = null,
-        @OptionalParam(name = Condition.SP_CLINICAL_STATUS) clinicalStatusParam: TokenOrListParam? = null
+        @OptionalParam(name = Condition.SP_CLINICAL_STATUS) clinicalStatusParam: TokenOrListParam? = null,
     ): List<Condition> {
         val reference = patientReferenceParam?.let { "Patient/${it.value}" }
         return clinicalStatusParam?.valuesAsQueryTokens?.map {
             resourceDAO.searchByQuery(
                 reference,
                 categoryParam,
-                it.value
+                it.value,
             )
         }?.flatten()
             ?: resourceDAO.searchByQuery(
                 reference,
                 categoryParam,
-                null
+                null,
             )
     }
 }

@@ -21,12 +21,14 @@ class R4MedicationRequestDAO(private val schema: SafeXDev, context: FhirContext)
         subject: String? = null,
         fromDate: Date? = null,
         toDate: Date? = null,
-        identifier: Identifier? = null
+        identifier: Identifier? = null,
     ): List<MedicationRequest> {
         // Build queryFragments into query joined with 'AND'
         val queryFragments = mutableListOf<String>()
         subject?.let { queryFragments.add("('${it.escapeSQL()}' = subject.reference)") }
-        identifier?.let { queryFragments.add("{'value':'${identifier.value.escapeSQL()}','system':'${identifier.system.escapeSQL()}'} in identifier[*]") }
+        identifier?.let {
+            queryFragments.add("{'value':'${identifier.value.escapeSQL()}','system':'${identifier.system.escapeSQL()}'} in identifier[*]")
+        }
         if (queryFragments.isEmpty()) return listOf()
         val query = queryFragments.joinToString(" AND ")
 

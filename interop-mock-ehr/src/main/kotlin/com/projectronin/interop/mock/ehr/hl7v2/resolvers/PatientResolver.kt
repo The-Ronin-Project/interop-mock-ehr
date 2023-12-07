@@ -21,13 +21,14 @@ class PatientResolver(private val patientDAO: R4PatientDAO) {
      */
     fun findPatient(pidSegment: PID): Patient? {
         logger.info { "Searching for patient" }
-        val patient = pidSegment.patientIdentifierList
-            .asSequence()
-            .firstNotNullOfOrNull {
-                val patientIdentifier = it.toIdentifier()
-                logger.debug { "Using identifier with value ${patientIdentifier.value} and system ${patientIdentifier.system}" }
-                patientDAO.searchByIdentifier(patientIdentifier)
-            }
+        val patient =
+            pidSegment.patientIdentifierList
+                .asSequence()
+                .firstNotNullOfOrNull {
+                    val patientIdentifier = it.toIdentifier()
+                    logger.debug { "Using identifier with value ${patientIdentifier.value} and system ${patientIdentifier.system}" }
+                    patientDAO.searchByIdentifier(patientIdentifier)
+                }
         return patient
     }
 }

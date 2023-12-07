@@ -30,10 +30,11 @@ class R4EncounterResourceTest : BaseMySQLTest() {
         collection = createCollection(Encounter::class.simpleName!!)
 
         val database = mockk<SafeXDev>()
-        every { database.createCollection(Encounter::class.java) } returns SafeXDev.SafeCollection(
-            "resource",
-            collection
-        )
+        every { database.createCollection(Encounter::class.java) } returns
+            SafeXDev.SafeCollection(
+                "resource",
+                collection,
+            )
         every { database.run(any(), captureLambda<Collection.() -> Any>()) } answers {
             val collection = firstArg<SafeXDev.SafeCollection>()
             val lamdba = secondArg<Collection.() -> Any>()
@@ -60,9 +61,10 @@ class R4EncounterResourceTest : BaseMySQLTest() {
         fakeEncounter2.id = "FAKEENCOUNTER2"
         collection.add(FhirContext.forR4().newJsonParser().encodeResourceToString(fakeEncounter2)).execute()
 
-        val output = encounterProvider.search(
-            patient = ReferenceParam("fakeFakeFakeId")
-        )
+        val output =
+            encounterProvider.search(
+                patient = ReferenceParam("fakeFakeFakeId"),
+            )
 
         assertEquals(1, output.size)
         assertEquals("Encounter/${fakeEncounter.id}", output[0].id)
@@ -80,9 +82,10 @@ class R4EncounterResourceTest : BaseMySQLTest() {
         fakeEncounter2.id = "FAKEENCOUNTER2"
         collection.add(FhirContext.forR4().newJsonParser().encodeResourceToString(fakeEncounter2)).execute()
 
-        val output = encounterProvider.search(
-            subject = ReferenceParam("Patient/fakeFakeFakeId")
-        )
+        val output =
+            encounterProvider.search(
+                subject = ReferenceParam("Patient/fakeFakeFakeId"),
+            )
 
         assertEquals(1, output.size)
         assertEquals("Encounter/${fakeEncounter.id}", output[0].id)
@@ -100,10 +103,11 @@ class R4EncounterResourceTest : BaseMySQLTest() {
         fakeEncounter2.id = "FAKEENCOUNTER2"
         collection.add(FhirContext.forR4().newJsonParser().encodeResourceToString(fakeEncounter2)).execute()
 
-        val output = encounterProvider.search(
-            patient = ReferenceParam("fakeFakeFakeId"),
-            subject = ReferenceParam("Patient/fakeFakeFakeId")
-        )
+        val output =
+            encounterProvider.search(
+                patient = ReferenceParam("fakeFakeFakeId"),
+                subject = ReferenceParam("Patient/fakeFakeFakeId"),
+            )
 
         assertEquals(1, output.size)
         assertEquals("Encounter/${fakeEncounter.id}", output[0].id)
@@ -126,9 +130,10 @@ class R4EncounterResourceTest : BaseMySQLTest() {
         val dateParam = DateRangeParam()
         dateParam.lowerBound = DateParam("2012-02-22T12:12:00-06:00")
 
-        val output = encounterProvider.search(
-            dateRange = dateParam
-        )
+        val output =
+            encounterProvider.search(
+                dateRange = dateParam,
+            )
 
         assertEquals(1, output.size)
         assertEquals("Encounter/${fakeEncounter.id}", output[0].id)
@@ -152,9 +157,10 @@ class R4EncounterResourceTest : BaseMySQLTest() {
         dateParam.lowerBound = DateParam("2012-02-22T12:12:00-06:00")
         dateParam.upperBound = DateParam("2022-02-22T12:12:00-06:00")
 
-        val output = encounterProvider.search(
-            dateRange = dateParam
-        )
+        val output =
+            encounterProvider.search(
+                dateRange = dateParam,
+            )
 
         assertEquals(1, output.size)
         assertEquals("Encounter/${fakeEncounter.id}", output[0].id)
@@ -178,9 +184,10 @@ class R4EncounterResourceTest : BaseMySQLTest() {
         dateParam.lowerBound = DateParam("2012-02-22T12:12:00-06:00")
         dateParam.upperBound = DateParam("2016-02-22T12:12:00-06:00")
 
-        val output = encounterProvider.search(
-            dateRange = dateParam
-        )
+        val output =
+            encounterProvider.search(
+                dateRange = dateParam,
+            )
 
         assertEquals(0, output.size)
     }
@@ -201,9 +208,10 @@ class R4EncounterResourceTest : BaseMySQLTest() {
         dateParam.lowerBound = DateParam("2012-02-22T12:12:00-06:00")
         dateParam.upperBound = DateParam("2022-02-22T12:12:00-06:00")
 
-        val output = encounterProvider.search(
-            dateRange = dateParam
-        )
+        val output =
+            encounterProvider.search(
+                dateRange = dateParam,
+            )
 
         assertEquals(0, output.size)
     }

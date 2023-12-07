@@ -11,7 +11,7 @@ import java.util.Date
 @Component
 class R4ProcedureDAO(
     private val schema: SafeXDev,
-    context: FhirContext
+    context: FhirContext,
 ) : BaseResourceDAO<Procedure>(context, schema, Procedure::class.java) {
     /**
      * Finds Procedure based on input query parameters.
@@ -22,7 +22,7 @@ class R4ProcedureDAO(
     fun searchByQuery(
         reference: List<Reference> = listOf(),
         fromDate: Date? = null,
-        toDate: Date? = null
+        toDate: Date? = null,
     ): List<Procedure> {
         val queryFragments = mutableListOf<String>()
 

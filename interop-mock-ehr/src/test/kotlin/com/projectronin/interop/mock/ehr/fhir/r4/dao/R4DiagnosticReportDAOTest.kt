@@ -21,10 +21,11 @@ internal class R4DiagnosticReportDAOTest : BaseMySQLTest() {
     fun beforeTest() {
         collection = createCollection(DiagnosticReport::class.simpleName!!)
         val database = mockk<SafeXDev>()
-        every { database.createCollection(DiagnosticReport::class.java) } returns SafeXDev.SafeCollection(
-            "resource",
-            collection
-        )
+        every { database.createCollection(DiagnosticReport::class.java) } returns
+            SafeXDev.SafeCollection(
+                "resource",
+                collection,
+            )
         every { database.run(any(), captureLambda<Collection.() -> Any>()) } answers {
             val collection = firstArg<SafeXDev.SafeCollection>()
             val lamdba = secondArg<Collection.() -> Any>()

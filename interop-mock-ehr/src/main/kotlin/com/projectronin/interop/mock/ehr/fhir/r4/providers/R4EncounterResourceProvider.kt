@@ -21,7 +21,7 @@ class R4EncounterResourceProvider(override var resourceDAO: R4EncounterDAO) :
     fun search(
         @OptionalParam(name = Encounter.SP_PATIENT) patient: ReferenceParam? = null,
         @OptionalParam(name = Encounter.SP_SUBJECT) subject: ReferenceParam? = null,
-        @OptionalParam(name = Encounter.SP_DATE) dateRange: DateRangeParam? = null
+        @OptionalParam(name = Encounter.SP_DATE) dateRange: DateRangeParam? = null,
     ): List<Encounter> {
         val referenceList = mutableListOf<Reference>()
 
@@ -31,7 +31,7 @@ class R4EncounterResourceProvider(override var resourceDAO: R4EncounterDAO) :
         return resourceDAO.searchByQuery(
             referenceList,
             dateRange?.lowerBoundAsInstant,
-            dateRange?.upperBoundAsInstant
+            dateRange?.upperBoundAsInstant,
         )
     }
 }

@@ -16,40 +16,46 @@ class R4CommunicationTransformer {
         val messageContent =
             Communication.CommunicationPayloadComponent(
                 StringType(
-                    sendMessageRequest.messageText?.joinToString("\n") ?: ""
-                )
+                    sendMessageRequest.messageText?.joinToString("\n") ?: "",
+                ),
             )
         val messageType = CodeableConcept()
         messageType.text = sendMessageRequest.messageType
 
-        val communicationPriority = try {
-            Communication.CommunicationPriority.fromCode(sendMessageRequest.messagePriority)
-        } catch (e: FHIRException) {
-            Communication.CommunicationPriority.ROUTINE
-        }
-
-        val patientReference = buildReference(
-            ResourceType.Patient,
-            sendMessageRequest.patientID,
-            sendMessageRequest.patientIDType
-        )
-        val senderReference = buildReference(
-            ResourceType.Organization,
-            sendMessageRequest.senderID,
-            sendMessageRequest.senderIDType
-        )
-        val encounterReference = buildReference(
-            ResourceType.Encounter,
-            sendMessageRequest.contactID,
-            sendMessageRequest.contactIDType
-        )
-        val recipients = sendMessageRequest.recipients?.map {
-            val referenceType = when (it.isPool) {
-                true -> ResourceType.Group
-                false -> ResourceType.Practitioner
+        val communicationPriority =
+            try {
+                Communication.CommunicationPriority.fromCode(sendMessageRequest.messagePriority)
+            } catch (e: FHIRException) {
+                Communication.CommunicationPriority.ROUTINE
             }
-            buildReference(referenceType, it.iD, it.iDType)
-        }
+
+        val patientReference =
+            buildReference(
+                ResourceType.Patient,
+                sendMessageRequest.patientID,
+                sendMessageRequest.patientIDType,
+            )
+        val senderReference =
+            buildReference(
+                ResourceType.Organization,
+                sendMessageRequest.senderID,
+                sendMessageRequest.senderIDType,
+            )
+        val encounterReference =
+            buildReference(
+                ResourceType.Encounter,
+                sendMessageRequest.contactID,
+                sendMessageRequest.contactIDType,
+            )
+        val recipients =
+            sendMessageRequest.recipients?.map {
+                val referenceType =
+                    when (it.isPool) {
+                        true -> ResourceType.Group
+                        false -> ResourceType.Practitioner
+                    }
+                buildReference(referenceType, it.iD, it.iDType)
+            }
 
         val communication = Communication()
         communication.payload = listOf(messageContent)
@@ -63,7 +69,11 @@ class R4CommunicationTransformer {
         return communication
     }
 
-    private fun buildReference(referenceType: ResourceType, id: String?, idType: String?): Reference {
+    private fun buildReference(
+        referenceType: ResourceType,
+        id: String?,
+        idType: String?,
+    ): Reference {
         val identifier = Identifier()
         identifier.type.text = idType
         identifier.value = id

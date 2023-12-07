@@ -28,10 +28,11 @@ class R4AppointmentResourceTest : BaseMySQLTest() {
     fun initTest() {
         collection = createCollection(Appointment::class.simpleName!!)
         val database = mockk<SafeXDev>()
-        every { database.createCollection(Appointment::class.java) } returns SafeXDev.SafeCollection(
-            "resource",
-            collection
-        )
+        every { database.createCollection(Appointment::class.java) } returns
+            SafeXDev.SafeCollection(
+                "resource",
+                collection,
+            )
         every { database.run(any(), captureLambda<Collection.() -> Any>()) } answers {
             val collection = firstArg<SafeXDev.SafeCollection>()
             val lamdba = secondArg<Collection.() -> Any>()
@@ -72,10 +73,11 @@ class R4AppointmentResourceTest : BaseMySQLTest() {
         testAppt2.id = "TESTAPPT4"
         collection.add(FhirContext.forR4().newJsonParser().encodeResourceToString(testAppt2)).execute()
 
-        val output = appointmentProvider.search(
-            practitionerReferenceParam = ReferenceParam("IPMD"),
-            referenceParam = ReferenceParam("Location/1")
-        )
+        val output =
+            appointmentProvider.search(
+                practitionerReferenceParam = ReferenceParam("IPMD"),
+                referenceParam = ReferenceParam("Location/1"),
+            )
         assertEquals(1, output.size)
         assertEquals("Appointment/${testAppt.id}", output[0].id)
     }
@@ -94,10 +96,11 @@ class R4AppointmentResourceTest : BaseMySQLTest() {
         testAppt2.id = "TESTAPPT10"
         collection.add(FhirContext.forR4().newJsonParser().encodeResourceToString(testAppt2)).execute()
 
-        val output = appointmentProvider.search(
-            practitionerReferenceParam = ReferenceParam("IPMD"),
-            locationParam = ReferenceParam("LocationFHIRID1")
-        )
+        val output =
+            appointmentProvider.search(
+                practitionerReferenceParam = ReferenceParam("IPMD"),
+                locationParam = ReferenceParam("LocationFHIRID1"),
+            )
         assertEquals(1, output.size)
         assertEquals("Appointment/${testAppt.id}", output[0].id)
     }
@@ -116,9 +119,10 @@ class R4AppointmentResourceTest : BaseMySQLTest() {
 
         val dateParam = DateRangeParam()
         dateParam.lowerBound = DateParam("2011-02-22T13:12:00-06:00")
-        val output = appointmentProvider.search(
-            dateRangeParam = dateParam
-        )
+        val output =
+            appointmentProvider.search(
+                dateRangeParam = dateParam,
+            )
         assertEquals(1, output.size)
         assertEquals("Appointment/${testAppt2.id}", output[0].id)
     }
@@ -138,9 +142,10 @@ class R4AppointmentResourceTest : BaseMySQLTest() {
         val dateParam = DateRangeParam()
         dateParam.lowerBound = DateParam("2011-02-22T13:12:00-06:00")
         dateParam.upperBound = DateParam("2020-02-22T13:12:00-06:00")
-        val output = appointmentProvider.search(
-            dateRangeParam = dateParam
-        )
+        val output =
+            appointmentProvider.search(
+                dateRangeParam = dateParam,
+            )
         assertEquals(0, output.size)
     }
 

@@ -16,7 +16,7 @@ import java.util.UUID
 abstract class BaseResourceDAO<T : Resource>(
     protected val context: FhirContext,
     private val schema: SafeXDev,
-    val resourceType: Class<T>
+    val resourceType: Class<T>,
 ) {
     protected val collection: SafeXDev.SafeCollection = schema.createCollection(resourceType)
 
@@ -35,7 +35,7 @@ abstract class BaseResourceDAO<T : Resource>(
             schema.run(collection) {
                 replaceOne(
                     it,
-                    context.newJsonParser().encodeResourceToString(resource)
+                    context.newJsonParser().encodeResourceToString(resource),
                 )
             }
         } ?: insert(resource) // add new resource if not found
@@ -46,11 +46,12 @@ abstract class BaseResourceDAO<T : Resource>(
     }
 
     fun findById(fhirId: String): T {
-        val resourceJSON = findByIdQuery(fhirId)?.toString()
-            ?: throw ResourceNotFoundException("No resource found with id: $fhirId")
+        val resourceJSON =
+            findByIdQuery(fhirId)?.toString()
+                ?: throw ResourceNotFoundException("No resource found with id: $fhirId")
         return context.newJsonParser().parseResource(
             resourceType,
-            resourceJSON
+            resourceJSON,
         )
     }
 
@@ -65,7 +66,10 @@ abstract class BaseResourceDAO<T : Resource>(
         return list
     }
 
-    fun patch(fhirId: String, rawPatch: String) {
+    fun patch(
+        fhirId: String,
+        rawPatch: String,
+    ) {
         val mapper = ObjectMapper()
         val patch = mapper.readValue(rawPatch, JsonPatch::class.java)
         val resourceJSON = findByIdQuery(fhirId)?.toString()
@@ -94,15 +98,20 @@ abstract class BaseResourceDAO<T : Resource>(
      * Returns a search string suitable as part of a where clause in a query to mock EHR.
      * Returns null if no search string can be formed from the input.
      */
-    fun getSearchStringForFHIRTokens(fhirTokens: TokenOrListParam? = null, fieldName: String? = "category", repeatingField: Boolean? = true): String? {
+    fun getSearchStringForFHIRTokens(
+        fhirTokens: TokenOrListParam? = null,
+        fieldName: String? = "category",
+        repeatingField: Boolean? = true,
+    ): String? {
         if (fhirTokens == null) {
             return null
         }
         val queryFragments = mutableListOf<String>()
         val categories = fhirTokens.valuesAsQueryTokens
-        val phraseList = categories.mapNotNull { token ->
-            getSearchStringForFHIRToken(token, fieldName, repeatingField)
-        }
+        val phraseList =
+            categories.mapNotNull { token ->
+                getSearchStringForFHIRToken(token, fieldName, repeatingField)
+            }
         if (phraseList.isNotEmpty()) {
             queryFragments.add(" ( ")
             queryFragments.add(phraseList.joinToString(" OR "))
@@ -117,7 +126,11 @@ abstract class BaseResourceDAO<T : Resource>(
      * Returns a search string suitable as part of a where clause in a query to mock EHR.
      * Returns null if no search string can be formed from the input.
      */
-    fun getSearchStringForFHIRToken(fhirToken: TokenParam? = null, fieldName: String? = "category", repeatingField: Boolean? = true): String? {
+    fun getSearchStringForFHIRToken(
+        fhirToken: TokenParam? = null,
+        fieldName: String? = "category",
+        repeatingField: Boolean? = true,
+    ): String? {
         if (fhirToken == null) {
             return null
         }
@@ -127,7 +140,8 @@ abstract class BaseResourceDAO<T : Resource>(
 
         return if (!system.isNullOrEmpty()) {
             if (!code.isNullOrEmpty()) {
-                "('${system.escapeSQL()}' in ${field.escapeSQL()}.coding[*].system AND '${code.escapeSQL()}' in ${field.escapeSQL()}.coding[*].code)"
+                "('${system.escapeSQL()}' in ${field.escapeSQL()}.coding[*].system AND " +
+                    "'${code.escapeSQL()}' in ${field.escapeSQL()}.coding[*].code)"
             } else {
                 "('${system.escapeSQL()}' in ${field.escapeSQL()}.coding[*].system)"
             }

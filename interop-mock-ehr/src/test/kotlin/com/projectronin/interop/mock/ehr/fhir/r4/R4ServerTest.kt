@@ -60,7 +60,6 @@ import org.junit.jupiter.api.Test
 import javax.servlet.http.HttpServletResponse
 
 internal class R4ServerTest {
-
     @Test
     fun `add resources correctly test`() {
         val ctx = FhirContext.forR4()
@@ -112,33 +111,34 @@ internal class R4ServerTest {
         every { r4Procedure.resourceType } returns Procedure::class.java
         val r4DiagnosticReport = mockk<R4DiagnosticReportResourceProvider>()
         every { r4DiagnosticReport.resourceType } returns DiagnosticReport::class.java
-        val server = R4Server(
-            ctx,
-            r4Patient,
-            r4Condition,
-            r4Appointment,
-            r4Practitioner,
-            r4Location,
-            r4PractitionerRole,
-            r4Communication,
-            r4Bundle,
-            r4Observation,
-            r4DocumentReference,
-            r4Binary,
-            r4Organization,
-            r4CareTeam,
-            r4CarePlan,
-            r4Medication,
-            r4MedicationStatement,
-            r4MedicationRequest,
-            r4Encounter,
-            r4RequestGroup,
-            r4Flag,
-            r4MedAdmin,
-            r4ServiceRequest,
-            r4Procedure,
-            r4DiagnosticReport
-        )
+        val server =
+            R4Server(
+                ctx,
+                r4Patient,
+                r4Condition,
+                r4Appointment,
+                r4Practitioner,
+                r4Location,
+                r4PractitionerRole,
+                r4Communication,
+                r4Bundle,
+                r4Observation,
+                r4DocumentReference,
+                r4Binary,
+                r4Organization,
+                r4CareTeam,
+                r4CarePlan,
+                r4Medication,
+                r4MedicationStatement,
+                r4MedicationRequest,
+                r4Encounter,
+                r4RequestGroup,
+                r4Flag,
+                r4MedAdmin,
+                r4ServiceRequest,
+                r4Procedure,
+                r4DiagnosticReport,
+            )
         server.init()
         assertTrue(
             server.resourceProviders.containsAll(
@@ -166,18 +166,19 @@ internal class R4ServerTest {
                     r4MedAdmin,
                     r4ServiceRequest,
                     r4Procedure,
-                    r4DiagnosticReport
-                )
-            )
+                    r4DiagnosticReport,
+                ),
+            ),
         )
     }
 
     @Test
     fun `filterTest - short circuit null`() {
         val filter = RoninVendorFilter()
-        val request = mockk<RequestDetails> {
-            every { resourceName } returns null
-        }
+        val request =
+            mockk<RequestDetails> {
+                every { resourceName } returns null
+            }
         val response = mockk<HttpServletResponse>()
         val ret = filter.filterVendor(request, response)
         assertEquals(ret, true)
@@ -186,9 +187,10 @@ internal class R4ServerTest {
     @Test
     fun `filterTest - short circuit empty`() {
         val filter = RoninVendorFilter()
-        val request = mockk<RequestDetails> {
-            every { resourceName } returns ""
-        }
+        val request =
+            mockk<RequestDetails> {
+                every { resourceName } returns ""
+            }
         val response = mockk<HttpServletResponse>()
         val ret = filter.filterVendor(request, response)
         assertEquals(ret, true)
@@ -197,10 +199,11 @@ internal class R4ServerTest {
     @Test
     fun `filterTest - default server`() {
         val filter = RoninVendorFilter()
-        val request = mockk<RequestDetails> {
-            every { resourceName } returns "Patient"
-            every { completeUrl } returns "localhost/"
-        }
+        val request =
+            mockk<RequestDetails> {
+                every { resourceName } returns "Patient"
+                every { completeUrl } returns "localhost/"
+            }
         val response = mockk<HttpServletResponse>()
         val ret = filter.filterVendor(request, response)
         assertEquals(ret, true)
@@ -209,11 +212,12 @@ internal class R4ServerTest {
     @Test
     fun `filterTest - epic server`() {
         val filter = RoninVendorFilter()
-        val request = mockk<RequestDetails> {
-            every { resourceName } returns "Patient"
-            every { completeUrl } returns "localhost/epic/"
-            every { tenantId = "epic" } just runs
-        }
+        val request =
+            mockk<RequestDetails> {
+                every { resourceName } returns "Patient"
+                every { completeUrl } returns "localhost/epic/"
+                every { tenantId = "epic" } just runs
+            }
         val response = mockk<HttpServletResponse>()
         val ret = filter.filterVendor(request, response)
         assertEquals(ret, true)
@@ -222,11 +226,12 @@ internal class R4ServerTest {
     @Test
     fun `filterTest - cerner server`() {
         val filter = RoninVendorFilter()
-        val request = mockk<RequestDetails> {
-            every { resourceName } returns "Patient"
-            every { completeUrl } returns "localhost/cerner/"
-            every { tenantId = "cerner" } just runs
-        }
+        val request =
+            mockk<RequestDetails> {
+                every { resourceName } returns "Patient"
+                every { completeUrl } returns "localhost/cerner/"
+                every { tenantId = "cerner" } just runs
+            }
         val response = mockk<HttpServletResponse>()
         val ret = filter.filterVendor(request, response)
         assertEquals(ret, true)
@@ -235,14 +240,16 @@ internal class R4ServerTest {
     @Test
     fun `filterTest - unsupported failure`() {
         val filter = RoninVendorFilter()
-        val request = mockk<RequestDetails> {
-            every { resourceName } returns "PractitionerRole"
-            every { completeUrl } returns "localhost/cerner/"
-            every { tenantId = "cerner" } just runs
-        }
-        val response = mockk<HttpServletResponse> {
-            every { sendError(any(), any()) } just runs
-        }
+        val request =
+            mockk<RequestDetails> {
+                every { resourceName } returns "PractitionerRole"
+                every { completeUrl } returns "localhost/cerner/"
+                every { tenantId = "cerner" } just runs
+            }
+        val response =
+            mockk<HttpServletResponse> {
+                every { sendError(any(), any()) } just runs
+            }
         val ret = filter.filterVendor(request, response)
         assertEquals(ret, false)
     }

@@ -14,7 +14,6 @@ import org.springframework.stereotype.Component
 @Component
 class R4DocumentReferenceResourceProvider(override var resourceDAO: R4DocumentReferenceDAO) :
     BaseResourceProvider<DocumentReference, R4DocumentReferenceDAO>() {
-
     override fun getResourceType(): Class<out IBaseResource> {
         return DocumentReference::class.java
     }
@@ -26,7 +25,7 @@ class R4DocumentReferenceResourceProvider(override var resourceDAO: R4DocumentRe
         @OptionalParam(name = DocumentReference.SP_ENCOUNTER) encounterReferenceParam: ReferenceParam? = null,
         @OptionalParam(name = DocumentReference.SP_CATEGORY) categoryParam: TokenOrListParam? = null,
         @OptionalParam(name = "docStatus") docStatusParam: StringParam? = null,
-        @OptionalParam(name = DocumentReference.SP_DATE) dateRangeParam: DateRangeParam? = null
+        @OptionalParam(name = DocumentReference.SP_DATE) dateRangeParam: DateRangeParam? = null,
     ): List<DocumentReference> {
         val subject = patientReferenceParam?.let { "Patient/${it.value}" } ?: subjectReferenceParam?.value
         val encounter = encounterReferenceParam?.let { "Encounter/${it.value}" }
@@ -36,7 +35,7 @@ class R4DocumentReferenceResourceProvider(override var resourceDAO: R4DocumentRe
             docStatusParam?.value,
             encounter,
             dateRangeParam?.lowerBoundAsInstant,
-            dateRangeParam?.upperBoundAsInstant
+            dateRangeParam?.upperBoundAsInstant,
         )
     }
 }

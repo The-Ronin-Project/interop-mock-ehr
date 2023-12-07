@@ -21,20 +21,24 @@ class R4BundleResourceProvider(resourceDAOs: List<BaseResourceDAO<*>>) : IResour
     }
 
     @Transaction
-    fun bundleTransaction(@TransactionParam bundleParam: Bundle): Bundle {
+    fun bundleTransaction(
+        @TransactionParam bundleParam: Bundle,
+    ): Bundle {
         val response = Bundle()
         bundleParam.entry.forEach { entry ->
             if (entry.request.method != Bundle.HTTPVerb.POST) {
                 throw UnsupportedOperationException("This server only allows POST operations in transaction Bundles.")
             }
             val resourceDAO = daoMap[entry.resource.resourceType]
-            val id = resourceDAO?.insert(entry.resource)
-                ?: throw UnsupportedOperationException("Resource type ${entry.resource.resourceType} not supported.")
+            val id =
+                resourceDAO?.insert(entry.resource)
+                    ?: throw UnsupportedOperationException("Resource type ${entry.resource.resourceType} not supported.")
             val responseEntry = BundleEntryComponent()
             responseEntry.resource = entry.resource // FHIR example shows full resource returned.
-            responseEntry.response = Bundle.BundleEntryResponseComponent().setStatus("201 Created")
-                // HAPI serialization prepends IDs with the resource type but BaseResourceDAO does not.
-                .setLocation("${entry.resource.resourceType}/${id.removePrefix("${entry.resource.resourceType}/")}")
+            responseEntry.response =
+                Bundle.BundleEntryResponseComponent().setStatus("201 Created")
+                    // HAPI serialization prepends IDs with the resource type but BaseResourceDAO does not.
+                    .setLocation("${entry.resource.resourceType}/${id.removePrefix("${entry.resource.resourceType}/")}")
             response.addEntry(responseEntry)
         }
         return response

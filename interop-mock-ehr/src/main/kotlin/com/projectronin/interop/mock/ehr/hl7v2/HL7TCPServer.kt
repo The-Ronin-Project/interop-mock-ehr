@@ -15,7 +15,7 @@ class HL7TCPServer(
     binaryDAO: R4BinaryDAO,
     documentReferenceDAO: R4DocumentReferenceDAO,
     patientResolver: PatientResolver,
-    documentReferenceResolver: DocumentReferenceResolver
+    documentReferenceResolver: DocumentReferenceResolver,
 ) {
     final val server: SimpleServer = DefaultHapiContext().newServer(port, false)
 

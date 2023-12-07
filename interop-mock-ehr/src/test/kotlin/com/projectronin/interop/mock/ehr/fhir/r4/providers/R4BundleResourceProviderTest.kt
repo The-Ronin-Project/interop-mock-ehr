@@ -13,7 +13,6 @@ import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 
 internal class R4BundleResourceProviderTest {
-
     private var dao = mockk<R4PatientDAO>()
     private lateinit var provider: R4BundleResourceProvider
 

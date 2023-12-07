@@ -28,10 +28,11 @@ internal class R4DocumentReferenceDAOTest {
     fun initTest() {
         collection = mockk()
         val database = mockk<SafeXDev>()
-        every { database.createCollection(DocumentReference::class.java) } returns SafeXDev.SafeCollection(
-            "resource",
-            collection
-        )
+        every { database.createCollection(DocumentReference::class.java) } returns
+            SafeXDev.SafeCollection(
+                "resource",
+                collection,
+            )
         every { database.run(any(), captureLambda<Collection.() -> Any>()) } answers {
             val collection = firstArg<SafeXDev.SafeCollection>()
             val lamdba = secondArg<Collection.() -> Any>()
@@ -66,11 +67,13 @@ internal class R4DocumentReferenceDAOTest {
 
     @Test
     fun `identifier search returns null when none found`() {
-        every { collection.find(any()) } returns mockk {
-            every { execute() } returns mockk {
-                every { fetchAll() } returns emptyList()
+        every { collection.find(any()) } returns
+            mockk {
+                every { execute() } returns
+                    mockk {
+                        every { fetchAll() } returns emptyList()
+                    }
             }
-        }
         val identifier = Identifier()
         identifier.value = "value"
         val output = dao.searchByIdentifier(identifier)
@@ -79,11 +82,13 @@ internal class R4DocumentReferenceDAOTest {
 
     @Test
     fun `identifier search returns null when multiple found`() {
-        every { collection.find(any()) } returns mockk {
-            every { execute() } returns mockk {
-                every { fetchAll() } returns listOf(mockk(), mockk())
+        every { collection.find(any()) } returns
+            mockk {
+                every { execute() } returns
+                    mockk {
+                        every { fetchAll() } returns listOf(mockk(), mockk())
+                    }
             }
-        }
         val identifier = Identifier()
         identifier.value = "value"
         val output = dao.searchByIdentifier(identifier)
@@ -97,11 +102,13 @@ internal class R4DocumentReferenceDAOTest {
         val documentString = FhirContext.forR4().newJsonParser().encodeResourceToString(document)
         val mockDocDb = mockk<DbDoc>()
         every { mockDocDb.toString() } returns documentString
-        every { collection.find(any()) } returns mockk {
-            every { execute() } returns mockk {
-                every { fetchAll() } returns listOf(mockDocDb)
+        every { collection.find(any()) } returns
+            mockk {
+                every { execute() } returns
+                    mockk {
+                        every { fetchAll() } returns listOf(mockDocDb)
+                    }
             }
-        }
         val identifier = Identifier()
         identifier.value = "value"
         val output = dao.searchByIdentifier(identifier)

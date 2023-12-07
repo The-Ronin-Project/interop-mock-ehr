@@ -28,10 +28,11 @@ class R4RequestGroupResourceTest : BaseMySQLTest() {
     fun initTest() {
         collection = createCollection(RequestGroup::class.simpleName!!)
         val database = mockk<SafeXDev>()
-        every { database.createCollection(RequestGroup::class.java) } returns SafeXDev.SafeCollection(
-            "resource",
-            collection
-        )
+        every { database.createCollection(RequestGroup::class.java) } returns
+            SafeXDev.SafeCollection(
+                "resource",
+                collection,
+            )
         every { database.run(any(), captureLambda<Collection.() -> Any>()) } answers {
             val collection = firstArg<SafeXDev.SafeCollection>()
             val lamdba = secondArg<Collection.() -> Any>()
@@ -68,9 +69,10 @@ class R4RequestGroupResourceTest : BaseMySQLTest() {
         val testRequestGroup = RequestGroup()
         testRequestGroup.id = "TESTINGIDENTIFIER1"
 
-        val exception = assertThrows<ResourceNotFoundException> {
-            requestGroupProvider.read(IdType("NothingToSeeHere"))
-        }
+        val exception =
+            assertThrows<ResourceNotFoundException> {
+                requestGroupProvider.read(IdType("NothingToSeeHere"))
+            }
         assertEquals("No resource found with id: NothingToSeeHere", exception.message)
     }
 

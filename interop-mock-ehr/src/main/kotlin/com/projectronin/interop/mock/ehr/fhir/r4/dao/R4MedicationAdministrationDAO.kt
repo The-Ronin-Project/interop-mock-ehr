@@ -10,19 +10,19 @@ import java.util.Date
 @Component
 class R4MedicationAdministrationDAO(private val schema: SafeXDev, context: FhirContext) :
     BaseResourceDAO<MedicationAdministration>(context, schema, MedicationAdministration::class.java) {
-
     fun searchByPatient(
         patientID: String,
         fromDate: Date? = null,
-        toDate: Date? = null
+        toDate: Date? = null,
     ): List<MedicationAdministration> {
         val parser = context.newJsonParser()
 
-        val medicationAdministrations = schema.run(collection) {
-            find("subject.reference = 'Patient/${patientID.escapeSQL()}'").execute().map {
-                parser.parseResource(resourceType, it.toString())
+        val medicationAdministrations =
+            schema.run(collection) {
+                find("subject.reference = 'Patient/${patientID.escapeSQL()}'").execute().map {
+                    parser.parseResource(resourceType, it.toString())
+                }
             }
-        }
 
         // no good way to compare dates in the query string, so we have to filter post-query.
         return medicationAdministrations.filter { medicationAdministration ->

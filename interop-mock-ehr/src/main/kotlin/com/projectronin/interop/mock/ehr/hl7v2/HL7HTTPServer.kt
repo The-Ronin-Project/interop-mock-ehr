@@ -16,7 +16,7 @@ class HL7HTTPServer(
     private val binaryDAO: R4BinaryDAO,
     private val documentReferenceDAO: R4DocumentReferenceDAO,
     private val patientResolver: PatientResolver,
-    private val documentReferenceResolver: DocumentReferenceResolver
+    private val documentReferenceResolver: DocumentReferenceResolver,
 ) : HohServlet() {
     override fun init(config: ServletConfig) {
         setApplication(MDMReceiverHandler(binaryDAO, documentReferenceDAO, patientResolver, documentReferenceResolver))

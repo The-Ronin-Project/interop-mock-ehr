@@ -24,10 +24,11 @@ internal class R4ProcedureDAOTest : BaseMySQLTest() {
     fun initTest() {
         collection = createCollection(Procedure::class.simpleName!!)
         val database = mockk<SafeXDev>()
-        every { database.createCollection(Procedure::class.java) } returns SafeXDev.SafeCollection(
-            "resource",
-            collection
-        )
+        every { database.createCollection(Procedure::class.java) } returns
+            SafeXDev.SafeCollection(
+                "resource",
+                collection,
+            )
         every { database.run(any(), captureLambda<Collection.() -> Any>()) } answers {
             val collection = firstArg<SafeXDev.SafeCollection>()
             val lamdba = secondArg<Collection.() -> Any>()

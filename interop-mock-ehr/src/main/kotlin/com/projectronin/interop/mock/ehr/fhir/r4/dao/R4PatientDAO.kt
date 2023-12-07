@@ -17,7 +17,7 @@ class R4PatientDAO(private val schema: SafeXDev, context: FhirContext) :
         familyName: String? = null,
         gender: String? = null,
         email: String? = null,
-        telecom: ContactPoint? = null
+        telecom: ContactPoint? = null,
     ): List<Patient> {
         val queryFragments = mutableListOf<String>()
 
@@ -31,20 +31,23 @@ class R4PatientDAO(private val schema: SafeXDev, context: FhirContext) :
         val query = queryFragments.joinToString(" AND ")
         val parser = context.newJsonParser()
 
-        val result = schema.run(collection) {
-            find(query).execute().map {
-                parser.parseResource(resourceType, it.toString())
+        val result =
+            schema.run(collection) {
+                find(query).execute().map {
+                    parser.parseResource(resourceType, it.toString())
+                }
             }
-        }
         return result.filter { patient ->
-            (givenName == null && familyName == null && patient.name.isEmpty()) || patient.name.any { humanName ->
-                val matchesGivenName = givenName?.let { searchGiven ->
-                    humanName.given.any { it.toString().equals(searchGiven, ignoreCase = true) }
-                } ?: true
-                val matchesFamilyName = familyName?.let { it.equals(humanName.family, ignoreCase = true) } ?: true
+            (givenName == null && familyName == null && patient.name.isEmpty()) ||
+                patient.name.any { humanName ->
+                    val matchesGivenName =
+                        givenName?.let { searchGiven ->
+                            humanName.given.any { it.toString().equals(searchGiven, ignoreCase = true) }
+                        } ?: true
+                    val matchesFamilyName = familyName?.let { it.equals(humanName.family, ignoreCase = true) } ?: true
 
-                matchesGivenName && matchesFamilyName
-            }
+                    matchesGivenName && matchesFamilyName
+                }
         }
     }
 

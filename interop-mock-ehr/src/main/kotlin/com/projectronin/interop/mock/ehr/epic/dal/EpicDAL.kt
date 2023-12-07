@@ -25,5 +25,5 @@ class EpicDAL(
     val r4EncounterDAO: R4EncounterDAO,
     val r4FlagDAO: R4FlagDAO,
     val r4MedAdminDAO: R4MedicationAdministrationDAO,
-    val r4MedicationRequestDAO: R4MedicationRequestDAO
+    val r4MedicationRequestDAO: R4MedicationRequestDAO,
 )

@@ -30,10 +30,11 @@ class R4ConditionResourceTest : BaseMySQLTest() {
     fun initTest() {
         collection = createCollection(Condition::class.simpleName!!)
         val database = mockk<SafeXDev>()
-        every { database.createCollection(Condition::class.java) } returns SafeXDev.SafeCollection(
-            "resource",
-            collection
-        )
+        every { database.createCollection(Condition::class.java) } returns
+            SafeXDev.SafeCollection(
+                "resource",
+                collection,
+            )
         every { database.run(any(), captureLambda<Collection.() -> Any>()) } answers {
             val collection = firstArg<SafeXDev.SafeCollection>()
             val lamdba = secondArg<Collection.() -> Any>()
@@ -223,10 +224,11 @@ class R4ConditionResourceTest : BaseMySQLTest() {
         collection.add(FhirContext.forR4().newJsonParser().encodeResourceToString(testCondition4)).execute()
 
         // AND match on "myCode" for 3 mixed properties matches only conditions 1 and 4
-        var output = conditionProvider.search(
-            clinicalStatusParam = TokenOrListParam("system", "myCode"),
-            categoryParam = TokenOrListParam("", "myCode")
-        )
+        var output =
+            conditionProvider.search(
+                clinicalStatusParam = TokenOrListParam("system", "myCode"),
+                categoryParam = TokenOrListParam("", "myCode"),
+            )
         assertEquals(2, output.size)
         assertEquals("Condition/${testCondition1.id}", output[0].id)
         assertEquals("Condition/${testCondition4.id}", output[1].id)
@@ -241,10 +243,11 @@ class R4ConditionResourceTest : BaseMySQLTest() {
         collection.add(FhirContext.forR4().newJsonParser().encodeResourceToString(testConditionNoMatch)).execute()
 
         // no match for mixed AND condition
-        output = conditionProvider.search(
-            clinicalStatusParam = TokenOrListParam("system", "myCode"),
-            categoryParam = TokenOrListParam("", "myCode")
-        )
+        output =
+            conditionProvider.search(
+                clinicalStatusParam = TokenOrListParam("system", "myCode"),
+                categoryParam = TokenOrListParam("", "myCode"),
+            )
         assertEquals(0, output.size)
     }
 

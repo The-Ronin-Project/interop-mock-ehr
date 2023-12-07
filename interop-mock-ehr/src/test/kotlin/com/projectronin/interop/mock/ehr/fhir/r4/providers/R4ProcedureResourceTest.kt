@@ -34,10 +34,11 @@ class R4ProcedureResourceTest : BaseMySQLTest() {
         val database = mockk<SafeXDev>()
         every {
             database.createCollection(Procedure::class.java)
-        } returns SafeXDev.SafeCollection(
-            "resource",
-            collection
-        )
+        } returns
+            SafeXDev.SafeCollection(
+                "resource",
+                collection,
+            )
         every {
             database.run(any(), captureLambda<Collection.() -> Any>())
         } answers {
@@ -71,9 +72,10 @@ class R4ProcedureResourceTest : BaseMySQLTest() {
         fakeProcedure2.id = "FAKEPROCEDURE2"
         collection.add(FhirContext.forR4().newJsonParser().encodeResourceToString(fakeProcedure2)).execute()
 
-        val output = procedureProvider.search(
-            patient = ReferenceParam("fakeFakeFakeId")
-        )
+        val output =
+            procedureProvider.search(
+                patient = ReferenceParam("fakeFakeFakeId"),
+            )
 
         assertEquals(1, output.size)
         assertEquals("Procedure/${fakeProcedure.id}", output[0].id)
@@ -91,9 +93,10 @@ class R4ProcedureResourceTest : BaseMySQLTest() {
         fakeProcedure2.id = "FAKEPROCEDURE2"
         collection.add(FhirContext.forR4().newJsonParser().encodeResourceToString(fakeProcedure2)).execute()
 
-        val output = procedureProvider.search(
-            subject = ReferenceParam("Patient/fakeFakeFakeId")
-        )
+        val output =
+            procedureProvider.search(
+                subject = ReferenceParam("Patient/fakeFakeFakeId"),
+            )
 
         assertEquals(1, output.size)
         assertEquals("Procedure/${fakeProcedure.id}", output[0].id)
@@ -111,10 +114,11 @@ class R4ProcedureResourceTest : BaseMySQLTest() {
         fakeProcedure2.id = "FAKEPROCEDURE2"
         collection.add(FhirContext.forR4().newJsonParser().encodeResourceToString(fakeProcedure2)).execute()
 
-        val output = procedureProvider.search(
-            patient = ReferenceParam("fakeFakeFakeId"),
-            subject = ReferenceParam("Patient/fakeFakeFakeId")
-        )
+        val output =
+            procedureProvider.search(
+                patient = ReferenceParam("fakeFakeFakeId"),
+                subject = ReferenceParam("Patient/fakeFakeFakeId"),
+            )
 
         assertEquals(1, output.size)
         assertEquals("Procedure/${fakeProcedure.id}", output[0].id)
@@ -142,9 +146,10 @@ class R4ProcedureResourceTest : BaseMySQLTest() {
         val dateParam = DateRangeParam()
         dateParam.lowerBound = DateParam("ge$date2")
         dateParam.upperBound = DateParam("lt$date1")
-        val output = procedureProvider.search(
-            dateRange = dateParam
-        )
+        val output =
+            procedureProvider.search(
+                dateRange = dateParam,
+            )
         assertEquals(1, output.size)
         assertEquals("Procedure/${fakeProcedure.id}", output[0].id)
     }
@@ -170,9 +175,10 @@ class R4ProcedureResourceTest : BaseMySQLTest() {
         val dateParam = DateRangeParam()
         dateParam.lowerBound = DateParam("ge$date2")
         dateParam.upperBound = DateParam("lt$date1")
-        val output = procedureProvider.search(
-            dateRange = dateParam
-        )
+        val output =
+            procedureProvider.search(
+                dateRange = dateParam,
+            )
         assertEquals(2, output.size)
         assertEquals("Procedure/${fakeProcedure.id}", output[0].id)
         assertEquals("Procedure/${fakeProcedure2.id}", output[1].id)
@@ -199,9 +205,10 @@ class R4ProcedureResourceTest : BaseMySQLTest() {
         dateParam.lowerBound = DateParam("2012-02-22T12:12:00-06:00")
         dateParam.upperBound = DateParam("2016-02-22T12:12:00-06:00")
 
-        val output = procedureProvider.search(
-            dateRange = dateParam
-        )
+        val output =
+            procedureProvider.search(
+                dateRange = dateParam,
+            )
 
         assertEquals(0, output.size)
     }

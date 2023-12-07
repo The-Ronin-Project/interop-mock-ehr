@@ -12,7 +12,6 @@ import org.junit.jupiter.api.Assertions.assertTrue
 import org.junit.jupiter.api.Test
 
 internal class STU3ServerTest {
-
     @Test
     fun `add resources correctly test`() {
         val ctx = FhirContext.forDstu3()
@@ -26,9 +25,9 @@ internal class STU3ServerTest {
             server.resourceProviders.containsAll(
                 listOf(
                     stu3Appointment,
-                    stu3MedicationStatement
-                )
-            )
+                    stu3MedicationStatement,
+                ),
+            ),
         )
     }
 }

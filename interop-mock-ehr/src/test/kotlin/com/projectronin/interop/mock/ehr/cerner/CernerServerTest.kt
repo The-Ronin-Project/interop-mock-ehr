@@ -18,13 +18,14 @@ internal class CernerServerTest {
     fun `check auth test`() {
         mockkStatic(UUID::class)
         every { UUID.randomUUID().toString() } returns "UUID-GENERATED-ID"
-        val expected = CernerAuthentication(
-            accessToken = "UUID-GENERATED-ID",
-            tokenType = "bearer",
-            expiresIn = 3600,
-            scope = "Patient.read Patient.search",
-            refreshToken = null
-        )
+        val expected =
+            CernerAuthentication(
+                accessToken = "UUID-GENERATED-ID",
+                tokenType = "bearer",
+                expiresIn = 3600,
+                scope = "Patient.read Patient.search",
+                refreshToken = null,
+            )
         val actual = server.getAuthToken()
         assertEquals(expected, actual)
         unmockkStatic(UUID::class)

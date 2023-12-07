@@ -16,7 +16,7 @@ class R4CareTeamDAO(private val schema: SafeXDev, context: FhirContext) :
      */
     fun searchByQuery(
         subject: String? = null,
-        status: String? = null
+        status: String? = null,
     ): List<CareTeam> {
         // Build queryFragments into query joined with 'AND'
         val queryFragments = mutableListOf<String>()

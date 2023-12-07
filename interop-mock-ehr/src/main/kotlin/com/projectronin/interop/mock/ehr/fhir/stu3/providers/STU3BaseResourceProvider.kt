@@ -19,40 +19,52 @@ import org.hl7.fhir.dstu3.model.Resource
 import org.hl7.fhir.r4.model.Resource as R4Resource
 
 abstract class STU3BaseResourceProvider<T : Resource, R4 : R4Resource, DAO : BaseResourceDAO<R4>> : IResourceProvider {
-
     abstract var resourceDAO: DAO
 
     @Read // ex. /fhir/stu3/Patient/123
-    fun read(@IdParam theId: IdType): T {
+    fun read(
+        @IdParam theId: IdType,
+    ): T {
         return (resourceDAO.findById(theId.idPart)).toDSTU3()
     }
 
     @Search // ex. /fhir/r4/Patient?_id=123,456
-    fun readMultiple(@RequiredParam(name = Resource.SP_RES_ID) idList: TokenOrListParam): List<T> {
+    fun readMultiple(
+        @RequiredParam(name = Resource.SP_RES_ID) idList: TokenOrListParam,
+    ): List<T> {
         return idList.valuesAsQueryTokens.map { resourceDAO.findById(it.value).toDSTU3() }
     }
 
     @Update
-    fun update(@IdParam theId: IdType, @ResourceParam theResource: T): MethodOutcome {
+    fun update(
+        @IdParam theId: IdType,
+        @ResourceParam theResource: T,
+    ): MethodOutcome {
         theResource.id = theId.idPart
         resourceDAO.update(theResource.toR4())
         return MethodOutcome().setCreated(true)
     }
 
     @Update
-    fun updateNoId(@ResourceParam theResource: T): MethodOutcome {
+    fun updateNoId(
+        @ResourceParam theResource: T,
+    ): MethodOutcome {
         resourceDAO.update(theResource.toR4())
         return MethodOutcome().setCreated(true)
     }
 
     @Create
-    fun create(@ResourceParam theResource: T): MethodOutcome {
+    fun create(
+        @ResourceParam theResource: T,
+    ): MethodOutcome {
         return MethodOutcome().setCreated(true)
             .setId(IdType(resourceDAO.insert(theResource.toR4()))) // return the resource FHIR ID for reference
     }
 
     @Delete
-    fun delete(@IdParam theId: IdType): MethodOutcome {
+    fun delete(
+        @IdParam theId: IdType,
+    ): MethodOutcome {
         resourceDAO.delete(theId.idPart)
         return MethodOutcome().setCreated(false)
     }

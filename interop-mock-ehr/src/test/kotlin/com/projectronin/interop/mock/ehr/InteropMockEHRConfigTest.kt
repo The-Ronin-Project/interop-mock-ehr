@@ -7,7 +7,6 @@ import org.junit.jupiter.api.Assertions.assertNotNull
 import org.junit.jupiter.api.Test
 
 internal class InteropMockEHRConfigTest {
-
     @Test
     fun `return correct URL`() {
         val xdevConfig = InteropMockEHRConfig().xdevConfig("host", "9090", "name", "user", "pass")

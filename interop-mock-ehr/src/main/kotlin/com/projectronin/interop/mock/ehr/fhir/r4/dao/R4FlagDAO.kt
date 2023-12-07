@@ -9,10 +9,7 @@ import org.springframework.stereotype.Component
 @Component
 class R4FlagDAO(private val schema: SafeXDev, context: FhirContext) :
     BaseResourceDAO<Flag>(context, schema, Flag::class.java) {
-
-    fun searchByQuery(
-        subject: String
-    ): List<Flag> {
+    fun searchByQuery(subject: String): List<Flag> {
         val query = "('${subject.escapeSQL()}' = subject.reference)"
 
         // Run the query and return a List of resources that match

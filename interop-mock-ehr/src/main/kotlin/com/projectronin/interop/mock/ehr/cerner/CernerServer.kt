@@ -15,7 +15,6 @@ import java.util.UUID
 @RestController
 @RequestMapping("/cerner")
 class CernerServer(private var dal: CernerDAL) {
-
     @Operation(summary = "Returns Mock Cerner Authentication Token", description = "Returns token if successful")
     @ApiResponses(
         value = [
@@ -25,11 +24,11 @@ class CernerServer(private var dal: CernerDAL) {
                 content = [
                     Content(
                         mediaType = "application/json",
-                        schema = Schema(implementation = CernerAuthentication::class)
-                    )
-                ]
-            )
-        ]
+                        schema = Schema(implementation = CernerAuthentication::class),
+                    ),
+                ],
+            ),
+        ],
     )
     @PostMapping("/oauth2/token")
     fun getAuthToken(): CernerAuthentication {
@@ -38,7 +37,7 @@ class CernerServer(private var dal: CernerDAL) {
             tokenType = "bearer",
             expiresIn = 3600,
             scope = "Patient.read Patient.search",
-            refreshToken = null
+            refreshToken = null,
         )
     }
 }

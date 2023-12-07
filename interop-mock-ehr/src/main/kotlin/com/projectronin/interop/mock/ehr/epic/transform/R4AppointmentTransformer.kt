@@ -13,19 +13,23 @@ import org.hl7.fhir.r4.model.Appointment as R4Appointment
 @Component
 class R4AppointmentTransformer(
     private val r4PractitionerDAO: R4PractitionerDAO,
-    private val r4LocationDAO: R4LocationDAO
+    private val r4LocationDAO: R4LocationDAO,
 ) {
-
-    fun transformToEpicAppointment(r4Appointment: R4Appointment, r4Patient: Patient?): EpicAppointment {
-        val patientIDs = r4Patient?.identifier?.map {
-            // mimic Epic for MRNs and Internal IDs
-            val system = when (it.system) {
-                "mockEHRMRNSystem" -> "MRN"
-                "mockPatientInternalSystem" -> "Internal"
-                else -> it.system
+    fun transformToEpicAppointment(
+        r4Appointment: R4Appointment,
+        r4Patient: Patient?,
+    ): EpicAppointment {
+        val patientIDs =
+            r4Patient?.identifier?.map {
+                // mimic Epic for MRNs and Internal IDs
+                val system =
+                    when (it.system) {
+                        "mockEHRMRNSystem" -> "MRN"
+                        "mockPatientInternalSystem" -> "Internal"
+                        else -> it.system
+                    }
+                IDType(it.value, system)
             }
-            IDType(it.value, system)
-        }
 
         val departmentList =
             r4Appointment.participant.find { it.actor.reference.contains("Location") }?.let { locationRef ->
@@ -40,23 +44,26 @@ class R4AppointmentTransformer(
 
         val providers =
             r4Appointment.participant.filter { it.actor.reference.contains("Practitioner") }.map { practitionerRef ->
-                val practitioner = runCatching {
-                    r4PractitionerDAO.findById(practitionerRef.actor.reference.removePrefix("Practitioner/"))
-                }.getOrNull()
+                val practitioner =
+                    runCatching {
+                        r4PractitionerDAO.findById(practitionerRef.actor.reference.removePrefix("Practitioner/"))
+                    }.getOrNull()
 
                 // check actual R4 practitioner for internal ID
-                val identifierVal = practitioner?.identifier?.find { it.system == "mockEHRProviderSystem" }?.value
-                    ?: practitionerRef.actor.identifier.takeIf { it.system == "mockEHRProviderSystem" }?.value
+                val identifierVal =
+                    practitioner?.identifier?.find { it.system == "mockEHRProviderSystem" }?.value
+                        ?: practitionerRef.actor.identifier.takeIf { it.system == "mockEHRProviderSystem" }?.value
 
                 ScheduleProviderReturnWithTime(
                     departmentName = "",
                     duration = "",
-                    providerIDs = listOf(
-                        IDType(identifierVal ?: "NO-INTERNAL-ID", "external")
-                    ),
+                    providerIDs =
+                        listOf(
+                            IDType(identifierVal ?: "NO-INTERNAL-ID", "external"),
+                        ),
                     providerName = "",
                     time = "",
-                    departmentIDs = departmentList
+                    departmentIDs = departmentList,
                 )
             }
 
@@ -68,10 +75,11 @@ class R4AppointmentTransformer(
             contactIDs = listOf(IDType(r4Appointment.id.removePrefix("Appointment/"), "CSN")),
             date = SimpleDateFormat("MM/dd/yyyy").format(r4Appointment.start),
             patientIDs = patientIDs ?: listOf(),
-            patientName = r4Patient?.name?.find { it.use?.toCode() == "usual" }?.nameAsSingleString
-                ?: r4Patient?.nameFirstRep?.nameAsSingleString ?: "",
+            patientName =
+                r4Patient?.name?.find { it.use?.toCode() == "usual" }?.nameAsSingleString
+                    ?: r4Patient?.nameFirstRep?.nameAsSingleString ?: "",
             providers = providers,
-            visitTypeName = r4Appointment.appointmentType.text ?: ""
+            visitTypeName = r4Appointment.appointmentType.text ?: "",
         )
     }
 }

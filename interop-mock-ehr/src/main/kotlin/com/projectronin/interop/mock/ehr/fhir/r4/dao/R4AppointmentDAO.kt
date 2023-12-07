@@ -21,7 +21,7 @@ class R4AppointmentDAO(private val schema: SafeXDev, context: FhirContext) :
         references: List<Reference> = listOf(),
         fromDate: Date? = null,
         toDate: Date? = null,
-        status: String? = null
+        status: String? = null,
     ): List<Appointment> {
         val queryFragments = mutableListOf<String>()
 

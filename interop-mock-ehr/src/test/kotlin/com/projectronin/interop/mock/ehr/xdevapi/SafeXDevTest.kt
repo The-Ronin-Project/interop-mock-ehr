@@ -39,7 +39,9 @@ class SafeXDevTest {
     fun setup() {
         mockkConstructor(SessionFactory::class)
 
-        every { anyConstructed<SessionFactory>().getSession("mysqlx://host:8080/schema?user=user&password=pass").defaultSchema } returns schema
+        every {
+            anyConstructed<SessionFactory>().getSession("mysqlx://host:8080/schema?user=user&password=pass").defaultSchema
+        } returns schema
 
         xdev = SafeXDev(config)
     }
@@ -104,7 +106,7 @@ class SafeXDevTest {
                 },
                 async {
                     xdev.createCollection(Practitioner::class.java)
-                }
+                },
             )
         }
 
@@ -139,18 +141,19 @@ class SafeXDevTest {
             mockk(relaxed = true)
         }
 
-        val values = runBlocking {
-            awaitAll(
-                async {
-                    xdev.createCollection(Patient::class.java)
-                    System.currentTimeMillis()
-                },
-                async {
-                    xdev.createCollection(Practitioner::class.java)
-                    System.currentTimeMillis()
-                }
-            )
-        }
+        val values =
+            runBlocking {
+                awaitAll(
+                    async {
+                        xdev.createCollection(Patient::class.java)
+                        System.currentTimeMillis()
+                    },
+                    async {
+                        xdev.createCollection(Practitioner::class.java)
+                        System.currentTimeMillis()
+                    },
+                )
+            }
 
         val diff = abs(values.first() - values.last())
         // A bit of leeway here, but this should basically be 0
@@ -189,7 +192,7 @@ class SafeXDevTest {
                 },
                 async {
                     task.invoke()
-                }
+                },
             )
         }
 
@@ -201,10 +204,11 @@ class SafeXDevTest {
     @Test
     fun `run resets failed collections`() {
         val schema2 = mockk<Schema>()
-        every { anyConstructed<SessionFactory>().getSession("mysqlx://host:8080/schema?user=user&password=pass").defaultSchema } returnsMany listOf(
-            schema,
-            schema2
-        )
+        every { anyConstructed<SessionFactory>().getSession("mysqlx://host:8080/schema?user=user&password=pass").defaultSchema } returnsMany
+            listOf(
+                schema,
+                schema2,
+            )
 
         xdev = SafeXDev(config)
 
@@ -213,9 +217,10 @@ class SafeXDevTest {
         val patientCollection2 = mockk<Collection>(relaxed = true)
         every { schema2.createCollection("Patient", true) } returns patientCollection2
 
-        val locationCollection1 = mockk<Collection> {
-            every { count() } throws CJCommunicationsException()
-        }
+        val locationCollection1 =
+            mockk<Collection> {
+                every { count() } throws CJCommunicationsException()
+            }
         every { schema.createCollection("Location", true) } returns locationCollection1
         val locationCollection2 = mockk<Collection>(relaxed = true)
         every { schema2.createCollection("Location", true) } returns locationCollection2

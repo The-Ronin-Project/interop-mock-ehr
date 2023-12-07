@@ -8,7 +8,6 @@ import org.junit.jupiter.api.Test
 
 @Disabled
 class InteropMockEHRTestContainerTest {
-
     private var mockEHR = MockEHRTestcontainer()
 
     @Test

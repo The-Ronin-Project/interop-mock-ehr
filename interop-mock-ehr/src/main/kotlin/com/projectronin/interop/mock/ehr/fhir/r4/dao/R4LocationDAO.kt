@@ -10,7 +10,6 @@ import org.springframework.stereotype.Component
 @Component
 class R4LocationDAO(private val schema: SafeXDev, context: FhirContext) :
     BaseResourceDAO<Location>(context, schema, Location::class.java) {
-
     fun searchByIdentifier(identifier: Identifier): Location? {
         val parser = context.newJsonParser()
         // note that this query is a bit rigid and expects identifiers in database to only ever have just value and system

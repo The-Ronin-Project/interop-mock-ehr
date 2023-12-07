@@ -23,10 +23,11 @@ class R4CommunicationResourceTest : BaseMySQLTest() {
     fun initTest() {
         collection = createCollection(Communication::class.simpleName!!)
         val database = mockk<SafeXDev>()
-        every { database.createCollection(Communication::class.java) } returns SafeXDev.SafeCollection(
-            "resource",
-            collection
-        )
+        every { database.createCollection(Communication::class.java) } returns
+            SafeXDev.SafeCollection(
+                "resource",
+                collection,
+            )
         dao = R4CommunicationDAO(database, FhirContext.forR4())
         communicationProvider = R4CommunicationResourceProvider(dao)
     }

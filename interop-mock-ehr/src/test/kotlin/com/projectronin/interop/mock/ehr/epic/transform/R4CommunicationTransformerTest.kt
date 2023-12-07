@@ -11,21 +11,23 @@ import org.junit.jupiter.api.Test
 class R4CommunicationTransformerTest {
     @Test
     fun `can build communication`() {
-        val sendMessageRequest = SendMessageRequest(
-            messageText = listOf("Message Text", "Line 2"),
-            patientID = "MRN#1",
-            recipients = listOf(
-                SendMessageRecipient("first", false, "External"),
-                SendMessageRecipient("second", true, "External")
-            ),
-            senderID = "Sender#1",
-            messageType = "messageType",
-            senderIDType = "SendType#1",
-            patientIDType = "MRN",
-            contactID = "Con#1",
-            contactIDType = "ConType#1",
-            messagePriority = "urgent"
-        )
+        val sendMessageRequest =
+            SendMessageRequest(
+                messageText = listOf("Message Text", "Line 2"),
+                patientID = "MRN#1",
+                recipients =
+                    listOf(
+                        SendMessageRecipient("first", false, "External"),
+                        SendMessageRecipient("second", true, "External"),
+                    ),
+                senderID = "Sender#1",
+                messageType = "messageType",
+                senderIDType = "SendType#1",
+                patientIDType = "MRN",
+                contactID = "Con#1",
+                contactIDType = "ConType#1",
+                messagePriority = "urgent",
+            )
 
         val communication = R4CommunicationTransformer().transformFromSendMessage(sendMessageRequest)
         assertNotNull(communication)
@@ -62,21 +64,23 @@ class R4CommunicationTransformerTest {
 
     @Test
     fun `message text is optional`() {
-        val sendMessageRequest = SendMessageRequest(
-            messageText = null,
-            patientID = "MRN#1",
-            recipients = listOf(
-                SendMessageRecipient("first", false, "External"),
-                SendMessageRecipient("second", true, "External")
-            ),
-            senderID = "Sender#1",
-            messageType = "messageType",
-            senderIDType = "SendType#1",
-            patientIDType = "MRN",
-            contactID = "Con#1",
-            contactIDType = "ConType#1",
-            messagePriority = "just incoherent gibberish"
-        )
+        val sendMessageRequest =
+            SendMessageRequest(
+                messageText = null,
+                patientID = "MRN#1",
+                recipients =
+                    listOf(
+                        SendMessageRecipient("first", false, "External"),
+                        SendMessageRecipient("second", true, "External"),
+                    ),
+                senderID = "Sender#1",
+                messageType = "messageType",
+                senderIDType = "SendType#1",
+                patientIDType = "MRN",
+                contactID = "Con#1",
+                contactIDType = "ConType#1",
+                messagePriority = "just incoherent gibberish",
+            )
 
         val communication = R4CommunicationTransformer().transformFromSendMessage(sendMessageRequest)
         assertNotNull(communication)
@@ -86,21 +90,23 @@ class R4CommunicationTransformerTest {
 
     @Test
     fun `priority defaults`() {
-        val sendMessageRequest = SendMessageRequest(
-            messageText = listOf("Message Text", "Line 2"),
-            patientID = "MRN#1",
-            recipients = listOf(
-                SendMessageRecipient("first", false, "External"),
-                SendMessageRecipient("second", true, "External")
-            ),
-            senderID = "Sender#1",
-            messageType = "messageType",
-            senderIDType = "SendType#1",
-            patientIDType = "MRN",
-            contactID = "Con#1",
-            contactIDType = "ConType#1",
-            messagePriority = "just incoherent gibberish"
-        )
+        val sendMessageRequest =
+            SendMessageRequest(
+                messageText = listOf("Message Text", "Line 2"),
+                patientID = "MRN#1",
+                recipients =
+                    listOf(
+                        SendMessageRecipient("first", false, "External"),
+                        SendMessageRecipient("second", true, "External"),
+                    ),
+                senderID = "Sender#1",
+                messageType = "messageType",
+                senderIDType = "SendType#1",
+                patientIDType = "MRN",
+                contactID = "Con#1",
+                contactIDType = "ConType#1",
+                messagePriority = "just incoherent gibberish",
+            )
 
         val communication = R4CommunicationTransformer().transformFromSendMessage(sendMessageRequest)
         assertNotNull(communication)

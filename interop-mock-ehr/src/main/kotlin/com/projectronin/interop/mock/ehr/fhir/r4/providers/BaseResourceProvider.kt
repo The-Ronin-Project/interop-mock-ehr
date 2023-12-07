@@ -21,48 +21,60 @@ import org.hl7.fhir.r4.model.Resource
 import java.security.InvalidParameterException
 
 abstract class BaseResourceProvider<T : Resource, DAO : BaseResourceDAO<T>> : IResourceProvider {
-
     abstract var resourceDAO: DAO
 
     @Read // ex. /fhir/r4/Patient/123
-    fun read(@IdParam theId: IdType): T {
+    fun read(
+        @IdParam theId: IdType,
+    ): T {
         return resourceDAO.findById(theId.idPart)
     }
 
     @Search // ex. /fhir/r4/Patient?_id=123,456
-    fun readMultiple(@RequiredParam(name = Resource.SP_RES_ID) idList: TokenOrListParam): List<T> {
+    fun readMultiple(
+        @RequiredParam(name = Resource.SP_RES_ID) idList: TokenOrListParam,
+    ): List<T> {
         return idList.valuesAsQueryTokens.map { (resourceDAO.findById(it.value)) }
     }
 
     @Search // ex. /fhir/r4/Patient?_id=123&_include=Patient:managingOrganization
     fun readWithIncludes(
         @RequiredParam(name = Resource.SP_RES_ID) theId: IdType,
-        @IncludeParam includeSetParam: Set<Include>?
+        @IncludeParam includeSetParam: Set<Include>?,
     ): T {
         return handleIncludes(resourceDAO.findById(theId.idPart), includeSetParam)
     }
 
     @Update
-    fun update(@IdParam theId: IdType, @ResourceParam theResource: T): MethodOutcome {
+    fun update(
+        @IdParam theId: IdType,
+        @ResourceParam theResource: T,
+    ): MethodOutcome {
         theResource.id = theId.idPart
         resourceDAO.update(theResource)
         return MethodOutcome().setCreated(true)
     }
 
     @Update
-    fun updateNoId(@ResourceParam theResource: T): MethodOutcome {
+    fun updateNoId(
+        @ResourceParam theResource: T,
+    ): MethodOutcome {
         resourceDAO.update(theResource)
         return MethodOutcome().setCreated(true)
     }
 
     @Create
-    fun create(@ResourceParam theResource: T): MethodOutcome {
+    fun create(
+        @ResourceParam theResource: T,
+    ): MethodOutcome {
         return MethodOutcome().setCreated(true)
             .setId(IdType(resourceDAO.insert(theResource))) // return the resource FHIR ID for reference
     }
 
     @Delete
-    fun delete(@IdParam theId: IdType): MethodOutcome {
+    fun delete(
+        @IdParam theId: IdType,
+    ): MethodOutcome {
         resourceDAO.delete(theId.idPart)
         return MethodOutcome().setCreated(false)
     }
@@ -73,7 +85,11 @@ abstract class BaseResourceProvider<T : Resource, DAO : BaseResourceDAO<T>> : IR
     }
 
     @Patch
-    fun patch(@IdParam theID: IdType, patchType: PatchTypeEnum, @ResourceParam rawPatch: String): MethodOutcome {
+    fun patch(
+        @IdParam theID: IdType,
+        patchType: PatchTypeEnum,
+        @ResourceParam rawPatch: String,
+    ): MethodOutcome {
         if (patchType != PatchTypeEnum.JSON_PATCH) {
             throw java.lang.UnsupportedOperationException("Only JSON patch types allowed.")
         }
@@ -82,7 +98,10 @@ abstract class BaseResourceProvider<T : Resource, DAO : BaseResourceDAO<T>> : IR
     }
 
     // implementing functions should add this when necessary, but not required by default.
-    open fun handleIncludes(resource: T, includeSet: Set<Include>?): T {
+    open fun handleIncludes(
+        resource: T,
+        includeSet: Set<Include>?,
+    ): T {
         if (includeSet?.isNotEmpty() == true) {
             throw InvalidParameterException("'_include' parameters are not implemented for this resource type.")
         }

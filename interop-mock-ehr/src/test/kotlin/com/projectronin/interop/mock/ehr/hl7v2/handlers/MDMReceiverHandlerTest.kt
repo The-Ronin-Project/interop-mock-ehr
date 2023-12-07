@@ -70,9 +70,10 @@ internal class MDMReceiverHandlerTest {
     @Test
     fun `processMessage - basic document`() {
         every { documentResolver.findDocumentReference(any()) } returns null
-        every { patientResolver.findPatient(any()) } returns mockk {
-            every { id } returns "patId"
-        }
+        every { patientResolver.findPatient(any()) } returns
+            mockk {
+                every { id } returns "patId"
+            }
         val documentSlot = slot<DocumentReference>()
         every { documentDao.insert(capture(documentSlot)) } returns "fake"
 
@@ -117,18 +118,19 @@ internal class MDMReceiverHandlerTest {
 
     @Test
     fun `processMessage - handles existing binary and document`() {
-        val mockExistingDoc = mockk<DocumentReference> {
-            every { hasContent() } returns true
-            every { content } returns listOf(
-                mockk {
-                    every { hasAttachment() } returns true
-                    every { attachment.hasUrl() } returns true
-                    every { attachment.url } returns "Binary/existingBinaryId"
-                }
-
-            )
-            every { id } returns "existingDocId"
-        }
+        val mockExistingDoc =
+            mockk<DocumentReference> {
+                every { hasContent() } returns true
+                every { content } returns
+                    listOf(
+                        mockk {
+                            every { hasAttachment() } returns true
+                            every { attachment.hasUrl() } returns true
+                            every { attachment.url } returns "Binary/existingBinaryId"
+                        },
+                    )
+                every { id } returns "existingDocId"
+            }
         every { documentResolver.findDocumentReference("unique") } returns mockExistingDoc
         every { patientResolver.findPatient(any()) } returns null
         val documentSlot = slot<DocumentReference>()
@@ -156,18 +158,19 @@ internal class MDMReceiverHandlerTest {
 
     @Test
     fun `processMessage - handles existing binary and document for document with single quote`() {
-        val mockExistingDoc = mockk<DocumentReference> {
-            every { hasContent() } returns true
-            every { content } returns listOf(
-                mockk {
-                    every { hasAttachment() } returns true
-                    every { attachment.hasUrl() } returns true
-                    every { attachment.url } returns "Binary/existingBinaryId"
-                }
-
-            )
-            every { id } returns "existingDocId"
-        }
+        val mockExistingDoc =
+            mockk<DocumentReference> {
+                every { hasContent() } returns true
+                every { content } returns
+                    listOf(
+                        mockk {
+                            every { hasAttachment() } returns true
+                            every { attachment.hasUrl() } returns true
+                            every { attachment.url } returns "Binary/existingBinaryId"
+                        },
+                    )
+                every { id } returns "existingDocId"
+            }
         every { documentResolver.findDocumentReference("""unique\'value""") } returns mockExistingDoc
         every { patientResolver.findPatient(any()) } returns null
         val documentSlot = slot<DocumentReference>()
@@ -195,10 +198,11 @@ internal class MDMReceiverHandlerTest {
 
     @Test
     fun `processMessage - handles existing document but no existing content`() {
-        val mockExistingDoc = mockk<DocumentReference> {
-            every { hasContent() } returns false
-            every { id } returns "existingDocId"
-        }
+        val mockExistingDoc =
+            mockk<DocumentReference> {
+                every { hasContent() } returns false
+                every { id } returns "existingDocId"
+            }
         every { documentResolver.findDocumentReference("unique") } returns mockExistingDoc
         every { patientResolver.findPatient(any()) } returns null
         val documentSlot = slot<DocumentReference>()
@@ -216,17 +220,19 @@ internal class MDMReceiverHandlerTest {
 
     @Test
     fun `processMessage - handles existing document but no matching content`() {
-        val mockExistingDoc = mockk<DocumentReference> {
-            every { hasContent() } returns true
-            every { content } returns listOf(
-                mockk {
-                    every { hasAttachment() } returns true
-                    every { attachment.hasUrl() } returns true
-                    every { attachment.url } returns null
-                }
-            )
-            every { id } returns "existingDocId"
-        }
+        val mockExistingDoc =
+            mockk<DocumentReference> {
+                every { hasContent() } returns true
+                every { content } returns
+                    listOf(
+                        mockk {
+                            every { hasAttachment() } returns true
+                            every { attachment.hasUrl() } returns true
+                            every { attachment.url } returns null
+                        },
+                    )
+                every { id } returns "existingDocId"
+            }
 
         every { documentResolver.findDocumentReference("unique") } returns mockExistingDoc
         every { patientResolver.findPatient(any()) } returns null
@@ -245,19 +251,21 @@ internal class MDMReceiverHandlerTest {
 
     @Test
     fun `processMessage - handles existing document with matching content but no url`() {
-        val mockExistingDoc = mockk<DocumentReference> {
-            every { hasContent() } returns true
-            every { content } returns listOf(
-                mockk {
-                    every { hasAttachment() } returns false
-                },
-                mockk {
-                    every { hasAttachment() } returns true
-                    every { attachment.hasUrl() } returns false
-                }
-            )
-            every { id } returns "existingDocId"
-        }
+        val mockExistingDoc =
+            mockk<DocumentReference> {
+                every { hasContent() } returns true
+                every { content } returns
+                    listOf(
+                        mockk {
+                            every { hasAttachment() } returns false
+                        },
+                        mockk {
+                            every { hasAttachment() } returns true
+                            every { attachment.hasUrl() } returns false
+                        },
+                    )
+                every { id } returns "existingDocId"
+            }
 
         every { documentResolver.findDocumentReference("unique") } returns mockExistingDoc
         every { patientResolver.findPatient(any()) } returns null

@@ -24,7 +24,6 @@ import java.util.Date
 
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
 class R4MedicationAdministrationResourceTest : BaseMySQLTest() {
-
     private lateinit var collection: Collection
     private lateinit var medicationAdministrationProvider: R4MedicationAdministrationResourceProvider
 
@@ -32,10 +31,11 @@ class R4MedicationAdministrationResourceTest : BaseMySQLTest() {
     fun initTest() {
         collection = createCollection(MedicationAdministration::class.simpleName!!)
         val database = mockk<SafeXDev>()
-        every { database.createCollection(MedicationAdministration::class.java) } returns SafeXDev.SafeCollection(
-            "resource",
-            collection
-        )
+        every { database.createCollection(MedicationAdministration::class.java) } returns
+            SafeXDev.SafeCollection(
+                "resource",
+                collection,
+            )
         every { database.run(any(), captureLambda<Collection.() -> Any>()) } answers {
             val collection = firstArg<SafeXDev.SafeCollection>()
             val lamdba = secondArg<Collection.() -> Any>()
@@ -140,6 +140,9 @@ class R4MedicationAdministrationResourceTest : BaseMySQLTest() {
         assertEquals(medicationAdministrationProvider.resourceType, MedicationAdministration::class.java)
     }
 
-    private fun getDate(year: Int, month: Int, day: Int): Date =
-        Date.from(LocalDate.of(year, month, day).atStartOfDay().toInstant(ZoneOffset.UTC))
+    private fun getDate(
+        year: Int,
+        month: Int,
+        day: Int,
+    ): Date = Date.from(LocalDate.of(year, month, day).atStartOfDay().toInstant(ZoneOffset.UTC))
 }

@@ -28,10 +28,11 @@ class R4CareTeamResourceTest : BaseMySQLTest() {
     fun initTest() {
         collection = createCollection(CareTeam::class.simpleName!!)
         val database = mockk<SafeXDev>()
-        every { database.createCollection(CareTeam::class.java) } returns SafeXDev.SafeCollection(
-            "resource",
-            collection
-        )
+        every { database.createCollection(CareTeam::class.java) } returns
+            SafeXDev.SafeCollection(
+                "resource",
+                collection,
+            )
         every { database.run(any(), captureLambda<Collection.() -> Any>()) } answers {
             val collection = firstArg<SafeXDev.SafeCollection>()
             val lamdba = secondArg<Collection.() -> Any>()

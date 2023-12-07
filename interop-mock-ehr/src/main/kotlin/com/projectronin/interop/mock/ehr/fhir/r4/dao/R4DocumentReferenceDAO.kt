@@ -18,7 +18,7 @@ class R4DocumentReferenceDAO(private val schema: SafeXDev, context: FhirContext)
         docStatus: String? = null,
         encounter: String? = null,
         fromDate: Date? = null,
-        toDate: Date? = null
+        toDate: Date? = null,
     ): List<DocumentReference> {
         // Build queryFragments into query joined with 'AND'
         val queryFragments = mutableListOf<String>()

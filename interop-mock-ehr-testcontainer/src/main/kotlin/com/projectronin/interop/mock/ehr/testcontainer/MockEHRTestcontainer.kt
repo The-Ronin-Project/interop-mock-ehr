@@ -23,36 +23,40 @@ class MockEHRTestcontainer {
 
         // needs to start before MOCK_EHR_CONTAINER, but isn't used directly.
         @Suppress("unused")
-        var MYSQL_CONTAINER = MySQLContainer<Nothing>("mysql:8.0.28-oracle").apply {
-            withExposedPorts(3306, 33060)
-            withNetwork(sharedNetwork)
-            withNetworkAliases("database")
-            start()
-        }
+        var mySQLContainer =
+            MySQLContainer<Nothing>("mysql:8.0.28-oracle").apply {
+                withExposedPorts(3306, 33060)
+                withNetwork(sharedNetwork)
+                withNetworkAliases("database")
+                start()
+            }
 
-        var MOCK_EHR_CONTAINER = GenericContainer("docker-proxy.devops.projectronin.io/interop-mock-ehr:latest").apply {
-            withExposedPorts(8080)
-            withNetwork(sharedNetwork)
-            withImagePullPolicy(PullPolicy.alwaysPull()) // 'latest' may be updated frequently
-            withEnv(
-                mapOf(
-                    "MOCK_EHR_DB_HOST" to "database",
-                    "MOCK_EHR_DB_PORT" to "33060",
-                    "MOCK_EHR_DB_NAME" to "test", // default values from MySQLContainer
-                    "MOCK_EHR_DB_USER" to "test",
-                    "MOCK_EHR_DB_PASS" to "test"
+        var mockEHRContainer =
+            GenericContainer("docker-proxy.devops.projectronin.io/interop-mock-ehr:latest").apply {
+                withExposedPorts(8080)
+                withNetwork(sharedNetwork)
+                // 'latest' may be updated frequently
+                withImagePullPolicy(PullPolicy.alwaysPull())
+                withEnv(
+                    mapOf(
+                        "MOCK_EHR_DB_HOST" to "database",
+                        "MOCK_EHR_DB_PORT" to "33060",
+                        // default values from MySQLContainer
+                        "MOCK_EHR_DB_NAME" to "test",
+                        "MOCK_EHR_DB_USER" to "test",
+                        "MOCK_EHR_DB_PASS" to "test",
+                    ),
                 )
-            )
-            start()
-        }
+                start()
+            }
     }
 
     /**
      * Retrieves base URL for MockEHR Spring Application
      */
     fun getURL(): String {
-        val address = MOCK_EHR_CONTAINER.host
-        val port = MOCK_EHR_CONTAINER.getMappedPort(8080)
+        val address = mockEHRContainer.host
+        val port = mockEHRContainer.getMappedPort(8080)
         return "http://$address:$port"
     }
 
@@ -62,7 +66,11 @@ class MockEHRTestcontainer {
      * @param json the json body of the resource to add. must include 'id' and 'resourceType'.
      * @param fhirID the fhir id of the object. must exactly match 'id' in the json body.
      */
-    fun addR4Resource(type: String, json: String, fhirID: String): HttpResponse {
+    fun addR4Resource(
+        type: String,
+        json: String,
+        fhirID: String,
+    ): HttpResponse {
         return runBlocking {
             httpClient.put("${getURL()}/fhir/r4/$type/$fhirID") {
                 headers {

@@ -15,5 +15,5 @@ class CernerDAL(
     val r4PractitionerDAO: R4PractitionerDAO,
     val r4CommunicationDAO: R4CommunicationDAO,
     val r4LocationDAO: R4LocationDAO,
-    val r4EncounterDAO: R4EncounterDAO
+    val r4EncounterDAO: R4EncounterDAO,
 )

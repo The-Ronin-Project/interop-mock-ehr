@@ -26,7 +26,6 @@ import java.util.Date
 
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
 class R4DocumentReferenceResourceTest : BaseMySQLTest() {
-
     private lateinit var collection: Collection
     private lateinit var documentReferenceProvider: R4DocumentReferenceResourceProvider
 
@@ -34,10 +33,11 @@ class R4DocumentReferenceResourceTest : BaseMySQLTest() {
     fun initTest() {
         collection = createCollection(DocumentReference::class.simpleName!!)
         val database = mockk<SafeXDev>()
-        every { database.createCollection(DocumentReference::class.java) } returns SafeXDev.SafeCollection(
-            "resource",
-            collection
-        )
+        every { database.createCollection(DocumentReference::class.java) } returns
+            SafeXDev.SafeCollection(
+                "resource",
+                collection,
+            )
         every { database.run(any(), captureLambda<Collection.() -> Any>()) } answers {
             val collection = firstArg<SafeXDev.SafeCollection>()
             val lamdba = secondArg<Collection.() -> Any>()
@@ -104,19 +104,22 @@ class R4DocumentReferenceResourceTest : BaseMySQLTest() {
         val output = documentReferenceProvider.search()
         assertTrue(output.isEmpty())
 
-        val outputNullCategory = documentReferenceProvider.search(
-            categoryParam = null
-        )
+        val outputNullCategory =
+            documentReferenceProvider.search(
+                categoryParam = null,
+            )
         assertTrue(outputNullCategory.isEmpty())
 
-        val outputNullSubject = documentReferenceProvider.search(
-            subjectReferenceParam = null
-        )
+        val outputNullSubject =
+            documentReferenceProvider.search(
+                subjectReferenceParam = null,
+            )
         assertTrue(outputNullSubject.isEmpty())
 
-        val outputNullPatient = documentReferenceProvider.search(
-            patientReferenceParam = null
-        )
+        val outputNullPatient =
+            documentReferenceProvider.search(
+                patientReferenceParam = null,
+            )
         assertTrue(outputNullPatient.isEmpty())
     }
 
@@ -187,18 +190,20 @@ class R4DocumentReferenceResourceTest : BaseMySQLTest() {
         tokenListMixed.add(tokenMine)
         tokenListMixed.add(tokenOther)
 
-        val outputCode = documentReferenceProvider.search(
-            categoryParam = tokenListCode
-        )
+        val outputCode =
+            documentReferenceProvider.search(
+                categoryParam = tokenListCode,
+            )
         assertEquals(4, outputCode.size)
         assertEquals("DocumentReference/${testDocumentReference1.id}", outputCode[0].id)
         assertEquals("DocumentReference/${testDocumentReference3.id}", outputCode[1].id)
         assertEquals("DocumentReference/${testDocumentReference4.id}", outputCode[2].id)
         assertEquals("DocumentReference/${testDocumentReference5.id}", outputCode[3].id)
 
-        val outputSystemCodeList = documentReferenceProvider.search(
-            categoryParam = tokenListMixed
-        )
+        val outputSystemCodeList =
+            documentReferenceProvider.search(
+                categoryParam = tokenListMixed,
+            )
         assertEquals(3, outputSystemCodeList.size)
         assertEquals("DocumentReference/${testDocumentReference1.id}", outputSystemCodeList[0].id)
         assertEquals("DocumentReference/${testDocumentReference2.id}", outputSystemCodeList[1].id)
@@ -211,33 +216,37 @@ class R4DocumentReferenceResourceTest : BaseMySQLTest() {
         val testDocumentReference1 = DocumentReference()
         testDocumentReference1.id = "TESTINGIDENTIFIER"
         testDocumentReference1.subject = Reference("Practitioner/pract1")
-        testDocumentReference1.category = listOf(
-            CodeableConcept(Coding("mySystem", "myCode", "myDisplay"))
-        )
+        testDocumentReference1.category =
+            listOf(
+                CodeableConcept(Coding("mySystem", "myCode", "myDisplay")),
+            )
         collection.add(FhirContext.forR4().newJsonParser().encodeResourceToString(testDocumentReference1)).execute()
 
         val testDocumentReference2 = DocumentReference()
         testDocumentReference2.id = "TESTINGIDENTIFIER2"
         testDocumentReference2.subject = Reference("Practitioner/pract1")
-        testDocumentReference2.category = listOf(
-            CodeableConcept(Coding("mySystem", "myCode", "myDisplay"))
-        )
+        testDocumentReference2.category =
+            listOf(
+                CodeableConcept(Coding("mySystem", "myCode", "myDisplay")),
+            )
         collection.add(FhirContext.forR4().newJsonParser().encodeResourceToString(testDocumentReference2)).execute()
 
         val testDocumentReference3 = DocumentReference()
         testDocumentReference3.id = "TESTINGIDENTIFIER3"
         testDocumentReference3.subject = Reference("Practitioner/pract2")
-        testDocumentReference3.category = listOf(
-            CodeableConcept(Coding("mySystem", "myCode", "myDisplay"))
-        )
+        testDocumentReference3.category =
+            listOf(
+                CodeableConcept(Coding("mySystem", "myCode", "myDisplay")),
+            )
         collection.add(FhirContext.forR4().newJsonParser().encodeResourceToString(testDocumentReference3)).execute()
 
         val testDocumentReference4 = DocumentReference()
         testDocumentReference4.id = "TESTINGIDENTIFIER4"
         testDocumentReference4.subject = Reference("Practitioner/pract1")
-        testDocumentReference4.category = listOf(
-            CodeableConcept(Coding("otherSystem", "otherCode", "otherDisplay"))
-        )
+        testDocumentReference4.category =
+            listOf(
+                CodeableConcept(Coding("otherSystem", "otherCode", "otherDisplay")),
+            )
         collection.add(FhirContext.forR4().newJsonParser().encodeResourceToString(testDocumentReference4)).execute()
 
         val tokenMine = TokenParam()
@@ -254,38 +263,43 @@ class R4DocumentReferenceResourceTest : BaseMySQLTest() {
         tokenListMixed.add(tokenMine)
         tokenListMixed.add(tokenOther)
 
-        val output1 = documentReferenceProvider.search(
-            subjectReferenceParam = ReferenceParam("Practitioner/pract1"),
-            categoryParam = tokenListMine
-        )
+        val output1 =
+            documentReferenceProvider.search(
+                subjectReferenceParam = ReferenceParam("Practitioner/pract1"),
+                categoryParam = tokenListMine,
+            )
         assertEquals(2, output1.size)
         assertEquals("DocumentReference/${testDocumentReference1.id}", output1[0].id)
         assertEquals("DocumentReference/${testDocumentReference2.id}", output1[1].id)
 
-        val output2 = documentReferenceProvider.search(
-            subjectReferenceParam = ReferenceParam("Practitioner/pract1"),
-            categoryParam = tokenListOther
-        )
+        val output2 =
+            documentReferenceProvider.search(
+                subjectReferenceParam = ReferenceParam("Practitioner/pract1"),
+                categoryParam = tokenListOther,
+            )
         assertEquals(1, output2.size)
         assertEquals("DocumentReference/${testDocumentReference4.id}", output2[0].id)
 
-        val output3 = documentReferenceProvider.search(
-            subjectReferenceParam = ReferenceParam("Practitioner/pract2"),
-            categoryParam = tokenListOther
-        )
+        val output3 =
+            documentReferenceProvider.search(
+                subjectReferenceParam = ReferenceParam("Practitioner/pract2"),
+                categoryParam = tokenListOther,
+            )
         assertEquals(0, output3.size)
 
-        val output4 = documentReferenceProvider.search(
-            subjectReferenceParam = ReferenceParam("Practitioner/pract2"),
-            categoryParam = tokenListMine
-        )
+        val output4 =
+            documentReferenceProvider.search(
+                subjectReferenceParam = ReferenceParam("Practitioner/pract2"),
+                categoryParam = tokenListMine,
+            )
         assertEquals(1, output4.size)
         assertEquals("DocumentReference/${testDocumentReference3.id}", output4[0].id)
 
-        val output5 = documentReferenceProvider.search(
-            subjectReferenceParam = ReferenceParam("Practitioner/pract1"),
-            categoryParam = tokenListMixed
-        )
+        val output5 =
+            documentReferenceProvider.search(
+                subjectReferenceParam = ReferenceParam("Practitioner/pract1"),
+                categoryParam = tokenListMixed,
+            )
         assertEquals(3, output5.size)
         assertEquals("DocumentReference/${testDocumentReference1.id}", output5[0].id)
         assertEquals("DocumentReference/${testDocumentReference2.id}", output5[1].id)
@@ -321,7 +335,10 @@ class R4DocumentReferenceResourceTest : BaseMySQLTest() {
         dateParam.lowerBound = DateParam("2009-02-22T13:12:00-06:00")
         dateParam.upperBound = DateParam("2020-02-22T13:12:00-06:00")
         val output =
-            documentReferenceProvider.search(dateRangeParam = dateParam, docStatusParam = StringParam(DocumentReference.ReferredDocumentStatus.FINAL.toCode()))
+            documentReferenceProvider.search(
+                dateRangeParam = dateParam,
+                docStatusParam = StringParam(DocumentReference.ReferredDocumentStatus.FINAL.toCode()),
+            )
         assertEquals(1, output.size)
         assertEquals("DocumentReference/DateTest1", output[0].id)
     }

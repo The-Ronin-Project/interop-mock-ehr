@@ -21,7 +21,6 @@ import org.junit.jupiter.api.assertThrows
 
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
 class R4OrganizationResourceTest : BaseMySQLTest() {
-
     private lateinit var collection: Collection
     private lateinit var organizationProvider: R4OrganizationResourceProvider
 
@@ -29,10 +28,11 @@ class R4OrganizationResourceTest : BaseMySQLTest() {
     fun initTest() {
         collection = createCollection(Organization::class.simpleName!!)
         val database = mockk<SafeXDev>()
-        every { database.createCollection(Organization::class.java) } returns SafeXDev.SafeCollection(
-            "resource",
-            collection
-        )
+        every { database.createCollection(Organization::class.java) } returns
+            SafeXDev.SafeCollection(
+                "resource",
+                collection,
+            )
         every { database.run(any(), captureLambda<Collection.() -> Any>()) } answers {
             val collection = firstArg<SafeXDev.SafeCollection>()
             val lamdba = secondArg<Collection.() -> Any>()
@@ -65,9 +65,10 @@ class R4OrganizationResourceTest : BaseMySQLTest() {
         val testOrganization = Organization()
         testOrganization.id = "TESTINGIDENTIFIER"
 
-        val exception = assertThrows<ResourceNotFoundException> {
-            organizationProvider.read(IdType("NotGoingToFindThisID"))
-        }
+        val exception =
+            assertThrows<ResourceNotFoundException> {
+                organizationProvider.read(IdType("NotGoingToFindThisID"))
+            }
         assertEquals("No resource found with id: NotGoingToFindThisID", exception.message)
     }
 

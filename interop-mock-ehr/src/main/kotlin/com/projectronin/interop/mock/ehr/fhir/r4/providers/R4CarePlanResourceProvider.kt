@@ -14,7 +14,6 @@ import org.springframework.stereotype.Component
 @Component
 class R4CarePlanResourceProvider(override var resourceDAO: R4CarePlanDAO) :
     BaseResourceProvider<CarePlan, R4CarePlanDAO>() {
-
     override fun getResourceType(): Class<out IBaseResource> {
         return CarePlan::class.java
     }
@@ -23,7 +22,7 @@ class R4CarePlanResourceProvider(override var resourceDAO: R4CarePlanDAO) :
     fun search(
         @RequiredParam(name = CarePlan.SP_PATIENT) patientReferenceParam: ReferenceParam,
         @RequiredParam(name = CarePlan.SP_CATEGORY) categoryParam: TokenParam,
-        @OptionalParam(name = CarePlan.SP_DATE) dateRangeParam: DateRangeParam? = null
+        @OptionalParam(name = CarePlan.SP_DATE) dateRangeParam: DateRangeParam? = null,
     ): List<CarePlan> {
         val reference = patientReferenceParam.let { "Patient/${it.value}" }
         val category = categoryParam.value
@@ -31,7 +30,7 @@ class R4CarePlanResourceProvider(override var resourceDAO: R4CarePlanDAO) :
             reference,
             category,
             dateRangeParam?.lowerBoundAsInstant,
-            dateRangeParam?.upperBoundAsInstant
+            dateRangeParam?.upperBoundAsInstant,
         )
     }
 }

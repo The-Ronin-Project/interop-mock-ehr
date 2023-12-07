@@ -17,7 +17,6 @@ import org.springframework.stereotype.Component
 @Component
 class R4PatientResourceProvider(override var resourceDAO: R4PatientDAO) :
     BaseResourceProvider<Patient, R4PatientDAO>() {
-
     override fun getResourceType(): Class<out IBaseResource> {
         return Patient::class.java
     }
@@ -29,7 +28,7 @@ class R4PatientResourceProvider(override var resourceDAO: R4PatientDAO) :
         @OptionalParam(name = Patient.SP_FAMILY) familyName: StringParam? = null,
         @OptionalParam(name = Patient.SP_GENDER) gender: StringParam? = null,
         @OptionalParam(name = Patient.SP_EMAIL) email: StringParam? = null,
-        @OptionalParam(name = Patient.SP_TELECOM) telecomParam: TokenParam? = null
+        @OptionalParam(name = Patient.SP_TELECOM) telecomParam: TokenParam? = null,
     ): List<Patient> {
         return resourceDAO.searchByQuery(
             bd?.valueAsString,
@@ -37,18 +36,21 @@ class R4PatientResourceProvider(override var resourceDAO: R4PatientDAO) :
             familyName?.value,
             gender?.value,
             email?.value,
-            telecomParam?.let { ContactPoint().setValue(it.value) }
+            telecomParam?.let { ContactPoint().setValue(it.value) },
         )
     }
 
     @Search
-    fun searchByIdentifier(@RequiredParam(name = Patient.SP_IDENTIFIER) idToken: TokenOrListParam): List<Patient> {
-        val identifiers = idToken.valuesAsQueryTokens.map {
-            val identifier = Identifier()
-            identifier.value = it.value
-            identifier.system = it.system
-            identifier
-        }
+    fun searchByIdentifier(
+        @RequiredParam(name = Patient.SP_IDENTIFIER) idToken: TokenOrListParam,
+    ): List<Patient> {
+        val identifiers =
+            idToken.valuesAsQueryTokens.map {
+                val identifier = Identifier()
+                identifier.value = it.value
+                identifier.system = it.system
+                identifier
+            }
 
         return resourceDAO.searchByIdentifiers(identifiers)
     }

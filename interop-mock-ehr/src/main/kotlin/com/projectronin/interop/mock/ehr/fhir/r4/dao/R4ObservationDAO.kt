@@ -24,7 +24,7 @@ class R4ObservationDAO(private val schema: SafeXDev, context: FhirContext) :
         category: TokenOrListParam? = null,
         fromDate: Date? = null,
         toDate: Date? = null,
-        code: TokenOrListParam? = null
+        code: TokenOrListParam? = null,
     ): List<Observation> {
         // Build queryFragments into query joined with 'AND'
         val queryFragments = mutableListOf<String>()

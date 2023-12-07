@@ -16,14 +16,13 @@ import javax.servlet.annotation.WebServlet
 class STU3Server(
     @Qualifier("DSTU3") context: FhirContext,
     private val stu3AppointmentProvider: STU3AppointmentResourceProvider,
-    private val stu3MedicationStatementProvider: STU3MedicationStatementProvider
+    private val stu3MedicationStatementProvider: STU3MedicationStatementProvider,
 ) : RestfulServer(context) {
-
     override fun initialize() {
         registerInterceptor(RoninVendorFilter())
         setResourceProviders(
             stu3AppointmentProvider,
-            stu3MedicationStatementProvider
+            stu3MedicationStatementProvider,
         )
         pagingProvider = FifoMemoryPagingProvider(10)
         maximumPageSize = 10 // in reality this is much higher, but this is easier to test with.

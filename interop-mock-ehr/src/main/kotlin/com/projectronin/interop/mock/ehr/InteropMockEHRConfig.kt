@@ -18,9 +18,8 @@ class InteropMockEHRConfig {
         @Value("#{environment.MOCK_EHR_DB_PORT}") port: String,
         @Value("#{environment.MOCK_EHR_DB_NAME}") name: String,
         @Value("#{environment.MOCK_EHR_DB_USER}") user: String,
-        @Value("#{environment.MOCK_EHR_DB_PASS}") pass: String
-    ): XDevConfig =
-        XDevConfig(host, port, name, user, pass)
+        @Value("#{environment.MOCK_EHR_DB_PASS}") pass: String,
+    ): XDevConfig = XDevConfig(host, port, name, user, pass)
 
     @Bean
     @Primary

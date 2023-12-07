@@ -33,10 +33,11 @@ class R4CarePlanResourceTest : BaseMySQLTest() {
     fun initTest() {
         collection = createCollection(CarePlan::class.simpleName!!)
         val database = mockk<SafeXDev>()
-        every { database.createCollection(CarePlan::class.java) } returns SafeXDev.SafeCollection(
-            "resource",
-            collection
-        )
+        every { database.createCollection(CarePlan::class.java) } returns
+            SafeXDev.SafeCollection(
+                "resource",
+                collection,
+            )
         every { database.run(any(), captureLambda<Collection.() -> Any>()) } answers {
             val collection = firstArg<SafeXDev.SafeCollection>()
             val lamdba = secondArg<Collection.() -> Any>()
@@ -73,10 +74,11 @@ class R4CarePlanResourceTest : BaseMySQLTest() {
         testCarePlan2.id = "${prefix}TESTPLAN2"
         collection.add(FhirContext.forR4().newJsonParser().encodeResourceToString(testCarePlan2)).execute()
 
-        val output = carePlanProvider.search(
-            patientReferenceParam = ReferenceParam("${prefix}TESTINGID"),
-            categoryParam = TokenParam("cat1")
-        )
+        val output =
+            carePlanProvider.search(
+                patientReferenceParam = ReferenceParam("${prefix}TESTINGID"),
+                categoryParam = TokenParam("cat1"),
+            )
         assertEquals(1, output.size)
         assertEquals("CarePlan/${testCarePlan1.id}", output[0].id)
     }
@@ -90,10 +92,11 @@ class R4CarePlanResourceTest : BaseMySQLTest() {
         testCarePlan1.id = "${prefix}TESTPLAN3"
         collection.add(FhirContext.forR4().newJsonParser().encodeResourceToString(testCarePlan1)).execute()
 
-        val output = carePlanProvider.search(
-            patientReferenceParam = ReferenceParam("${prefix}TESTINGID"),
-            categoryParam = TokenParam("cat1")
-        )
+        val output =
+            carePlanProvider.search(
+                patientReferenceParam = ReferenceParam("${prefix}TESTINGID"),
+                categoryParam = TokenParam("cat1"),
+            )
         assertEquals(0, output.size)
     }
 
@@ -133,11 +136,12 @@ class R4CarePlanResourceTest : BaseMySQLTest() {
         dateRange.setUpperBound("le2022-08-01")
 
         // Execute search
-        val output = carePlanProvider.search(
-            patientReferenceParam = ReferenceParam("${prefix}TESTINGID"),
-            categoryParam = TokenParam("cat1"),
-            dateRangeParam = dateRange
-        )
+        val output =
+            carePlanProvider.search(
+                patientReferenceParam = ReferenceParam("${prefix}TESTINGID"),
+                categoryParam = TokenParam("cat1"),
+                dateRangeParam = dateRange,
+            )
 
         // Check output
         assertEquals(1, output.size)
@@ -167,11 +171,12 @@ class R4CarePlanResourceTest : BaseMySQLTest() {
         dateRange.setUpperBound("le2023-08-01")
 
         // Execute search
-        val output = carePlanProvider.search(
-            patientReferenceParam = ReferenceParam("${prefix}TESTINGID"),
-            categoryParam = TokenParam("cat1"),
-            dateRangeParam = dateRange
-        )
+        val output =
+            carePlanProvider.search(
+                patientReferenceParam = ReferenceParam("${prefix}TESTINGID"),
+                categoryParam = TokenParam("cat1"),
+                dateRangeParam = dateRange,
+            )
 
         // Check output
         assertEquals(0, output.size)
@@ -195,10 +200,11 @@ class R4CarePlanResourceTest : BaseMySQLTest() {
         collection.add(FhirContext.forR4().newJsonParser().encodeResourceToString(testCarePlan1)).execute()
 
         // Execute search
-        val output = carePlanProvider.search(
-            patientReferenceParam = ReferenceParam("${prefix}TESTINGID"),
-            categoryParam = TokenParam("cat1")
-        )
+        val output =
+            carePlanProvider.search(
+                patientReferenceParam = ReferenceParam("${prefix}TESTINGID"),
+                categoryParam = TokenParam("cat1"),
+            )
 
         // Check output
         assertEquals(1, output.size)
@@ -226,11 +232,12 @@ class R4CarePlanResourceTest : BaseMySQLTest() {
         dateRange.setUpperBound("le2023-08-01")
 
         // Execute search
-        val output = carePlanProvider.search(
-            patientReferenceParam = ReferenceParam("${prefix}TESTINGID"),
-            categoryParam = TokenParam("cat1"),
-            dateRangeParam = dateRange
-        )
+        val output =
+            carePlanProvider.search(
+                patientReferenceParam = ReferenceParam("${prefix}TESTINGID"),
+                categoryParam = TokenParam("cat1"),
+                dateRangeParam = dateRange,
+            )
 
         // Check output
         assertEquals(1, output.size)
@@ -258,11 +265,12 @@ class R4CarePlanResourceTest : BaseMySQLTest() {
         dateRange.setLowerBound("ge2023-07-01")
 
         // Execute search
-        val output = carePlanProvider.search(
-            patientReferenceParam = ReferenceParam("${prefix}TESTINGID"),
-            categoryParam = TokenParam("cat1"),
-            dateRangeParam = dateRange
-        )
+        val output =
+            carePlanProvider.search(
+                patientReferenceParam = ReferenceParam("${prefix}TESTINGID"),
+                categoryParam = TokenParam("cat1"),
+                dateRangeParam = dateRange,
+            )
 
         // Check output
         assertEquals(0, output.size)
@@ -290,11 +298,12 @@ class R4CarePlanResourceTest : BaseMySQLTest() {
         dateRange.setLowerBound("ge2023-07-01")
 
         // Execute search
-        val output = carePlanProvider.search(
-            patientReferenceParam = ReferenceParam("${prefix}TESTINGID"),
-            categoryParam = TokenParam("cat1"),
-            dateRangeParam = dateRange
-        )
+        val output =
+            carePlanProvider.search(
+                patientReferenceParam = ReferenceParam("${prefix}TESTINGID"),
+                categoryParam = TokenParam("cat1"),
+                dateRangeParam = dateRange,
+            )
 
         // Check output
         assertEquals(0, output.size)
@@ -322,11 +331,12 @@ class R4CarePlanResourceTest : BaseMySQLTest() {
         dateRange.setLowerBound("ge2023-07-01")
 
         // Execute search
-        val output = carePlanProvider.search(
-            patientReferenceParam = ReferenceParam("${prefix}TESTINGID"),
-            categoryParam = TokenParam("cat1"),
-            dateRangeParam = dateRange
-        )
+        val output =
+            carePlanProvider.search(
+                patientReferenceParam = ReferenceParam("${prefix}TESTINGID"),
+                categoryParam = TokenParam("cat1"),
+                dateRangeParam = dateRange,
+            )
 
         // Check output
         assertEquals(1, output.size)

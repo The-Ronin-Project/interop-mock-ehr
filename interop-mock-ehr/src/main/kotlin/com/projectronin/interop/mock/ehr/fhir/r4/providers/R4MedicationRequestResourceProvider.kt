@@ -12,7 +12,6 @@ import org.springframework.stereotype.Component
 @Component
 class R4MedicationRequestResourceProvider(override var resourceDAO: R4MedicationRequestDAO) :
     BaseResourceProvider<MedicationRequest, R4MedicationRequestDAO>() {
-
     override fun getResourceType(): Class<out IBaseResource> {
         return MedicationRequest::class.java
     }
@@ -21,10 +20,13 @@ class R4MedicationRequestResourceProvider(override var resourceDAO: R4Medication
     fun search(
         @OptionalParam(name = MedicationRequest.SP_PATIENT) patientReferenceParam: ReferenceParam? = null,
         @OptionalParam(name = MedicationRequest.SP_DATE) dateRangeParam: DateRangeParam? = null,
-        @OptionalParam(name = "-timing-boundsPeriod") cernerDateRangeParam: DateRangeParam? = null
+        @OptionalParam(name = "-timing-boundsPeriod") cernerDateRangeParam: DateRangeParam? = null,
     ): List<MedicationRequest> {
         if (dateRangeParam != null && cernerDateRangeParam != null) {
-            throw UnsupportedOperationException("The MedicationRequest endpoint does not allow both optional parameters \"${MedicationRequest.SP_DATE}\" and \"-timing-boundsPeriod\" to be specified.")
+            throw UnsupportedOperationException(
+                "The MedicationRequest endpoint does not allow both optional parameters " +
+                    "\"${MedicationRequest.SP_DATE}\" and \"-timing-boundsPeriod\" to be specified.",
+            )
         }
 
         val subject = patientReferenceParam?.let { "Patient/${it.value}" }
@@ -33,7 +35,7 @@ class R4MedicationRequestResourceProvider(override var resourceDAO: R4Medication
         return resourceDAO.searchByQuery(
             subject,
             dateRange?.lowerBoundAsInstant,
-            dateRange?.upperBoundAsInstant
+            dateRange?.upperBoundAsInstant,
         )
     }
 }

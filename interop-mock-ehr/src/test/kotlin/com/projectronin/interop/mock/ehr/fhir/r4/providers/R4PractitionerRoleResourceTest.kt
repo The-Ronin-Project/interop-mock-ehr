@@ -29,7 +29,6 @@ import java.security.InvalidParameterException
 
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
 class R4PractitionerRoleResourceTest : BaseMySQLTest() {
-
     private lateinit var collection: Collection
     private lateinit var practitionerRoleProvider: R4PractitionerRoleResourceProvider
 
@@ -37,28 +36,32 @@ class R4PractitionerRoleResourceTest : BaseMySQLTest() {
     fun initTest() {
         collection = createCollection("test")
         val database = mockk<SafeXDev>()
-        every { database.createCollection(PractitionerRole::class.java) } returns SafeXDev.SafeCollection(
-            "resource",
-            collection
-        )
-        every { database.createCollection(Location::class.java) } returns SafeXDev.SafeCollection(
-            "resource",
-            collection
-        )
-        every { database.createCollection(Practitioner::class.java) } returns SafeXDev.SafeCollection(
-            "resource",
-            collection
-        )
+        every { database.createCollection(PractitionerRole::class.java) } returns
+            SafeXDev.SafeCollection(
+                "resource",
+                collection,
+            )
+        every { database.createCollection(Location::class.java) } returns
+            SafeXDev.SafeCollection(
+                "resource",
+                collection,
+            )
+        every { database.createCollection(Practitioner::class.java) } returns
+            SafeXDev.SafeCollection(
+                "resource",
+                collection,
+            )
         every { database.run(any(), captureLambda<Collection.() -> Any>()) } answers {
             val collection = firstArg<SafeXDev.SafeCollection>()
             val lamdba = secondArg<Collection.() -> Any>()
             lamdba.invoke(collection.collection)
         }
-        practitionerRoleProvider = R4PractitionerRoleResourceProvider(
-            R4PractitionerRoleDAO(database, FhirContext.forR4()),
-            R4LocationDAO(database, FhirContext.forR4()),
-            R4PractitionerDAO(database, FhirContext.forR4())
-        )
+        practitionerRoleProvider =
+            R4PractitionerRoleResourceProvider(
+                R4PractitionerRoleDAO(database, FhirContext.forR4()),
+                R4LocationDAO(database, FhirContext.forR4()),
+                R4PractitionerDAO(database, FhirContext.forR4()),
+            )
     }
 
     @Test
@@ -104,10 +107,11 @@ class R4PractitionerRoleResourceTest : BaseMySQLTest() {
         testRole2.id = "TESTINGIDENTIFIER4"
         collection.add(FhirContext.forR4().newJsonParser().encodeResourceToString(testRole2)).execute()
 
-        val output = practitionerRoleProvider.search(
-            practitionerReferenceParam = ReferenceParam("IPMD"),
-            locationReferenceParam = ReferenceAndListParam().addAnd(ReferenceOrListParam().add(ReferenceParam("1")))
-        )
+        val output =
+            practitionerRoleProvider.search(
+                practitionerReferenceParam = ReferenceParam("IPMD"),
+                locationReferenceParam = ReferenceAndListParam().addAnd(ReferenceOrListParam().add(ReferenceParam("1"))),
+            )
         assertEquals(1, output.size)
         assertEquals("PractitionerRole/${testRole.id}", output[0].id)
     }
@@ -132,11 +136,12 @@ class R4PractitionerRoleResourceTest : BaseMySQLTest() {
         practitioner.id = "IPMD"
         collection.add(FhirContext.forR4().newJsonParser().encodeResourceToString(practitioner)).execute()
 
-        val output = practitionerRoleProvider.search(
-            practitionerReferenceParam = ReferenceParam("IPMD"),
-            locationReferenceParam = ReferenceAndListParam().addAnd(ReferenceOrListParam().add(ReferenceParam("3"))),
-            includeSetParam = setOf(Include("PractitionerRole:practitioner"), Include("PractitionerRole:location"))
-        )
+        val output =
+            practitionerRoleProvider.search(
+                practitionerReferenceParam = ReferenceParam("IPMD"),
+                locationReferenceParam = ReferenceAndListParam().addAnd(ReferenceOrListParam().add(ReferenceParam("3"))),
+                includeSetParam = setOf(Include("PractitionerRole:practitioner"), Include("PractitionerRole:location")),
+            )
         assertEquals("Practitioner/IPMD", ((output[0].practitioner.resource) as Practitioner).id)
         assertEquals("Location/3", ((output[0].location[0].resource) as Location).id)
         assertEquals("Location/4", ((output[0].location[1].resource) as Location).id)
@@ -155,7 +160,7 @@ class R4PractitionerRoleResourceTest : BaseMySQLTest() {
             practitionerRoleProvider.search(
                 practitionerReferenceParam = ReferenceParam("IPMD"),
                 locationReferenceParam = ReferenceAndListParam().addAnd(ReferenceOrListParam().add(ReferenceParam("3"))),
-                includeSetParam = setOf(Include("PractitionerRole:somethingNotIncluded"))
+                includeSetParam = setOf(Include("PractitionerRole:somethingNotIncluded")),
             )
         }
     }
@@ -169,10 +174,11 @@ class R4PractitionerRoleResourceTest : BaseMySQLTest() {
         testRole.id = "TESTINGIDENTIFIER5"
         collection.add(FhirContext.forR4().newJsonParser().encodeResourceToString(testRole)).execute()
 
-        practitionerRoleProvider.search( // nothing to assert, just trying to catch the exceptions
+        // nothing to assert, just trying to catch the exceptions
+        practitionerRoleProvider.search(
             practitionerReferenceParam = ReferenceParam("IPMD2"),
             locationReferenceParam = ReferenceAndListParam().addAnd(ReferenceOrListParam().add(ReferenceParam("9"))),
-            includeSetParam = setOf(Include("PractitionerRole:practitioner"), Include("PractitionerRole:location"))
+            includeSetParam = setOf(Include("PractitionerRole:practitioner"), Include("PractitionerRole:location")),
         )
     }
 

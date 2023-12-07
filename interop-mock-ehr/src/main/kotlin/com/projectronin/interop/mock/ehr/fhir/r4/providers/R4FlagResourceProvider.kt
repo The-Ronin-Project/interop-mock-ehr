@@ -16,6 +16,7 @@ class R4FlagResourceProvider(override var resourceDAO: R4FlagDAO) :
     }
 
     @Search
-    fun search(@RequiredParam(name = Flag.SP_PATIENT) patientReferenceParam: ReferenceParam): List<Flag> =
-        resourceDAO.searchByQuery("Patient/${patientReferenceParam.value}")
+    fun search(
+        @RequiredParam(name = Flag.SP_PATIENT) patientReferenceParam: ReferenceParam,
+    ): List<Flag> = resourceDAO.searchByQuery("Patient/${patientReferenceParam.value}")
 }

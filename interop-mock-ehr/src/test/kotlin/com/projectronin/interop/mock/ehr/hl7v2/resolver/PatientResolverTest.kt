@@ -25,22 +25,28 @@ class PatientResolverTest {
         val resolver = PatientResolver(patientDAO)
         every { patientDAO.searchByIdentifier(match { it.value == "123" }) } returns Patient()
         every { patientDAO.searchByIdentifier(match { it.value != "123" }) } returns null
-        val cx1 = mockk<CX> {
-            every { idNumber } returns mockk {
-                every { value } returns "123"
+        val cx1 =
+            mockk<CX> {
+                every { idNumber } returns
+                    mockk {
+                        every { value } returns "123"
+                    }
+                every { assigningAuthority } returns
+                    mockk {
+                        every { namespaceID } returns
+                            mockk {
+                                every { value } returns "MRN"
+                            }
+                    }
             }
-            every { assigningAuthority } returns mockk {
-                every { namespaceID } returns mockk {
-                    every { value } returns "MRN"
-                }
+        val cx2 =
+            mockk<CX> {
             }
-        }
-        val cx2 = mockk<CX> {
-        }
 
-        val pid = mockk<PID> {
-            every { patientIdentifierList } returns arrayOf(cx1, cx2)
-        }
+        val pid =
+            mockk<PID> {
+                every { patientIdentifierList } returns arrayOf(cx1, cx2)
+            }
         assertNotNull(resolver.findPatient(pid))
     }
 
@@ -48,19 +54,24 @@ class PatientResolverTest {
     fun `findPatient - can return null`() {
         val resolver = PatientResolver(patientDAO)
         every { patientDAO.searchByIdentifier(any()) } returns null
-        val cx1 = mockk<CX> {
-            every { idNumber } returns mockk {
-                every { value } returns "123"
+        val cx1 =
+            mockk<CX> {
+                every { idNumber } returns
+                    mockk {
+                        every { value } returns "123"
+                    }
+                every { assigningAuthority } returns
+                    mockk {
+                        every { namespaceID } returns
+                            mockk {
+                                every { value } returns "MRN"
+                            }
+                    }
             }
-            every { assigningAuthority } returns mockk {
-                every { namespaceID } returns mockk {
-                    every { value } returns "MRN"
-                }
+        val pid =
+            mockk<PID> {
+                every { patientIdentifierList } returns arrayOf(cx1)
             }
-        }
-        val pid = mockk<PID> {
-            every { patientIdentifierList } returns arrayOf(cx1)
-        }
         assertNull(resolver.findPatient(pid))
     }
 }

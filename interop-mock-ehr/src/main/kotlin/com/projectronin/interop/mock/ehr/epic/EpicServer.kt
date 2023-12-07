@@ -38,7 +38,6 @@ import java.util.UUID
 @RestController
 @RequestMapping("/epic")
 class EpicServer(private var dal: EpicDAL) {
-
     @Operation(summary = "Returns Mock Epic Authentication Token", description = "Returns token if successful")
     @ApiResponses(
         value = [
@@ -48,11 +47,11 @@ class EpicServer(private var dal: EpicDAL) {
                 content = [
                     Content(
                         mediaType = "application/json",
-                        schema = Schema(implementation = EpicAuthentication::class)
-                    )
-                ]
-            )
-        ]
+                        schema = Schema(implementation = EpicAuthentication::class),
+                    ),
+                ],
+            ),
+        ],
     )
     @PostMapping("/oauth2/token")
     fun getAuthToken(): EpicAuthentication {
@@ -60,13 +59,13 @@ class EpicServer(private var dal: EpicDAL) {
             accessToken = UUID.randomUUID().toString(),
             tokenType = "bearer",
             expiresIn = 3600,
-            scope = "Patient.read Patient.search"
+            scope = "Patient.read Patient.search",
         )
     }
 
     @Operation(
         summary = "Returns Patient Appointments ",
-        description = "returns list of epic appointments if successful"
+        description = "returns list of epic appointments if successful",
     )
     @ApiResponses(
         value = [
@@ -76,28 +75,32 @@ class EpicServer(private var dal: EpicDAL) {
                 content = [
                     Content(
                         mediaType = "application/json",
-                        schema = Schema(implementation = GetAppointmentsResponse::class)
-                    )
-                ]
+                        schema = Schema(implementation = GetAppointmentsResponse::class),
+                    ),
+                ],
             ),
             ApiResponse(
                 responseCode = "400",
                 description = "Bad Request",
-                content = [Content(mediaType = "application/text")]
-            )
-        ]
+                content = [Content(mediaType = "application/text")],
+            ),
+        ],
     )
     @PostMapping("/api/epic/2013/Scheduling/Patient/GETPATIENTAPPOINTMENTS/GetPatientAppointments")
-    fun getAppointmentsByPatient(@RequestBody request: GetPatientAppointmentsRequest): GetAppointmentsResponse {
+    fun getAppointmentsByPatient(
+        @RequestBody request: GetPatientAppointmentsRequest,
+    ): GetAppointmentsResponse {
         // start date required
-        val start = kotlin.runCatching { SimpleDateFormat("MM/dd/yyyy").parse(request.startDate) }
-            .getOrElse { return errorResponse("INVALID-START-DATE") }
+        val start =
+            kotlin.runCatching { SimpleDateFormat("MM/dd/yyyy").parse(request.startDate) }
+                .getOrElse { return errorResponse("INVALID-START-DATE") }
 
         // end date not required
-        val end = request.endDate?.let {
-            kotlin.runCatching { SimpleDateFormat("MM/dd/yyyy").parse(request.endDate) }
-                .getOrElse { return errorResponse("INVALID-END-DATE") }
-        }
+        val end =
+            request.endDate?.let {
+                kotlin.runCatching { SimpleDateFormat("MM/dd/yyyy").parse(request.endDate) }
+                    .getOrElse { return errorResponse("INVALID-END-DATE") }
+            }
         // more validation
         end?.let { if (start.after(it)) return errorResponse("END-DATE-BEFORE-START-DATE") }
         // dates have milliseconds, but Epic's search doesn't allow for anything more granular than day
@@ -112,11 +115,12 @@ class EpicServer(private var dal: EpicDAL) {
         val patient = dal.r4PatientDAO.searchByIdentifier(patientID) ?: return errorResponse("NO-PATIENT-FOUND")
 
         // search for appointments
-        val r4appointments = dal.r4AppointmentDAO.searchByQuery(
-            references = listOf(Reference().setReference(patient.id)),
-            fromDate = start,
-            toDate = end
-        )
+        val r4appointments =
+            dal.r4AppointmentDAO.searchByQuery(
+                references = listOf(Reference().setReference(patient.id)),
+                fromDate = start,
+                toDate = end,
+            )
         val epicAppointments =
             r4appointments.map { dal.r4AppointmentTransformer.transformToEpicAppointment(it, patient) }
         return GetAppointmentsResponse(appointments = epicAppointments, error = null)
@@ -124,7 +128,7 @@ class EpicServer(private var dal: EpicDAL) {
 
     @Operation(
         summary = "Returns Provider Appointments",
-        description = "Returns list of epic appointments if successful"
+        description = "Returns list of epic appointments if successful",
     )
     @ApiResponses(
         value = [
@@ -134,28 +138,32 @@ class EpicServer(private var dal: EpicDAL) {
                 content = [
                     Content(
                         mediaType = "application/json",
-                        schema = Schema(implementation = GetAppointmentsResponse::class)
-                    )
-                ]
+                        schema = Schema(implementation = GetAppointmentsResponse::class),
+                    ),
+                ],
             ),
             ApiResponse(
                 responseCode = "400",
                 description = "Bad Request",
-                content = [Content(mediaType = "application/text")]
-            )
-        ]
+                content = [Content(mediaType = "application/text")],
+            ),
+        ],
     )
     @PostMapping("/api/epic/2013/Scheduling/Provider/GetProviderAppointments/Scheduling/Provider/Appointments")
-    fun getAppointmentsByPractitioner(@RequestBody request: GetProviderAppointmentRequest): GetAppointmentsResponse {
+    fun getAppointmentsByPractitioner(
+        @RequestBody request: GetProviderAppointmentRequest,
+    ): GetAppointmentsResponse {
         // start date required
-        val start = kotlin.runCatching { SimpleDateFormat("MM/dd/yyyy").parse(request.startDate) }
-            .getOrElse { return errorResponse("INVALID-START-DATE") }
+        val start =
+            kotlin.runCatching { SimpleDateFormat("MM/dd/yyyy").parse(request.startDate) }
+                .getOrElse { return errorResponse("INVALID-START-DATE") }
 
         // end date not required
-        val end = request.endDate?.let {
-            kotlin.runCatching { SimpleDateFormat("MM/dd/yyyy").parse(request.endDate) }
-                .getOrElse { return errorResponse("INVALID-END-DATE") }
-        }
+        val end =
+            request.endDate?.let {
+                kotlin.runCatching { SimpleDateFormat("MM/dd/yyyy").parse(request.endDate) }
+                    .getOrElse { return errorResponse("INVALID-END-DATE") }
+            }
 
         // more validation
         end?.let { if (start.after(it)) return errorResponse("END-DATE-BEFORE-START-DATE") }
@@ -167,31 +175,35 @@ class EpicServer(private var dal: EpicDAL) {
         if (request.userID == null) return errorResponse("NO-USER-FOUND")
 
         // find practitioners
-        val r4Practitioners = request.providers?.mapNotNull {
-            dal.r4PractitionerDAO.searchByIdentifier(
-                Identifier().setValue(it.id).setType(CodeableConcept().setText(it.idType))
-            )
-        } ?: emptyList()
-
-        // use practitioners if we have them
-        val r4ReferenceList = r4Practitioners.ifEmpty {
-            // otherwise use departments
-            val r4Departments = request.departments?.mapNotNull {
-                dal.r4LocationDAO.searchByIdentifier(
-                    Identifier().setValue(it.id).setSystem("mockEHRDepartmentInternalSystem")
+        val r4Practitioners =
+            request.providers?.mapNotNull {
+                dal.r4PractitionerDAO.searchByIdentifier(
+                    Identifier().setValue(it.id).setType(CodeableConcept().setText(it.idType)),
                 )
             } ?: emptyList()
-            r4Departments.ifEmpty { return errorResponse("NO-PROVIDER-FOUND") }
-        }
+
+        // use practitioners if we have them
+        val r4ReferenceList =
+            r4Practitioners.ifEmpty {
+                // otherwise use departments
+                val r4Departments =
+                    request.departments?.mapNotNull {
+                        dal.r4LocationDAO.searchByIdentifier(
+                            Identifier().setValue(it.id).setSystem("mockEHRDepartmentInternalSystem"),
+                        )
+                    } ?: emptyList()
+                r4Departments.ifEmpty { return errorResponse("NO-PROVIDER-FOUND") }
+            }
 
         // find all appointments for all practitioners
         val epicAppointments = mutableListOf<EpicAppointment>()
         r4ReferenceList.forEach {
-            val r4Appointments = dal.r4AppointmentDAO.searchByQuery(
-                references = listOf(Reference().setReference(it.id)),
-                fromDate = start,
-                toDate = end
-            )
+            val r4Appointments =
+                dal.r4AppointmentDAO.searchByQuery(
+                    references = listOf(Reference().setReference(it.id)),
+                    fromDate = start,
+                    toDate = end,
+                )
 
             r4Appointments.forEach { r4Appointment ->
                 val patientId =
@@ -216,26 +228,28 @@ class EpicServer(private var dal: EpicDAL) {
                 content = [
                     Content(
                         mediaType = "application/json",
-                        schema = Schema(implementation = SendMessageResponse::class)
-                    )
-                ]
+                        schema = Schema(implementation = SendMessageResponse::class),
+                    ),
+                ],
             ),
             ApiResponse(
                 responseCode = "400",
                 description = "Bad Request",
-                content = [Content(mediaType = "application/text")]
-            )
-        ]
+                content = [Content(mediaType = "application/text")],
+            ),
+        ],
     )
     @PostMapping("/api/epic/2014/Common/Utility/SENDMESSAGE/Message")
-    fun createCommunication(@RequestBody sendMessageRequest: SendMessageRequest): SendMessageResponse {
+    fun createCommunication(
+        @RequestBody sendMessageRequest: SendMessageRequest,
+    ): SendMessageResponse {
         // validate patient if it exists
         sendMessageRequest.patientID?.let {
             // expecting "MRN" or something similar, so hardcode MockEHR MRN system.
             dal.r4PatientDAO.searchByIdentifier(Identifier().setValue(it).setSystem("mockEHRMRNSystem"))
                 ?: throw ResponseStatusException(
                     HttpStatus.BAD_REQUEST,
-                    "INVALID-PATIENT"
+                    "INVALID-PATIENT",
                 )
         }
         val communication = dal.r4CommunicationTransformer.transformFromSendMessage(sendMessageRequest)
@@ -245,7 +259,7 @@ class EpicServer(private var dal: EpicDAL) {
 
     @Operation(
         summary = "Add onboard flag",
-        description = "Adds a smart data element to patient indicating Ronin onboarding"
+        description = "Adds a smart data element to patient indicating Ronin onboarding",
     )
     @ApiResponses(
         value = [
@@ -255,26 +269,28 @@ class EpicServer(private var dal: EpicDAL) {
                 content = [
                     Content(
                         mediaType = "application/json",
-                        schema = Schema(implementation = SetSmartDataValuesResult::class)
-                    )
-                ]
+                        schema = Schema(implementation = SetSmartDataValuesResult::class),
+                    ),
+                ],
             ),
             ApiResponse(
                 responseCode = "400",
                 description = "Bad Request",
-                content = [Content(mediaType = "application/text")]
-            )
-        ]
+                content = [Content(mediaType = "application/text")],
+            ),
+        ],
     )
     @PutMapping("/api/epic/2013/Clinical/Utility/SETSMARTDATAVALUES/SmartData/Values")
-    fun addOnboardFlag(@RequestBody request: SetSmartDataValuesRequest): SetSmartDataValuesResult {
+    fun addOnboardFlag(
+        @RequestBody request: SetSmartDataValuesRequest,
+    ): SetSmartDataValuesResult {
         // validate patient if it exists
         // expecting "MRN" or something similar, so hardcode MockEHR MRN system.
         val patient =
             dal.r4PatientDAO.searchByIdentifier(Identifier().setValue(request.id).setSystem("mockEHRMRNSystem"))
                 ?: throw ResponseStatusException(
                     HttpStatus.BAD_REQUEST,
-                    "NO-ENTITY-FOUND details: No entity found for the provided EntityID($request.id) and EntityIDType(mockEHRMRNSystem)."
+                    "NO-ENTITY-FOUND details: No entity found for the provided EntityID($request.id) and EntityIDType(mockEHRMRNSystem).",
                 )
         val existingFlags = dal.r4FlagDAO.searchByQuery("Patient/${patient.id.removePrefix("Patient/")}")
         // don't create multiple flags
@@ -291,48 +307,56 @@ class EpicServer(private var dal: EpicDAL) {
     }
 
     @PostMapping("/api/epic/2014/Clinical/Patient/GETMEDICATIONADMINISTRATIONHISTORY/MedicationAdministration")
-    fun getMedicationAdministration(@RequestBody request: EpicMedAdminRequest): EpicMedAdmin {
-        val patientID = dal.r4PatientDAO.searchByIdentifier(
-            Identifier().setValue(request.patientID).setSystem("mockPatientInternalSystem")
-        )?.id?.removePrefix("Patient/") ?: throw ResponseStatusException(
-            HttpStatus.BAD_REQUEST,
-            "INVALID-PATIENT"
-        )
-        val medOrders = request.orderIDs.map {
-            val medRequest = dal.r4MedicationRequestDAO.searchByQuery(
-                subject = "Patient/$patientID",
-                identifier = Identifier().setSystem("mockEHROrderSystem").setValue(it.id)
+    fun getMedicationAdministration(
+        @RequestBody request: EpicMedAdminRequest,
+    ): EpicMedAdmin {
+        val patientID =
+            dal.r4PatientDAO.searchByIdentifier(
+                Identifier().setValue(request.patientID).setSystem("mockPatientInternalSystem"),
+            )?.id?.removePrefix("Patient/") ?: throw ResponseStatusException(
+                HttpStatus.BAD_REQUEST,
+                "INVALID-PATIENT",
             )
-            if (medRequest.size != 1) {
-                throw ResponseStatusException(
-                    HttpStatus.INTERNAL_SERVER_ERROR,
-                    "${medRequest.size} MedicationRequests found for Order ID ${it.id}, expected 1."
-                )
-            }
-            val medAdminList =
-                dal.r4MedAdminDAO.searchByRequest(medRequest.first().id.removePrefix("MedicationRequest/"))
-            EpicMedicationOrder(
-                name = medAdminList.first().medicationCodeableConcept.text,
-                medicationAdministrations = medAdminList.map { R4MedAdmin ->
-                    EpicMedicationAdministration(
-                        administrationInstant = R4MedAdmin.effectiveDateTimeType.valueAsString,
-                        dose = EpicDose(
-                            value = R4MedAdmin.dosage.dose.value.toPlainString(),
-                            unit = R4MedAdmin.dosage.dose.unit
-                        ),
-                        action = when (R4MedAdmin.status.toCode()) {
-                            "completed" -> "Given"
-                            "in-progress" -> "Pending"
-                            "not-done" -> "Missed"
-                            "entered-in-error" -> "Canceled Entry"
-                            "stopped" -> "Stopped"
-                            "on-hold" -> "Held"
-                            else -> "?"
-                        }
+        val medOrders =
+            request.orderIDs.map {
+                val medRequest =
+                    dal.r4MedicationRequestDAO.searchByQuery(
+                        subject = "Patient/$patientID",
+                        identifier = Identifier().setSystem("mockEHROrderSystem").setValue(it.id),
+                    )
+                if (medRequest.size != 1) {
+                    throw ResponseStatusException(
+                        HttpStatus.INTERNAL_SERVER_ERROR,
+                        "${medRequest.size} MedicationRequests found for Order ID ${it.id}, expected 1.",
                     )
                 }
-            )
-        }
+                val medAdminList =
+                    dal.r4MedAdminDAO.searchByRequest(medRequest.first().id.removePrefix("MedicationRequest/"))
+                EpicMedicationOrder(
+                    name = medAdminList.first().medicationCodeableConcept.text,
+                    medicationAdministrations =
+                        medAdminList.map { R4MedAdmin ->
+                            EpicMedicationAdministration(
+                                administrationInstant = R4MedAdmin.effectiveDateTimeType.valueAsString,
+                                dose =
+                                    EpicDose(
+                                        value = R4MedAdmin.dosage.dose.value.toPlainString(),
+                                        unit = R4MedAdmin.dosage.dose.unit,
+                                    ),
+                                action =
+                                    when (R4MedAdmin.status.toCode()) {
+                                        "completed" -> "Given"
+                                        "in-progress" -> "Pending"
+                                        "not-done" -> "Missed"
+                                        "entered-in-error" -> "Canceled Entry"
+                                        "stopped" -> "Stopped"
+                                        "on-hold" -> "Held"
+                                        else -> "?"
+                                    },
+                            )
+                        },
+                )
+            }
         return EpicMedAdmin(medOrders)
     }
 }

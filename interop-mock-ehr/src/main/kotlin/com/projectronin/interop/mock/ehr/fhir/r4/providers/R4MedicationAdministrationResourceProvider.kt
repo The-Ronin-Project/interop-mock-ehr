@@ -12,7 +12,6 @@ import org.springframework.stereotype.Component
 @Component
 class R4MedicationAdministrationResourceProvider(override var resourceDAO: R4MedicationAdministrationDAO) :
     BaseResourceProvider<MedicationAdministration, R4MedicationAdministrationDAO>() {
-
     override fun getResourceType(): Class<out IBaseResource> {
         return MedicationAdministration::class.java
     }
@@ -21,7 +20,7 @@ class R4MedicationAdministrationResourceProvider(override var resourceDAO: R4Med
     fun search(
         @OptionalParam(name = MedicationAdministration.SP_REQUEST) requestParam: ReferenceParam? = null,
         @OptionalParam(name = MedicationAdministration.SP_PATIENT) patientParam: ReferenceParam? = null,
-        @OptionalParam(name = MedicationAdministration.SP_EFFECTIVE_TIME) effectiveTimeParam: DateRangeParam? = null
+        @OptionalParam(name = MedicationAdministration.SP_EFFECTIVE_TIME) effectiveTimeParam: DateRangeParam? = null,
     ): List<MedicationAdministration> {
         if (requestParam != null) {
             return resourceDAO.searchByRequest(requestParam.value)
@@ -31,7 +30,7 @@ class R4MedicationAdministrationResourceProvider(override var resourceDAO: R4Med
             return resourceDAO.searchByPatient(
                 patientParam.value,
                 effectiveTimeParam?.lowerBoundAsInstant,
-                effectiveTimeParam?.upperBoundAsInstant
+                effectiveTimeParam?.upperBoundAsInstant,
             )
         }
 

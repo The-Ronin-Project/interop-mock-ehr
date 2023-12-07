@@ -18,7 +18,6 @@ import org.hl7.fhir.r4.model.Appointment as R4Appointment
 @Component
 class STU3AppointmentResourceProvider(override var resourceDAO: R4AppointmentDAO) :
     STU3BaseResourceProvider<Appointment, R4Appointment, R4AppointmentDAO>() {
-
     override fun getResourceType(): Class<out IBaseResource> {
         return Appointment::class.java
     }
@@ -28,7 +27,7 @@ class STU3AppointmentResourceProvider(override var resourceDAO: R4AppointmentDAO
         @RequiredParam(name = Appointment.SP_PATIENT) patientReferenceParam: ReferenceParam,
         @OptionalParam(name = Appointment.SP_DATE) dateRangeParam: DateRangeParam? = null,
         @OptionalParam(name = Appointment.SP_STATUS) statusParam: StringParam? = null,
-        @OptionalParam(name = Appointment.SP_IDENTIFIER) identifiersParam: TokenOrListParam? = null
+        @OptionalParam(name = Appointment.SP_IDENTIFIER) identifiersParam: TokenOrListParam? = null,
     ): List<Appointment> {
         identifiersParam?.let {
             return it.valuesAsQueryTokens!!.map { identifier ->
@@ -43,7 +42,7 @@ class STU3AppointmentResourceProvider(override var resourceDAO: R4AppointmentDAO
             listOf(Reference("Patient/${patientReferenceParam.value}")),
             dateRangeParam?.lowerBoundAsInstant,
             dateRangeParam?.upperBoundAsInstant,
-            statusParam?.value
+            statusParam?.value,
         ).map { it.toDSTU3() }
     }
 }

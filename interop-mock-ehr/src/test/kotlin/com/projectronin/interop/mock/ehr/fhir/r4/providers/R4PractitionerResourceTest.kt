@@ -20,7 +20,6 @@ import java.util.Date
 
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
 class R4PractitionerResourceTest : BaseMySQLTest() {
-
     private lateinit var collection: Collection
     private lateinit var practitionerProvider: R4PractitionerResourceProvider
     private lateinit var dao: R4PractitionerDAO
@@ -29,10 +28,11 @@ class R4PractitionerResourceTest : BaseMySQLTest() {
     fun initTest() {
         collection = createCollection(Practitioner::class.simpleName!!)
         val database = mockk<SafeXDev>()
-        every { database.createCollection(Practitioner::class.java) } returns SafeXDev.SafeCollection(
-            "resource",
-            collection
-        )
+        every { database.createCollection(Practitioner::class.java) } returns
+            SafeXDev.SafeCollection(
+                "resource",
+                collection,
+            )
         every { database.run(any(), captureLambda<Collection.() -> Any>()) } answers {
             val collection = firstArg<SafeXDev.SafeCollection>()
             val lamdba = secondArg<Collection.() -> Any>()
@@ -171,11 +171,12 @@ class R4PractitionerResourceTest : BaseMySQLTest() {
         assertEquals(output.birthDate, practitioner.birthDate)
 
         collection.remove("true").execute() // Clear the collection in case other tests run first
-        var message = try {
-            dao.findById("TESTINGFINDID")
-        } catch (e: ResourceNotFoundException) {
-            e.message
-        }
+        var message =
+            try {
+                dao.findById("TESTINGFINDID")
+            } catch (e: ResourceNotFoundException) {
+                e.message
+            }
         assertEquals(message, "No resource found with id: TESTINGFINDID")
     }
 

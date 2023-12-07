@@ -11,13 +11,14 @@ import org.springframework.stereotype.Component
 @Component
 class R4ServiceRequestResourceProvider(override var resourceDAO: R4ServiceRequestDAO) :
     BaseResourceProvider<ServiceRequest, R4ServiceRequestDAO>() {
-
     override fun getResourceType(): Class<out IBaseResource> {
         return ServiceRequest::class.java
     }
 
     @Search
-    fun search(@RequiredParam(name = ServiceRequest.SP_PATIENT) patientReferenceParam: ReferenceParam): List<ServiceRequest> {
+    fun search(
+        @RequiredParam(name = ServiceRequest.SP_PATIENT) patientReferenceParam: ReferenceParam,
+    ): List<ServiceRequest> {
         return resourceDAO.searchByQuery("Patient/${patientReferenceParam.value}")
     }
 }

@@ -38,7 +38,10 @@ class SafeXDev(private val config: XDevConfig) {
             }
         }
 
-    fun <T> run(safeCollection: SafeCollection, block: Collection.() -> T): T {
+    fun <T> run(
+        safeCollection: SafeCollection,
+        block: Collection.() -> T,
+    ): T {
         return runBlocking {
             mutex.withLock {
                 testCollection(safeCollection)
@@ -60,7 +63,9 @@ class SafeXDev(private val config: XDevConfig) {
     }
 
     private fun newSchema(): Schema =
-        SessionFactory().getSession("mysqlx://${config.host}:${config.port}/${config.schema}?user=${config.username}&password=${config.password}")
+        SessionFactory().getSession(
+            "mysqlx://${config.host}:${config.port}/${config.schema}?user=${config.username}&password=${config.password}",
+        )
             .defaultSchema
 
     private fun resetAllCollections() {
@@ -82,5 +87,5 @@ data class XDevConfig(
     val port: String,
     val schema: String,
     val username: String,
-    val password: String
+    val password: String,
 )

@@ -18,7 +18,6 @@ import org.junit.jupiter.api.TestInstance
 
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
 class R4LocationResourceTest : BaseMySQLTest() {
-
     private lateinit var collection: Collection
     private lateinit var locationProvider: R4LocationResourceProvider
 
@@ -26,10 +25,11 @@ class R4LocationResourceTest : BaseMySQLTest() {
     fun initTest() {
         collection = createCollection(Location::class.simpleName!!)
         val database = mockk<SafeXDev>()
-        every { database.createCollection(Location::class.java) } returns SafeXDev.SafeCollection(
-            "resource",
-            collection
-        )
+        every { database.createCollection(Location::class.java) } returns
+            SafeXDev.SafeCollection(
+                "resource",
+                collection,
+            )
         every { database.run(any(), captureLambda<Collection.() -> Any>()) } answers {
             val collection = firstArg<SafeXDev.SafeCollection>()
             val lamdba = secondArg<Collection.() -> Any>()

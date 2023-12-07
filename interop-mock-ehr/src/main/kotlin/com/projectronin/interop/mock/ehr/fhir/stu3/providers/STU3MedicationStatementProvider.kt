@@ -13,14 +13,13 @@ import org.hl7.fhir.r4.model.MedicationStatement as R4MedicationStatement
 @Component
 class STU3MedicationStatementProvider(override var resourceDAO: R4MedicationStatementDAO) :
     STU3BaseResourceProvider<MedicationStatement, R4MedicationStatement, R4MedicationStatementDAO>() {
-
     override fun getResourceType(): Class<out IBaseResource> {
         return MedicationStatement::class.java
     }
 
     @Search
     fun search(
-        @RequiredParam(name = MedicationStatement.SP_PATIENT) patientReferenceParam: ReferenceParam
+        @RequiredParam(name = MedicationStatement.SP_PATIENT) patientReferenceParam: ReferenceParam,
     ): List<MedicationStatement> {
         val subject = patientReferenceParam.let { "Patient/${it.value}" }
         return resourceDAO.searchByQuery(subject).map { it.toDSTU3() }

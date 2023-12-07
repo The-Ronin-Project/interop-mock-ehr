@@ -10,16 +10,15 @@ import org.springframework.stereotype.Component
 
 @Component
 class R4RequestGroupResourceProvider(
-    override var resourceDAO: R4RequestGroupDAO
+    override var resourceDAO: R4RequestGroupDAO,
 ) : BaseResourceProvider<RequestGroup, R4RequestGroupDAO>() {
-
     override fun getResourceType(): Class<out IBaseResource> {
         return RequestGroup::class.java
     }
 
     @Search
     fun searchByQuery(
-        @RequiredParam(name = RequestGroup.SP_RES_ID) idListParam: StringOrListParam? = null
+        @RequiredParam(name = RequestGroup.SP_RES_ID) idListParam: StringOrListParam? = null,
     ): List<RequestGroup> {
         return resourceDAO.searchByQuery(idListParam)
     }

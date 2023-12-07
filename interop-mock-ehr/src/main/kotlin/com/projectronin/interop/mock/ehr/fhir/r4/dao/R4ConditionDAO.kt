@@ -10,7 +10,6 @@ import org.springframework.stereotype.Component
 @Component
 class R4ConditionDAO(private val schema: SafeXDev, context: FhirContext) :
     BaseResourceDAO<Condition>(context, schema, Condition::class.java) {
-
     /**
      * Finds conditions based on input query parameters. Treats all inputs as a logical 'AND'.
      * @param subject string for filtering Condition.subject.reference values.
@@ -20,7 +19,7 @@ class R4ConditionDAO(private val schema: SafeXDev, context: FhirContext) :
     fun searchByQuery(
         subject: String? = null,
         category: TokenOrListParam? = null,
-        clinicalStatus: String? = null
+        clinicalStatus: String? = null,
     ): List<Condition> {
         // Build queryFragments into query conditions joined with 'AND'
         val queryFragments = mutableListOf<String>()
@@ -31,7 +30,9 @@ class R4ConditionDAO(private val schema: SafeXDev, context: FhirContext) :
                 queryFragments.add(phrase)
             }
         }
-        clinicalStatus?.let { queryFragments.add("('${it.escapeSQL()}' in clinicalStatus.coding[*].code OR '${it.escapeSQL()}' in clinicalStatus.text)") }
+        clinicalStatus?.let {
+            queryFragments.add("('${it.escapeSQL()}' in clinicalStatus.coding[*].code OR '${it.escapeSQL()}' in clinicalStatus.text)")
+        }
 
         // Join query conditions with 'AND'
         val query = queryFragments.joinToString(" AND ")

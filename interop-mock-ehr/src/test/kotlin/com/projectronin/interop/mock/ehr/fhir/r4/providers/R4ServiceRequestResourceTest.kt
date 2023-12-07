@@ -27,10 +27,11 @@ class R4ServiceRequestResourceTest : BaseMySQLTest() {
     fun initTest() {
         collection = createCollection(ServiceRequest::class.simpleName!!)
         val database = mockk<SafeXDev>()
-        every { database.createCollection(ServiceRequest::class.java) } returns SafeXDev.SafeCollection(
-            "resource",
-            collection
-        )
+        every { database.createCollection(ServiceRequest::class.java) } returns
+            SafeXDev.SafeCollection(
+                "resource",
+                collection,
+            )
         every { database.run(any(), captureLambda<Collection.() -> Any>()) } answers {
             val collection = firstArg<SafeXDev.SafeCollection>()
             val lamdba = secondArg<Collection.() -> Any>()

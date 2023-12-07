@@ -4,7 +4,6 @@ import io.mockk.mockk
 import org.junit.jupiter.api.Test
 
 internal class EpicDALTest {
-
     @Test
     fun `code coverage test`() {
         EpicDAL(mockk(), mockk(), mockk(), mockk(), mockk(), mockk(), mockk(), mockk(), mockk(), mockk(), mockk())

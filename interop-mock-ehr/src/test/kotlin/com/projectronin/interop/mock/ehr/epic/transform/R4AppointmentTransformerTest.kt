@@ -21,21 +21,23 @@ import java.util.Date
 import org.hl7.fhir.r4.model.Appointment as R4Appointment
 
 internal class R4AppointmentTransformerTest {
-
     @Test
     fun `transform with everything test`() {
-        val practDAO = mockk<R4PractitionerDAO> {
-            every { findById("PRACTID#1") } throws Exception()
-        }
-        val locationDAO = mockk<R4LocationDAO> {
-            every { findById("LOCID#1") } throws Exception()
-        }
+        val practDAO =
+            mockk<R4PractitionerDAO> {
+                every { findById("PRACTID#1") } throws Exception()
+            }
+        val locationDAO =
+            mockk<R4LocationDAO> {
+                every { findById("LOCID#1") } throws Exception()
+            }
         val patient = Patient()
         patient.identifier = listOf(Identifier().setValue("PATMRN").setSystem("MRN"))
         patient.addName(HumanName().addGiven("given").setFamily("family").setUse(HumanName.NameUse.USUAL))
         val practitionerParticipant = AppointmentParticipantComponent()
-        practitionerParticipant.actor = Reference().setReference("Practitioner/PRACTID#1").setType("Practitioner")
-            .setIdentifier(Identifier().setValue("IPMD").setSystem("mockEHRProviderSystem"))
+        practitionerParticipant.actor =
+            Reference().setReference("Practitioner/PRACTID#1").setType("Practitioner")
+                .setIdentifier(Identifier().setValue("IPMD").setSystem("mockEHRProviderSystem"))
         val otherParticipant = AppointmentParticipantComponent()
         otherParticipant.actor = Reference().setReference("Location/LOCID#1").setType("Location")
         val input = R4Appointment()
@@ -46,54 +48,61 @@ internal class R4AppointmentTransformerTest {
         input.start = Date(120, 0, 1)
         input.status = org.hl7.fhir.r4.model.Appointment.AppointmentStatus.BOOKED
         input.id = "Appointment/APPTID#1"
-        input.participant = listOf(
-            practitionerParticipant,
-            otherParticipant
-        )
+        input.participant =
+            listOf(
+                practitionerParticipant,
+                otherParticipant,
+            )
 
-        val expected = EpicAppointment(
-            appointmentDuration = "30",
-            appointmentNotes = listOf("instruction", "comment"),
-            appointmentStartTime = "12:00 AM",
-            appointmentStatus = "Scheduled",
-            contactIDs = listOf(IDType(id = "APPTID#1", type = "CSN")),
-            date = "01/01/2020",
-            patientIDs = listOf(IDType("PATMRN", "MRN")),
-            patientName = "given family",
-            providers = listOf(
-                ScheduleProviderReturnWithTime(
-                    departmentIDs = listOf(
-                        IDType(
-                            id = "NO-INTERNAL-ID",
-                            type = "Internal"
-                        )
+        val expected =
+            EpicAppointment(
+                appointmentDuration = "30",
+                appointmentNotes = listOf("instruction", "comment"),
+                appointmentStartTime = "12:00 AM",
+                appointmentStatus = "Scheduled",
+                contactIDs = listOf(IDType(id = "APPTID#1", type = "CSN")),
+                date = "01/01/2020",
+                patientIDs = listOf(IDType("PATMRN", "MRN")),
+                patientName = "given family",
+                providers =
+                    listOf(
+                        ScheduleProviderReturnWithTime(
+                            departmentIDs =
+                                listOf(
+                                    IDType(
+                                        id = "NO-INTERNAL-ID",
+                                        type = "Internal",
+                                    ),
+                                ),
+                            departmentName = "",
+                            duration = "",
+                            providerIDs =
+                                listOf(
+                                    IDType(
+                                        id = "IPMD",
+                                        type = "external",
+                                    ),
+                                ),
+                            providerName = "",
+                            time = "",
+                        ),
                     ),
-                    departmentName = "",
-                    duration = "",
-                    providerIDs = listOf(
-                        IDType(
-                            id = "IPMD",
-                            type = "external"
-                        )
-                    ),
-                    providerName = "",
-                    time = ""
-                )
-            ),
-            visitTypeName = "type"
-        )
+                visitTypeName = "type",
+            )
         val actual = R4AppointmentTransformer(practDAO, locationDAO).transformToEpicAppointment(input, patient)
         assertEquals(expected, actual)
     }
 
     @Test
     fun `transform with some null test`() {
-        val practDAO = mockk<R4PractitionerDAO> {
-            every { findById("PRACTID#1") } throws Exception()
-        }
-        val locationDAO = mockk<R4LocationDAO> {
-            every { findById("LOCID#1") } throws Exception()
-        }
+        val practDAO =
+            mockk<R4PractitionerDAO> {
+                every { findById("PRACTID#1") } throws Exception()
+            }
+        val locationDAO =
+            mockk<R4LocationDAO> {
+                every { findById("LOCID#1") } throws Exception()
+            }
         val patient = Patient()
         val input = R4Appointment()
         input.minutesDuration = 30
@@ -102,30 +111,33 @@ internal class R4AppointmentTransformerTest {
         input.id = "Appointment/APPTID#1"
         input.participant = listOf()
 
-        val expected = EpicAppointment(
-            appointmentDuration = "30",
-            appointmentNotes = listOf("", ""),
-            appointmentStartTime = "12:00 AM",
-            appointmentStatus = "Scheduled",
-            contactIDs = listOf(IDType(id = "APPTID#1", type = "CSN")),
-            date = "01/01/2020",
-            patientIDs = listOf(),
-            patientName = "",
-            providers = listOf(),
-            visitTypeName = ""
-        )
+        val expected =
+            EpicAppointment(
+                appointmentDuration = "30",
+                appointmentNotes = listOf("", ""),
+                appointmentStartTime = "12:00 AM",
+                appointmentStatus = "Scheduled",
+                contactIDs = listOf(IDType(id = "APPTID#1", type = "CSN")),
+                date = "01/01/2020",
+                patientIDs = listOf(),
+                patientName = "",
+                providers = listOf(),
+                visitTypeName = "",
+            )
         val actual = R4AppointmentTransformer(practDAO, locationDAO).transformToEpicAppointment(input, patient)
         assertEquals(expected, actual)
     }
 
     @Test
     fun `transform when no use`() {
-        val practDAO = mockk<R4PractitionerDAO> {
-            every { findById("PRACTID#1") } throws Exception()
-        }
-        val locationDAO = mockk<R4LocationDAO> {
-            every { findById("LOCID#1") } throws Exception()
-        }
+        val practDAO =
+            mockk<R4PractitionerDAO> {
+                every { findById("PRACTID#1") } throws Exception()
+            }
+        val locationDAO =
+            mockk<R4LocationDAO> {
+                every { findById("LOCID#1") } throws Exception()
+            }
         val patient = Patient()
         patient.addName(HumanName().addGiven("given").setFamily("family"))
         patient.addName(HumanName().addGiven("given2").setFamily("family").setUse(HumanName.NameUse.OFFICIAL))
@@ -136,45 +148,50 @@ internal class R4AppointmentTransformerTest {
         input.id = "Appointment/APPTID#1"
         input.participant = listOf()
 
-        val expected = EpicAppointment(
-            appointmentDuration = "30",
-            appointmentNotes = listOf("", ""),
-            appointmentStartTime = "12:00 AM",
-            appointmentStatus = "Scheduled",
-            contactIDs = listOf(IDType(id = "APPTID#1", type = "CSN")),
-            date = "01/01/2020",
-            patientIDs = listOf(),
-            patientName = "given family",
-            providers = listOf(),
-            visitTypeName = ""
-        )
+        val expected =
+            EpicAppointment(
+                appointmentDuration = "30",
+                appointmentNotes = listOf("", ""),
+                appointmentStartTime = "12:00 AM",
+                appointmentStatus = "Scheduled",
+                contactIDs = listOf(IDType(id = "APPTID#1", type = "CSN")),
+                date = "01/01/2020",
+                patientIDs = listOf(),
+                patientName = "given family",
+                providers = listOf(),
+                visitTypeName = "",
+            )
         val actual = R4AppointmentTransformer(practDAO, locationDAO).transformToEpicAppointment(input, patient)
         assertEquals(expected, actual)
     }
 
     @Test
     fun `correctly translate the special systems`() {
-        val practDAO = mockk<R4PractitionerDAO> {
-            every { findById("PRACTID#1") } returns Practitioner().setIdentifier(
-                listOf(
-                    Identifier().setValue("IPMD").setSystem("mockEHRProviderSystem"),
-                    Identifier().setSystem("badSystem").setValue("badValue")
-                )
-            )
-        }
-        val locationDAO = mockk<R4LocationDAO> {
-            every { findById("LOCID#1") } returns Location().setIdentifier(
-                listOf(
-                    Identifier().setValue("E12345").setSystem("mockEHRDepartmentInternalSystem"),
-                    Identifier().setSystem("badSystem").setValue("badValue")
-                )
-            )
-        }
+        val practDAO =
+            mockk<R4PractitionerDAO> {
+                every { findById("PRACTID#1") } returns
+                    Practitioner().setIdentifier(
+                        listOf(
+                            Identifier().setValue("IPMD").setSystem("mockEHRProviderSystem"),
+                            Identifier().setSystem("badSystem").setValue("badValue"),
+                        ),
+                    )
+            }
+        val locationDAO =
+            mockk<R4LocationDAO> {
+                every { findById("LOCID#1") } returns
+                    Location().setIdentifier(
+                        listOf(
+                            Identifier().setValue("E12345").setSystem("mockEHRDepartmentInternalSystem"),
+                            Identifier().setSystem("badSystem").setValue("badValue"),
+                        ),
+                    )
+            }
         val patient = Patient()
         patient.identifier =
             listOf(
                 Identifier().setValue("PATMRN").setSystem("mockEHRMRNSystem"),
-                Identifier().setValue("   Z123").setSystem("mockPatientInternalSystem")
+                Identifier().setValue("   Z123").setSystem("mockPatientInternalSystem"),
             )
         patient.addName(HumanName().addGiven("given").setFamily("family").setUse(HumanName.NameUse.USUAL))
         val practitionerParticipant = AppointmentParticipantComponent()
@@ -189,62 +206,70 @@ internal class R4AppointmentTransformerTest {
         input.start = Date(120, 0, 1)
         input.status = org.hl7.fhir.r4.model.Appointment.AppointmentStatus.BOOKED
         input.id = "Appointment/APPTID#1"
-        input.participant = listOf(
-            practitionerParticipant,
-            otherParticipant
-        )
+        input.participant =
+            listOf(
+                practitionerParticipant,
+                otherParticipant,
+            )
 
-        val expected = EpicAppointment(
-            appointmentDuration = "30",
-            appointmentNotes = listOf("instruction", "comment"),
-            appointmentStartTime = "12:00 AM",
-            appointmentStatus = "Scheduled",
-            contactIDs = listOf(IDType(id = "APPTID#1", type = "CSN")),
-            date = "01/01/2020",
-            patientIDs = listOf(
-                IDType("PATMRN", "MRN"),
-                IDType("   Z123", "Internal")
-            ),
-            patientName = "given family",
-            providers = listOf(
-                ScheduleProviderReturnWithTime(
-                    departmentIDs = listOf(
-                        IDType(
-                            id = "E12345",
-                            type = "Internal"
-                        )
+        val expected =
+            EpicAppointment(
+                appointmentDuration = "30",
+                appointmentNotes = listOf("instruction", "comment"),
+                appointmentStartTime = "12:00 AM",
+                appointmentStatus = "Scheduled",
+                contactIDs = listOf(IDType(id = "APPTID#1", type = "CSN")),
+                date = "01/01/2020",
+                patientIDs =
+                    listOf(
+                        IDType("PATMRN", "MRN"),
+                        IDType("   Z123", "Internal"),
                     ),
-                    departmentName = "",
-                    duration = "",
-                    providerIDs = listOf(
-                        IDType(
-                            id = "IPMD",
-                            type = "external"
-                        )
+                patientName = "given family",
+                providers =
+                    listOf(
+                        ScheduleProviderReturnWithTime(
+                            departmentIDs =
+                                listOf(
+                                    IDType(
+                                        id = "E12345",
+                                        type = "Internal",
+                                    ),
+                                ),
+                            departmentName = "",
+                            duration = "",
+                            providerIDs =
+                                listOf(
+                                    IDType(
+                                        id = "IPMD",
+                                        type = "external",
+                                    ),
+                                ),
+                            providerName = "",
+                            time = "",
+                        ),
                     ),
-                    providerName = "",
-                    time = ""
-                )
-            ),
-            visitTypeName = "type"
-        )
+                visitTypeName = "type",
+            )
         val actual = R4AppointmentTransformer(practDAO, locationDAO).transformToEpicAppointment(input, patient)
         assertEquals(expected.patientIDs, actual.patientIDs)
     }
 
     @Test
     fun elvis() {
-        val practDAO = mockk<R4PractitionerDAO> {
-            every { findById("PRACTID#1") } throws Exception()
-        }
-        val locationDAO = mockk<R4LocationDAO> {
-            every { findById("LOCID#1") } throws Exception()
-        }
+        val practDAO =
+            mockk<R4PractitionerDAO> {
+                every { findById("PRACTID#1") } throws Exception()
+            }
+        val locationDAO =
+            mockk<R4LocationDAO> {
+                every { findById("LOCID#1") } throws Exception()
+            }
         val patient = Patient()
         patient.identifier =
             listOf(
                 Identifier().setValue("PATMRN").setSystem("mockEHRMRNSystem"),
-                Identifier().setValue("   Z123").setSystem("mockPatientInternalSystem")
+                Identifier().setValue("   Z123").setSystem("mockPatientInternalSystem"),
             )
         patient.addName(HumanName().addGiven("given").setFamily("family").setUse(HumanName.NameUse.USUAL))
         val practitionerParticipant = AppointmentParticipantComponent()
@@ -257,39 +282,44 @@ internal class R4AppointmentTransformerTest {
         input.start = Date(120, 0, 1)
         input.status = org.hl7.fhir.r4.model.Appointment.AppointmentStatus.BOOKED
         input.id = "Appointment/APPTID#1"
-        input.participant = listOf(
-            practitionerParticipant
-        )
+        input.participant =
+            listOf(
+                practitionerParticipant,
+            )
 
-        val expected = EpicAppointment(
-            appointmentDuration = "30",
-            appointmentNotes = listOf("instruction", "comment"),
-            appointmentStartTime = "12:00 AM",
-            appointmentStatus = "Scheduled",
-            contactIDs = listOf(IDType(id = "APPTID#1", type = "CSN")),
-            date = "01/01/2020",
-            patientIDs = listOf(
-                IDType("PATMRN", "MRN"),
-                IDType("   Z123", "Internal")
-            ),
-            patientName = "given family",
-            providers = listOf(
-                ScheduleProviderReturnWithTime(
-                    departmentIDs = emptyList(),
-                    departmentName = "",
-                    duration = "",
-                    providerIDs = listOf(
-                        IDType(
-                            id = "NO-INTERNAL-ID",
-                            type = "external"
-                        )
+        val expected =
+            EpicAppointment(
+                appointmentDuration = "30",
+                appointmentNotes = listOf("instruction", "comment"),
+                appointmentStartTime = "12:00 AM",
+                appointmentStatus = "Scheduled",
+                contactIDs = listOf(IDType(id = "APPTID#1", type = "CSN")),
+                date = "01/01/2020",
+                patientIDs =
+                    listOf(
+                        IDType("PATMRN", "MRN"),
+                        IDType("   Z123", "Internal"),
                     ),
-                    providerName = "",
-                    time = ""
-                )
-            ),
-            visitTypeName = "type"
-        )
+                patientName = "given family",
+                providers =
+                    listOf(
+                        ScheduleProviderReturnWithTime(
+                            departmentIDs = emptyList(),
+                            departmentName = "",
+                            duration = "",
+                            providerIDs =
+                                listOf(
+                                    IDType(
+                                        id = "NO-INTERNAL-ID",
+                                        type = "external",
+                                    ),
+                                ),
+                            providerName = "",
+                            time = "",
+                        ),
+                    ),
+                visitTypeName = "type",
+            )
         val actual = R4AppointmentTransformer(practDAO, locationDAO).transformToEpicAppointment(input, patient)
         assertEquals(expected.patientIDs, actual.patientIDs)
     }
