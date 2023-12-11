@@ -8,10 +8,14 @@ dependencies {
         resolutionStrategy {
             force(libs.jackson.core)
             force(libs.thymeleaf)
+            force(libs.mockk)
+            force(libs.spring.boot.parent)
+            force(libs.spring.framework.bom)
         }
     }
 
-    implementation(platform(libs.spring.boot.parent))
+    implementation(enforcedPlatform(libs.spring.boot.parent))
+    implementation(enforcedPlatform(libs.spring.framework.bom))
     implementation("org.springframework.boot:spring-boot-starter")
     implementation("org.springframework.boot:spring-boot-starter-web")
     implementation(libs.mysql.connector.java)

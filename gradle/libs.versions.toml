@@ -1,22 +1,24 @@
 [versions]
 apache-commons-text = "1.11.0"
 hapi-fhir = "6.10.0"
-# @pin until spring 3
+# @pin until can move to hapi-fhir 7.x
 hapi-hl7v2 = "2.4.1"
-interop-ehr = "12.7.0"
-interop-fhir = "8.11.0"
-interop-gradle = "3.4.0"
+interop-ehr = "13.0.0"
+interop-fhir = "9.0.0"
+interop-gradle = "4.0.0"
 jackson = "2.15.2"
 json-patch = "1.13"
 kotlinx-coroutines-core = "1.7.3"
-ktor-client = "2.3.6"
-# @pin Stuck on 7.3 until we are off Spring 2.x
+ktor-client = "2.3.7"
+# @pin Stuck on 7.3 until we are on hapi-fhir 7.x
 logstash-logback-encoder = "7.3"
 mockk = "1.13.8"
 mysql-connector-java = "8.2.0"
 protobuf-java = "3.25.1"
-# @pin until can move to JDK 17
-spring-boot = "2.7.13"
+# @pin until can move to hapi-fhir 7.x
+spring-boot = "2.7.18"
+# @pin until can move to hapi-fhir 7.x
+spring-framework = "5.3.31"
 springdoc-openapi = "1.7.0"
 testcontainers-bom = "1.19.3"
 thymeleaf = "3.1.2.RELEASE"
@@ -47,6 +49,7 @@ mockk = { module = "io.mockk:mockk", version.ref = "mockk" }
 mysql-connector-java = { module = "com.mysql:mysql-connector-j", version.ref = "mysql-connector-java" }
 protobuf-java = { module = "com.google.protobuf:protobuf-java", version.ref = "protobuf-java" }
 spring-boot-parent = { module = "org.springframework.boot:spring-boot-parent", version.ref = "spring-boot" }
+spring-framework-bom = { module = "org.springframework:spring-framework-bom", version.ref = "spring-framework" }
 springdoc-openapi-data = { module = "org.springdoc:springdoc-openapi-data-rest", version.ref = "springdoc-openapi" }
 springdoc-openapi-kotlin = { module = "org.springdoc:springdoc-openapi-kotlin", version.ref = "springdoc-openapi" }
 springdoc-openapi-ui = { module = "org.springdoc:springdoc-openapi-ui", version.ref = "springdoc-openapi" }
