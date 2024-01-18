@@ -13,7 +13,7 @@ ktor-client = "2.3.7"
 # @pin Stuck on 7.3 until we are on hapi-fhir 7.x
 logstash-logback-encoder = "7.3"
 mockk = "1.13.9"
-mysql-connector-java = "8.2.0"
+mysql-connector-java = "8.3.0"
 protobuf-java = "3.25.2"
 # @pin until can move to hapi-fhir 7.x
 spring-boot = "2.7.18"
