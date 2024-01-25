@@ -1,6 +1,6 @@
 [versions]
 apache-commons-text = "1.11.0"
-hapi-fhir = "6.10.2"
+hapi-fhir = "6.10.3"
 # @pin until can move to hapi-fhir 7.x
 hapi-hl7v2 = "2.4.1"
 interop-ehr = "13.1.1"
