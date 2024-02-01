@@ -9,7 +9,7 @@ interop-gradle = "4.0.3"
 jackson = "2.15.2"
 json-patch = "1.13"
 kotlinx-coroutines-core = "1.7.3"
-ktor-client = "2.3.7"
+ktor-client = "2.3.8"
 # @pin Stuck on 7.3 until we are on hapi-fhir 7.x
 logstash-logback-encoder = "7.3"
 mockk = "1.13.9"
