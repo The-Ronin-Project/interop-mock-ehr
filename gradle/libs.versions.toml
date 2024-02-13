@@ -3,7 +3,7 @@ apache-commons-text = "1.11.0"
 hapi-fhir = "6.10.4"
 # @pin until can move to hapi-fhir 7.x
 hapi-hl7v2 = "2.4.1"
-interop-ehr = "13.1.1"
+interop-ehr = "13.2.0"
 interop-fhir = "9.1.1"
 interop-gradle = "4.0.3"
 jackson = "2.15.2"
@@ -20,7 +20,7 @@ spring-boot = "2.7.18"
 # @pin until can move to hapi-fhir 7.x
 spring-framework = "5.3.31"
 springdoc-openapi = "1.7.0"
-testcontainers-bom = "1.19.4"
+testcontainers-bom = "1.19.5"
 thymeleaf = "3.1.2.RELEASE"
 
 [libraries]

@@ -353,6 +353,7 @@ class EpicServer(private var dal: EpicDAL) {
                                         "on-hold" -> "Held"
                                         else -> "?"
                                     },
+                                rate = null,
                             )
                         },
                 )
