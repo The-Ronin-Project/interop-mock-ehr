@@ -20,9 +20,15 @@ dependencies {
     implementation("org.springframework.boot:spring-boot-starter-web")
     implementation(libs.mysql.connector.java)
     implementation(libs.protobuf.java)
-    implementation(libs.interop.ehr)
-    implementation(libs.interop.ehr.cerner)
-    implementation(libs.interop.ehr.epic)
+    implementation(libs.interop.ehr) {
+        exclude(group = "org.springdoc")
+    }
+    implementation(libs.interop.ehr.cerner) {
+        exclude(group = "org.springdoc")
+    }
+    implementation(libs.interop.ehr.epic) {
+        exclude(group = "org.springdoc")
+    }
     implementation(libs.interop.fhir)
     implementation(libs.json.patch)
     implementation(libs.apache.commons.text)
