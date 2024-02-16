@@ -32,10 +32,10 @@ import com.projectronin.interop.mock.ehr.fhir.r4.providers.R4PractitionerRoleRes
 import com.projectronin.interop.mock.ehr.fhir.r4.providers.R4ProcedureResourceProvider
 import com.projectronin.interop.mock.ehr.fhir.r4.providers.R4RequestGroupResourceProvider
 import com.projectronin.interop.mock.ehr.fhir.r4.providers.R4ServiceRequestResourceProvider
+import jakarta.servlet.annotation.WebServlet
+import jakarta.servlet.http.HttpServletResponse
 import org.springframework.http.HttpStatus
 import org.springframework.stereotype.Component
-import javax.servlet.annotation.WebServlet
-import javax.servlet.http.HttpServletResponse
 
 @WebServlet(urlPatterns = ["/fhir/r4/*", "/cerner/fhir/r4/*", "/epic/api/FHIR/R4/*"])
 @Component

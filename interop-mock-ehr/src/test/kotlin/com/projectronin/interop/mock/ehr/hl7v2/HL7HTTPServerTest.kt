@@ -1,8 +1,8 @@
 package com.projectronin.interop.mock.ehr.hl7v2
 
 import io.mockk.mockk
+import jakarta.servlet.ServletConfig
 import org.junit.jupiter.api.Test
-import javax.servlet.ServletConfig
 
 internal class HL7HTTPServerTest {
     @Test

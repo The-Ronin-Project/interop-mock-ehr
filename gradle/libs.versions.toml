@@ -1,24 +1,21 @@
 [versions]
 apache-commons-text = "1.11.0"
-hapi-fhir = "6.10.4"
-# @pin until can move to hapi-fhir 7.x
-hapi-hl7v2 = "2.4.1"
+hapi-fhir = "7.0.0"
+hapi-hl7v2 = "2.5.1"
 interop-ehr = "13.2.0"
-interop-fhir = "9.1.1"
+interop-fhir = "9.1.2"
 interop-gradle = "4.0.3"
 jackson = "2.15.2"
+jakarta = "6.0.0"
 json-patch = "1.13"
-kotlinx-coroutines-core = "1.7.3"
+kotlinx-coroutines-core = "1.8.0"
 ktor-client = "2.3.8"
-# @pin Stuck on 7.3 until we are on hapi-fhir 7.x
-logstash-logback-encoder = "7.3"
+logstash-logback-encoder = "7.4"
 mockk = "1.13.9"
 mysql-connector-java = "8.3.0"
 protobuf-java = "3.25.2"
-# @pin until can move to hapi-fhir 7.x
-spring-boot = "2.7.18"
-# @pin until can move to hapi-fhir 7.x
-spring-framework = "5.3.31"
+spring-boot = "3.2.2"
+spring-framework = "6.1.4"
 springdoc-openapi = "1.7.0"
 testcontainers-bom = "1.19.5"
 thymeleaf = "3.1.2.RELEASE"
@@ -40,6 +37,7 @@ interop-ehr-epic = { module = "com.projectronin.interop.ehr:interop-ehr-epic", v
 interop-fhir = { module = "com.projectronin.interop.fhir:interop-fhir", version.ref = "interop-fhir" }
 # @keep Need to force this version
 jackson-core = { module = "com.fasterxml.jackson.core:jackson-core", version.ref = "jackson" }
+jakarta-servlet = { module = "jakarta.servlet:jakarta.servlet-api", version.ref = "jakarta" }
 json-patch = { module = "com.github.java-json-tools:json-patch", version.ref = "json-patch" }
 kotlinx-coroutines-core = { module = "org.jetbrains.kotlinx:kotlinx-coroutines-core", version.ref = "kotlinx-coroutines-core" }
 ktor-client-cio = { module = "io.ktor:ktor-client-cio", version.ref = "ktor-client" }

@@ -7,9 +7,9 @@ import ca.uhn.fhir.rest.server.RestfulServer
 import com.projectronin.interop.mock.ehr.fhir.r4.RoninVendorFilter
 import com.projectronin.interop.mock.ehr.fhir.stu3.providers.STU3AppointmentResourceProvider
 import com.projectronin.interop.mock.ehr.fhir.stu3.providers.STU3MedicationStatementProvider
+import jakarta.servlet.annotation.WebServlet
 import org.springframework.beans.factory.annotation.Qualifier
 import org.springframework.stereotype.Component
-import javax.servlet.annotation.WebServlet
 
 @WebServlet(urlPatterns = ["/fhir/stu3/*", "/cerner/fhir/stu3/*", "/epic/api/FHIR/STU3/*"])
 @Component

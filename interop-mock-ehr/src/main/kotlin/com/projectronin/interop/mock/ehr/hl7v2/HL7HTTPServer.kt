@@ -6,9 +6,9 @@ import com.projectronin.interop.mock.ehr.fhir.r4.dao.R4DocumentReferenceDAO
 import com.projectronin.interop.mock.ehr.hl7v2.handlers.MDMReceiverHandler
 import com.projectronin.interop.mock.ehr.hl7v2.resolvers.DocumentReferenceResolver
 import com.projectronin.interop.mock.ehr.hl7v2.resolvers.PatientResolver
+import jakarta.servlet.ServletConfig
+import jakarta.servlet.annotation.WebServlet
 import org.springframework.stereotype.Component
-import javax.servlet.ServletConfig
-import javax.servlet.annotation.WebServlet
 
 @WebServlet(urlPatterns = ["/HL7overHTTP/*"])
 @Component

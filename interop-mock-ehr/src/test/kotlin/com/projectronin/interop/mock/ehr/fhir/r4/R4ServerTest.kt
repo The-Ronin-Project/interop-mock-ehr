@@ -30,6 +30,7 @@ import io.mockk.every
 import io.mockk.just
 import io.mockk.mockk
 import io.mockk.runs
+import jakarta.servlet.http.HttpServletResponse
 import org.hl7.fhir.r4.model.Appointment
 import org.hl7.fhir.r4.model.Binary
 import org.hl7.fhir.r4.model.Bundle
@@ -57,7 +58,6 @@ import org.hl7.fhir.r4.model.ServiceRequest
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Assertions.assertTrue
 import org.junit.jupiter.api.Test
-import javax.servlet.http.HttpServletResponse
 
 internal class R4ServerTest {
     @Test

@@ -9,6 +9,7 @@ dependencies {
             force(libs.jackson.core)
             force(libs.thymeleaf)
             force(libs.mockk)
+            force(libs.jakarta.servlet)
             force(libs.spring.boot.parent)
             force(libs.spring.framework.bom)
         }
@@ -30,6 +31,7 @@ dependencies {
         exclude(group = "org.springdoc")
     }
     implementation(libs.interop.fhir)
+    implementation(libs.jakarta.servlet)
     implementation(libs.json.patch)
     implementation(libs.apache.commons.text)
     implementation(libs.kotlinx.coroutines.core)
